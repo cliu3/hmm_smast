@@ -144,7 +144,7 @@ for i = 1:o.no
                 load cmapfancy
                 plottingfancy(day,result,td,cmapfancy,o.rate,mpt,zm,o.lock)
         end
-        pause(1)
+        pause(0.05)
         F = getframe(gcf);
         mov = addframe(mov,F);
         disp(sprintf('Storing %i of %i',day,numbstor))
