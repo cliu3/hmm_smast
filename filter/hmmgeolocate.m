@@ -60,7 +60,8 @@ if ext
         end
     end
     if nargin < 6 | isempty(GEN), GEN = false; end
-    hmmgeolocate_mode(tagno,mode,viewres,Duser,GEN)
+    %hmmgeolocate_mode(tagno,mode,viewres,Duser,GEN)
+    hmmgeolocate1(tagno,mode,viewres)
 else
     % No behaviour switching and no generator use (28/11-08)
     if nargin < 4 | isempty(Duser)

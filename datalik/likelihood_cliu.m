@@ -218,7 +218,8 @@ for i=1:ndays;
     %
     if isfinite(day_tidal_depth(i))
         tide=1;
-        ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
+        %ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
+         ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+15+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
             normcdf((day_tidal_depth(i)-250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep);
         ObsLh_dep_tidal = ObsLh_dep_tidal ./ max(ObsLh_dep_tidal);
     else

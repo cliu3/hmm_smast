@@ -56,10 +56,11 @@ numnames = length(names);
 
 par1.covmat = 2*s(1)*eye(2);
 par2.covmat = 2*s(2)*eye(2);
+kern1 = makekern2(par1);
+kern2 = makekern2(par2);
+ks1 = size(kern1,1);
+ks2 = size(kern2,1);
 
-
-[~,x_rec]=min(abs(db.long(1,:)-td.catch_long));
-[~,y_rec]=min(abs(db.lat(:,1)-td.catch_lat));
 
 % Setup output struct
 mpt.land    = db.land;
@@ -74,7 +75,8 @@ mpt.lat_clean       = zeros(icalc,1);
 mpt.long_clean      = zeros(icalc,1);
 mpt.lat             = zeros(icalc,1);
 mpt.long            = zeros(icalc,1);
-
+mpt.catch_long      = td.catch_long;
+mpt.catch_lat       = td.catch_lat;
 
 dlong = (result.maplong(1,col)-result.maplong(1,1))/(col-1);
 dlat  = (result.maplat(row,1)-result.maplat(1,1))/(row-1);
@@ -110,22 +112,13 @@ for j = 2:theend
     for x = 1:col
         for y = 1:row
             if subject(y,x)
-                
-                par1.u=db.h.*[(x_rec-x) (y_rec-y)]./(2*(1+theend-j));
-                par2.u=par1.u;
-                
-                kern1 = makekern2(par1);
-                kern2 = makekern2(par2);
-                ks1 = min(size(kern1));
-                ks2 = min(size(kern2));
-                
                 switch td.behav(j-1)
                     case 1
                         ks = ks1; kern = kern1;
                     case 2
                         ks = ks2; kern = kern2;
                 end
-                
+
                 kminlat  = 1 + max([ceil(ks/2)-y 0]);
                 kmaxlat  =     min([ks-(y+floor(ks/2)-row) ks]);
                 kminlong = 1 + max([ceil(ks/2)-x 0]);
@@ -192,8 +185,33 @@ end
 
 %%
 M(db.land) = -inf;
-[val ind] = max(M(:));
-[ym xm]  = ind2sub([row col],ind);
+dist=zeros(size(M));
+rp=ceil(td.catch_unc./db.h);
+flag=0;
+for x = 1:col
+    for y = 1:row
+        %if sqrt((x-x_rec)^2+(y-y_rec)^2)<=rp
+        if sqrt((Tx(y,x,end-1)-td.x1)^2+(Ty(y,x,end-1)-td.y1)^2)<=rp
+            %dist(Ty(y,x,end-1),Tx(y,x,end-1))=1;
+            dist(y,x)=1;
+            flag=1;
+        end
+    end
+end
+if (flag==1)
+    Mr=M;
+    Mr(~logical(dist))=-inf;
+    [val ind] = max(Mr(:));
+    %[val ind] = max(M(:));
+    [ym xm]  = ind2sub([row col],ind);
+else
+    dist1=sqrt((Tx(:,:,end-1)-td.x1).^2+(Ty(:,:,end-1)-td.y1).^2);
+    [vali ind1]=min(dist1(:));
+    [ym1 xm1]  = ind2sub([row col],ind1);
+    ym=Ty(ym1,xm1,end-1);xm=Tx(ym1,xm1,end-1);
+    
+end
+
 mpt.long_pix_clean = shiftdim(Tx(ym,xm,:),2); mpt.long_pix = mpt.long_pix_clean;
 mpt.lat_pix_clean  = shiftdim(Ty(ym,xm,:),2); mpt.lat_pix = mpt.lat_pix_clean;
 

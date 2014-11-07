@@ -40,8 +40,8 @@ for i=2:icalc
     [y_peak,x_peak] = ind2sub(size(post),jnkind);
     
     %par1.u=[(x_rec-x_peak) (y_rec-y_peak)]./(2*db.h*(icalc-i));
-    par1.u=db.h.*[(x_rec-x_peak) (y_rec-y_peak)]./(2*(1+icalc-i));
-    par2.u=par1.u;
+    %%%par1.u=db.h.*[(x_rec-x_peak) (y_rec-y_peak)]./(2*(1+icalc-i));
+    %%%par2.u=par1.u;
     
     kern1 = makekern2(par1);
     kern2 = makekern2(par2);

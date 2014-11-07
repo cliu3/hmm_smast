@@ -41,9 +41,10 @@ if strcmp(pltyp,'2d') || strcmp(pltyp,'2D')
             st = plot(track.long,track.lat,linsty,'linewidth',lw);
             rel = plot(track.long(1),track.lat(1),'v','markersize',10,'markerfacecolor','g','markeredgecolor','k');
             rec = plot(track.long(end,:),track.lat(end,:),'^','markersize',10,'markerfacecolor','r','markeredgecolor','k');
+            rec_rp = plot(track.catch_long,track.catch_lat,'^','markersize',10,'markerfacecolor','y','markeredgecolor','k');
             hold off
-            if ~isempty(opttrack), legend([rel rec st(end) opt(end)],'Release position','Recapture position','Track','Optional track','location','best')
-            else legend([rel rec st(end)],'Release position','Estimated recapture position','Track','location','best'), end
+            if ~isempty(opttrack), legend([rel rec rec_rp st(end) opt(end)],'Release position','Recapture position','Reported Recapture position','Track','Optional track','location','best')
+            else legend([rel rec rec_rp st(end)],'Release position','Estimated recapture position','Reported Recapture position','Track','location','best'), end
             xlabel('Longitude, deg'), ylabel('Latitude, deg'), title('plottrack')
             handle = a;
     end

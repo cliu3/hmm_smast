@@ -20,7 +20,7 @@ if sign(par.u(1)) == -1, kb_x = fliplr(kb_x); end
 kb_var_x = sum(kb_x.*((-(kbl_x-1)/2:(kbl_x-1)/2) - par.u(1)).^2);
 rv(1) = par.covmat(1,1) - kb_var_x; % Remaining variance
 %rv(1) = 0.25 - kb_var_x; % Remaining variance
-if rv(1) < 0, error('Diffusion is too small compared to advection in x-dir! (makekern2)'), end
+%%%%% if rv(1) < 0, error('Diffusion is too small compared to advection in x-dir! (makekern2)'), end
 % % mk = [0.25*rv(1) 1-0.5*rv(1) 0.25*rv(1)];
 % % kb_x = convn(convn(kb_x,mk),mk);
 % % kb_var_x = sum(kb_x.*((-(kbl_x+3)/2:(kbl_x+3)/2) - par.u(1)).^2);
@@ -39,7 +39,7 @@ if sign(par.u(2)) == -1, kb_y = fliplr(kb_y); end
 kb_var_y = sum(kb_y.*((-(kbl_y-1)/2:(kbl_y-1)/2) - par.u(2)).^2);
 rv(2) = par.covmat(2,2) - kb_var_y; % Remaining variance
 %rv(2) = 0.25 - kb_var_y; % Remaining variance
-if rv(2) < 0, error('Diffusion is too small compared to advection in y-dir! (makekern2)'), end
+%%%%% if rv(2) < 0, error('Diffusion is too small compared to advection in y-dir! (makekern2)'), end
 % Make sure all schemes have 0.25 variance to begin with since som values
 % for advection forces the scheme to a minimum variance of 0.25 (when u =
 % 0.5 or 1.5 or 2.5 or....)
@@ -52,8 +52,12 @@ kb{1} = kb_x;
 kb{2} = kb_y;
 for j = 1:2 % Cycle the two directions
     %disp('============')
-    D = 0.5*(par.covmat(j,j)-0.25); % The 0.25 is to cope with numerical diffusion from advection (see above)
+    if rv(j)<0
+        D = 0.5*par.covmat(j,j);
+        %D = 0.5*(par.covmat(j,j)-0.25); % The 0.25 is to cope with numerical diffusion from advection (see above)
+    else
     D = 0.5*rv(j); % The 0.25 is to cope with numerical diffusion from advection (see above)
+    end
     n = floor(D/0.5);
     mink = 1;
     endk = 1;

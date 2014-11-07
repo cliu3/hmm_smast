@@ -165,6 +165,10 @@ if estimate == 1
     result.loglikval = loglik;
 end
 
+if result.D(1)>result.D(2)
+    fprintf('\nD(1)>D(2), MLE failed... \nUsing default D\n');
+    result.D=guess./D2s;
+end
 %% Prediction %%
 disp(sprintf('Using D: [%f %f]',result.D(1),result.D(2))), 
 if ext == 0
