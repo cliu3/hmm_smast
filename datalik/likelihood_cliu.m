@@ -199,6 +199,7 @@ end
 
 
 %% loop over days, calculate daily likelihood distribution
+std_temp_offset=2.0;
 % fig3=figure('units','normalized','position',[.05 .05 .6 .9]);
 % plot_axis = [8e5,11e5,-2e5,2e5];
 %plot_axis = [8.2e5,9.5e5,-0.9e5,0.5e5];
@@ -240,6 +241,7 @@ for i=1:ndays;
     
     % compute temp std for neighboring nodes
     std_temp=nan(size(fvcom.dep));
+    std_temp=std_temp+std_temp_offset;
     fprintf('computing temp std for day %d\n',i)
     [~,iframe] = min(abs(int_dnum(i)-time_mdl));
     for nd=1:numel(node_idx)
