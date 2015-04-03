@@ -6,7 +6,7 @@ function likelihood_cliu(fish_no)
 
 addpath('../../hmm_smast/backfun/')
 tag_name=[num2str(fish_no),'_raw'];
-load(['~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/',tag_name,'.mat'])
+load(['../../tag_data/',tag_name,'.mat'])
 tagno=[num2str(fish_no),'_',tag.tag_id];
 tideLV  = [0.22 0.85 0.2 2.0];
 
@@ -116,11 +116,10 @@ addpath('../')
 
 
 
-load ~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/vemco.mat
 
 
 % ==== Load  FVCOM  ====
-load ~/Dropbox/Geolocation/preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat
+load ../../preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat
 
 % search within radius
 %search_rad=200000; %m
@@ -135,7 +134,7 @@ end
 
 
 % load bottom temperature
-fname   = '~/Dropbox/Geolocation/data/bottom_temperature/gom3_btemp_davged_09_12.nc';
+fname   = '../../bottom_temperature/gom3_btemp_davged_2003_2013.nc';
 % time
 time_mjd = double(ncread(fname,'time'));
 ntimes = numel(time_mjd);

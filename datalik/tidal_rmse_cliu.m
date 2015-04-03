@@ -4,7 +4,7 @@ function tidal_rmse_cliu(fish_no)
 
 
 tag_name=[num2str(fish_no),'_raw'];
-load(['~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/',tag_name,'.mat'])
+load(['../../tag_data/',tag_name,'.mat'])
 tagno=[num2str(fish_no),'_',tag.tag_id];
 
 tideLV  = [0.42 0.85 0.2 2.0];
@@ -36,7 +36,7 @@ cost = cos(w*tag.dnum);
 
 
 % ==== Load & interp FVCOM  ====
-load ~/Dropbox/Geolocation/preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat
+load ../../preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat
 
 %search_rad=2000; %m
 search_rad=-1; % minus value: use all nodes
