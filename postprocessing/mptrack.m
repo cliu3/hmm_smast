@@ -130,10 +130,35 @@ for j = 2:theend
                 mminlong = max([x-floor(ks/2) 1]);
                 mmaxlong = min([x+floor(ks/2) col]);
                 mlat = mminlat:mmaxlat; mlong = mminlong:mmaxlong;
+                
+                
+                
+                
+                %if x>=20 && x<=22 && y>=69 && y<=71
+                %if j==192 && x==22 && y>=65 && y<=71
+                %    mask=bwconvhull(mask,'objects',8);
+                
+                %end
+                
 
+                % fill the land border
+                mask=db.land(mlat,mlong);
+                
+                
+                
+                
                 % Branch matrix for current position
-                B = log(Ltotal(mlat,mlong,j-1) .* kern(klat,klong));
-                                
+                kern_ins=kern(klat,klong);
+                if any(mask(:)==1)
+                    DistT=mask_distance(mask);
+                    
+                    kern_ins=interp1(0:floor(ks/2),kern(ceil(ks/2),ceil(ks/2):end),DistT,'linear','extrap');
+                    kern_ins(kern_ins<=0)=0;
+                    %disp checkpoint1
+                    kern_ins(mask)=0;
+                end
+                B = log(Ltotal(mlat,mlong,j-1) .* kern_ins);
+                
                 % Total probability of the possible tracks from (x,y)
                 Msub = B + M(y,x); % sum of current state and branch metric
                 
