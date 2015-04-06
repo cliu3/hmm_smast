@@ -124,8 +124,15 @@ else
 end
 
 
-fig = figure; set(fig,'position',[50 100 900 600])
-mov = avifile(o.movname,'fps',o.fps,'quality',100,'compression',o.comp);
+fig = figure; %set(fig,'position',[50 100 900 600])
+set(fig,'PaperUnits', 'inches');
+set(fig,'PaperPosition', [0 0 12 8]); %
+% mov = avifile(o.movname,'fps',o.fps,'quality',100,'compression',o.comp);
+vidObj = VideoWriter(o.movname);
+vidObj.Quality = 100;   % 0 -- 100
+vidObj.FrameRate = o.fps;  % fps
+open(vidObj);
+set(fig,'Visible','off');
 set(fig,'NextPlot','replacechildren');
 
 for i = 1:o.no
@@ -145,10 +152,16 @@ for i = 1:o.no
                 plottingfancy(day,result,td,cmapfancy,o.rate,mpt,zm,o.lock)
         end
         pause(0.05)
-        F = getframe(gcf);
-        mov = addframe(mov,F);
+        imgname=[o.movname,'.tmp'];
+        saveas(fig,imgname,'png');
+        img = imread(imgname);
+        writeVideo(vidObj,img);
+        %F = getframe(gcf);
+        %mov = addframe(mov,F);
         disp(sprintf('Storing %i of %i',day,numbstor))
     end
 end
-mov=close(mov);
+close(vidObj);
+!rm *.tmp
+%mov=close(mov);
 disp(sprintf('Stored animation in -> %s.mat <- in\n%s',o.movname,cd))
