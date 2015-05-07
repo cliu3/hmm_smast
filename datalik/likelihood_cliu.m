@@ -135,6 +135,7 @@ end
 
 % load bottom temperature
 fname   = '../../bottom_temperature/gom3_btemp_davged_2003_2013.nc';
+
 % time
 time_mjd = double(ncread(fname,'time'));
 ntimes = numel(time_mjd);
@@ -219,7 +220,7 @@ for i=1:ndays;
     if isfinite(day_tidal_depth(i))
         tide=1;
         %ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
-         ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+15+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
+         ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
             normcdf((day_tidal_depth(i)-250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep);
         ObsLh_dep_tidal = ObsLh_dep_tidal ./ max(ObsLh_dep_tidal);
     else
