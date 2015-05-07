@@ -75,33 +75,16 @@ names   = cell(ncon,1);
 freq    = zeros(ncon,1);
 tidecon1 = zeros(ncon,4);
 
-for nd=1:numel(node_idx)
-    if (mod(nd,500)==0)
-        fprintf('node: %d/%d\n',nd,numel(node_idx))
-    end
-    pha1(nd,:)=fvcom.phase(node_idx(nd),:);
-    amp1(nd,:)=fvcom.amp(node_idx(nd),:)*0.01; %cm to m
-    for ic = 1:length(inpcon)
-        names(ic) = inpcon(ic);
-        idf = strcmp(ttstuff.const.name,inpcon(ic));
-        freq(ic,:)  = ttstuff.const.freq(idf,:);
-        tidecon1(ic,:) = [amp1(nd,ic) 0.0 pha1(nd,ic) 0.0];
-    end
-    
-    % create timeseries with the defined tidal harmonics info with ttide
-    eta1{nd}= t_predic(tag.dnum,names,freq,tidecon1);
-    
-end
-
 
 
 %% fitting
 
-thresh=0.3550;
-rmse_con=0.1*ones(ndays,numel(fvcom.x));
-figh=figure('units','normalized','position',[.05 .05 .6 .9]);
+tide = zeros(1,ndays);
+rmse_con=ones(ndays,numel(fvcom.x));
+%figh=figure('units','normalized','position',[.05 .05 .6 .9]);
 %loop over day
 rmse_tag=[];
+day_ampli=nan(ndays,1);
 for i=1:ndays;
     fprintf(['day: ' num2str(i) ' of ' num2str(ndays) ' \n'])
     days_idx=find(int_dnum == days(i));
@@ -131,10 +114,14 @@ for i=1:ndays;
     %crit=ones(numel(rmse));
     %find best fit for each day and reconstruct corresponding fvcom signal
     if (sum(crit)>0)
+        tide(i)=2;
+        
         idx=find(rmse==min(rmse(crit)));
         idx=idx(1);
         intv=days_idx(idx):min(ntimes,days_idx(idx)+nwindow-1);
+        intv_cell{i}=intv;
         time=tag.dnum(intv);
+        day_ampli(i) = ampli(idx);
         
         eta_tag{i}=tag.depth(intv)-mean(tag.depth(intv));
         %eta_tag{i}=tag.depth(intv);
@@ -143,19 +130,66 @@ for i=1:ndays;
         f=fit(time,eta_tag{i},'sin1');
         eta_tag_fit{i}=f(time);
         
-        %figure(100);plot(time,eta_tag_fit{i});hold on;
-        %plot(time,eta_tag_fit{i},'g');
-        
-        
-        eta_tagnode=eta1{find(node_idx==node_tag)}(intv)-mean(eta1{find(node_idx==node_tag)}(intv));
-        %plot(time,eta_tagnode,'r');
-        
-        % calculate rmse_tag
-        
-        rmse_tag(i)=rms(eta_tagnode-eta_tag_fit{i});
-        
-        % calculate rmse map
+    end
+end
+
+
+% === reconstruction of FVCOM tidal signal ===
+% only consider nodes whose range of amplitude falls in range of amplitude
+% of fitted signal +/- ampl_buffer (in meters)
+ampl_buffer = 0.0;
+Fr1=0.01*( fvcom.amp(:,1) - sum(fvcom.amp(:,2:end),2) );
+Fr1(Fr1<=0) = 0;
+Fr2=0.01*sum(fvcom.amp,2);
+Tr1=max(0,min(day_ampli)-ampl_buffer);
+Tr2=max(day_ampli)+ampl_buffer;
+node_idx=find(Fr2>=Tr1 & Fr1<=Tr2);
+
+%[~,node_tag]=min( sqrt((xt-fvcom.x).^2 + (yt-fvcom.y).^2) );
+pha1=zeros(numel(node_idx),numel(fvcom.comps));
+amp1=zeros(numel(node_idx),numel(fvcom.comps));
+
+for nd=1:numel(node_idx)
+    if (mod(nd,500)==0)
+        fprintf('node: %d/%d\n',nd,numel(node_idx))
+    end
+    pha1(nd,:)=fvcom.phase(node_idx(nd),:);
+    amp1(nd,:)=fvcom.amp(node_idx(nd),:)*0.01; %cm to m
+    for ic = 1:length(inpcon)
+        names(ic) = inpcon(ic);
+        idf = strcmp(ttstuff.const.name,inpcon(ic));
+        freq(ic,:)  = ttstuff.const.freq(idf,:);
+        tidecon1(ic,:) = [amp1(nd,ic) 0.0 pha1(nd,ic) 0.0];
+    end
+    
+    % create timeseries with the defined tidal harmonics info with ttide
+    eta1{nd}= t_predic(tag.dnum,names,freq,tidecon1);
+    
+end
+% === reconstruction of FVCOM tidal signal ===
+
+
+%thresh=0.2461;
+%thresh=tideLV(1);
+%thresh=0.8;
+%thresh=1.4;
+for i=1:ndays;
+    %figure(100);plot(time,eta_tag_fit{i});hold on;
+    %plot(time,eta_tag_fit{i},'g');
+    
+    
+    %eta_tagnode=eta1{find(node_idx==node_tag)}(intv)-mean(eta1{find(node_idx==node_tag)}(intv));
+    %plot(time,eta_tagnode,'r');
+    
+    % calculate rmse_tag
+    
+    %rmse_tag(i)=rms(eta_tagnode-eta_tag_fit{i});
+    
+    % calculate rmse map
+    if (tide(i)==2)
         rmse_eta=nan(size(fvcom.x));
+        
+        intv = intv_cell{i};
         
         for nd=1:numel(node_idx)
             
@@ -166,32 +200,24 @@ for i=1:ndays;
             
             % figure(1);plot(time,eta1{nd},'r');hold on
         end
-        
+        thresh = min(rmse_eta)+0.3*range(rmse_eta);
+        rmse_con(i,:)=0;
         rmse_con(i,rmse_eta<=thresh)=1;
         
-        %         figure(figh)
-        %         clf
-        %         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',rmse_eta,'edgecolor','none','facecolor','interp');
-        %         axis equal;%axis(plot_axis);
-        %         caxis([0 0.3]);
-        %         [a,b]=min(rmse_eta);
-        %         hold on
-        %         %plot(fvcom.x(b),fvcom.y(b),'ro')
-        %         %plot(xt,yt,'ko')
-        %         colorbar()
-        %
-        %         caxis([0,thresh]);
-        
-        
-        H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);
-        set(H,'FontSize',16,'Color','k');
-        %
-        %         %pause(1)
-        %
-        %         figure(100);plot(time,eta1{find(node_idx==b)}(intv),'r');
-        
-        
+%         H2 = figure(2);clf
+%         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',rmse_eta,'edgecolor','none','facecolor','interp');
+%         H = text(6.1959e5,2.0322e5,['day: ' num2str(i) ' of ' num2str(ndays),'  ', datestr(days(i),'mmm dd yyyy')]);
+%         export_fig([dir_name,'/rmse_',num2str(i,'%04d'),'.png']);
     end
+    
+    %     H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);
+    %     set(H,'FontSize',16,'Color','k');
+    %     %
+    %         %pause(1)
+    %
+    %         figure(100);plot(time,eta1{find(node_idx==b)}(intv),'r');
+    
+    
     
 end
 
