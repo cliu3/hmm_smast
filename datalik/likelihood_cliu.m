@@ -202,42 +202,40 @@ end
 std_temp_offset=2.0;
 % fig3=figure('units','normalized','position',[.05 .05 .6 .9]);
 % plot_axis = [8e5,11e5,-2e5,2e5];
-%plot_axis = [8.2e5,9.5e5,-0.9e5,0.5e5];
+% pause on
+% plot_axis = [8.2e5,9.5e5,-0.9e5,0.5e5];
 ObsLh=nan(ndays,numel(node_idx));
 for i=1:ndays;
     %for i=1:12
-    ObsLh_dep = normcdf((day_max_depth(i)+15)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
-        normcdf((day_max_depth(i))*ones(size(fvcom.dep)),fvcom.dep,std_dep);
-    ObsLh_dep = ObsLh_dep ./max(ObsLh_dep);
-    %     figure(1);clf;
-    %     patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh_dep,'edgecolor','none','facecolor','interp');
-    %     axis equal;axis(plot_axis);
-    %     colorbar()
-    %     title('daily max depth')
-    %     H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);
-    %     set(H,'FontSize',16,'Color','k');
-    %
+
+
+    
+    
     if isfinite(day_tidal_depth(i))
         tide=1;
         %ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
          ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
             normcdf((day_tidal_depth(i)-250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep);
         ObsLh_dep_tidal = ObsLh_dep_tidal ./ max(ObsLh_dep_tidal);
+        
+        ObsLh_dep_total=ObsLh_dep_tidal;
     else
         tide=0;
-        ObsLh_dep_tidal =zeros(size(fvcom.dep));
+        ObsLh_dep = normcdf( -day_max_depth(i)*ones(size(fvcom.dep)), -fvcom.dep,std_dep) ./ ...
+            normcdf(zeros(size(fvcom.dep)),-fvcom.dep,std_dep);
+%         %
+%         figure(1);clf;
+%         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh_dep,'edgecolor','none','facecolor','interp');
+%         axis equal;%axis(plot_axis);
+%         colorbar()
+%         H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);
+%         set(H,'FontSize',16,'Color','k');
+%         %pause
+        %
+        ObsLh_dep_total=ObsLh_dep;
+        
     end
-    %     figure(2);clf;
-    %     patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh_dep_tidal,'edgecolor','none','facecolor','interp');
-    %     axis equal;axis(plot_axis);
-    %     colorbar()
-    %     title('daily tidal depth')
-    ObsLh_dep_total=max(ObsLh_dep,ObsLh_dep_tidal);
-    %     figure(3);clf;
-    %     patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh_dep.*ObsLh_dep_tidal,'edgecolor','none','facecolor','interp');
-    %     axis equal;axis(plot_axis);
-    %     colorbar()
-    %     title('daily max depth x daily tidal depth')
+
     
     % compute temp std for neighboring nodes
     std_temp=nan(size(fvcom.dep));
@@ -254,28 +252,35 @@ for i=1:ndays;
         
     end
     
-    ObsLh_temp = normcdf((day_max_depth_temp(i)+0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-...
-        normcdf((day_max_depth_temp(i)-0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
-    ObsLh_temp = ObsLh_temp./max(ObsLh_temp);
+    
     if isfinite(day_tidal_depth(i))
         ObsLh_temp_tidal = normcdf((day_tidal_depth_temp(i)+0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-...
             normcdf((day_tidal_depth_temp(i)-0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
         ObsLh_temp_tidal = ObsLh_temp_tidal ./ max(ObsLh_temp_tidal);
+        ObsLh_temp_total=ObsLh_temp_tidal;
     else
-        ObsLh_temp_tidal =zeros(size(fvcom.dep));
+        ObsLh_temp = normcdf((day_max_depth_temp(i)+0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-...
+            normcdf((day_max_depth_temp(i)-0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
+        ObsLh_temp = ObsLh_temp./max(ObsLh_temp);
+        ObsLh_temp_total=ObsLh_temp;
+        
+        
     end
-    %     figure(2);clf;
-    %     patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh_temp,'edgecolor','none','facecolor','interp');
-    %     axis equal;axis(plot_axis);
-    %     colorbar()
-    %     H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);
-    %     set(H,'FontSize',16,'Color','k');
-    %     %pause
+
     
-    ObsLh_temp_total=max(ObsLh_temp,ObsLh_temp_tidal);
+    
     
     
     ObsLh(i,:)=ObsLh_dep_total.*ObsLh_temp_total;
+    %
+%         figure(2);clf;
+%         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh(i,:),'edgecolor','none','facecolor','interp');
+%         axis equal;%axis(plot_axis);
+%         colorbar()
+%         H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);
+%         set(H,'FontSize',16,'Color','k');
+%         pause
+    %
     %     figure(fig3);clf;
     %     patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh,'edgecolor','none','facecolor','interp');
     %     figure(fig3);axis equal;axis(plot_axis);
