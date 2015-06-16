@@ -1,11 +1,11 @@
-clear all;
-close all;
+%clear all;
+%close all;
 addpath(genpath('../'));
 addpath(genpath('../../preprocess/'));
 %addpath('/opt/matlab/googleearth');
 
 %ptags = [7,8,11,12,13,16,17,18,22,24,55,56]; %Doug Zemeckis priority tag list
-ptags = [8,11,12,13,16,17,18,22,24,55,56];
+%ptags=[7,8,11,12,13,16,17,18,22,24];  %double tagged fish
 %ptags = [12,22,24,55,56];
 %ptags=7;
 tag_num_range = ptags;
@@ -26,9 +26,9 @@ for tag_num=tag_num_range
     %do_parts = 6;
     
     do_parts(1) = 0; %1 generate a new tidaldb, =0 use tidaldb.mat
-    do_parts(2) = 1; %2 strip
-    do_parts(3) = 1; %3 behavior
-    do_parts(4) = 1; %4 likelihood
+    do_parts(2) = 0; %2 strip
+    do_parts(3) = 0; %3 behavior
+    do_parts(4) = 0; %4 likelihood
     do_parts(5) = 1; %5 cliu likelihood & tidal constraint
     do_parts(6) = 1; %6 geolocate
     do_parts(7) = 1; %7 most probable track
