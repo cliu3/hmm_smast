@@ -204,6 +204,14 @@ std_temp_offset=2.0;
 % plot_axis = [8e5,11e5,-2e5,2e5];
 % pause on
 % plot_axis = [8.2e5,9.5e5,-0.9e5,0.5e5];
+<<<<<<< HEAD
+=======
+
+% recap location
+[xr,yr]=my_project(tag.recapture_lon,tag.recapture_lat,'forward');
+dist_r = ( (fvcom.x-xr).^2+(fvcom.y-yr).^2 ).^0.5;
+
+>>>>>>> 94343470e6bd3d6bd481b93c852e05c9415d2c01
 ObsLh=nan(ndays,numel(node_idx));
 for i=1:ndays;
     %for i=1:12
@@ -268,10 +276,25 @@ for i=1:ndays;
     end
 
     
+<<<<<<< HEAD
     
     
     
     ObsLh(i,:)=ObsLh_dep_total.*ObsLh_temp_total;
+=======
+    %%%%%%%%%%%%%%%%%%%%%%
+    % recapture location attraction likelihood
+    %%%%%%%%%%%%%%%%%%%%%%
+    
+    t_remain=ndays-i;
+    sigma = max( 1000*tag.recap_uncertainty_km, 0.5*25000*t_remain);
+    AttLh = normpdf(dist_r,0,sigma); %25000: typical cod swimming speed (30 cm/s)
+    AttLh = AttLh./max(AttLh);
+    
+    
+    
+    ObsLh(i,:)=ObsLh_dep_total.*ObsLh_temp_total.*AttLh;
+>>>>>>> 94343470e6bd3d6bd481b93c852e05c9415d2c01
     %
 %         figure(2);clf;
 %         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh(i,:),'edgecolor','none','facecolor','interp');
