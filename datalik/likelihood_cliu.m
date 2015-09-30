@@ -1,4 +1,4 @@
-function likelihood_cliu(fish_no)
+function likelihood_cliu(fish_no,path_to_tags,tagname)
 % Construction of likelihood function after (Le Bris et al, 2013 eq (2))
 % using daily max depth and depth where tidal signal is detected, with
 % coorespoding temperature.
@@ -6,7 +6,7 @@ function likelihood_cliu(fish_no)
 
 addpath('../../hmm_smast/backfun/')
 tag_name=[num2str(fish_no),'_raw'];
-load(['../../tag_data/',tag_name,'.mat'])
+load([path_to_tags tagname]);
 tagno=[num2str(fish_no),'_',tag.tag_id];
 tideLV  = [0.22 0.85 0.2 2.0];
 
