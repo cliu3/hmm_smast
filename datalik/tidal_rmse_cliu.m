@@ -1,10 +1,10 @@
-function tidal_rmse_cliu(fish_no)
+function tidal_rmse_cliu(fish_no,path_to_tags,tagname)
 %calculate rmse between tag and fvcom, create tidal signal threshold on
 %likelihood funcion
 
 
 tag_name=[num2str(fish_no),'_raw'];
-load(['~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/',tag_name,'.mat'])
+load([path_to_tags tagname]);
 tagno=[num2str(fish_no),'_',tag.tag_id];
 
 tideLV  = [0.42 0.85 0.2 2.0];
