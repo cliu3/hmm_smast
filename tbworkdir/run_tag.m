@@ -10,6 +10,9 @@ addpath(genpath('../../preprocess/'));
 %ptags=7;
 tag_num_range = ptags;
 
+global tideLV
+tideLV  = [0.42 0.85 0.2 2.0];
+
 % main loop over tags
 for tag_num=tag_num_range
     clear tag;
@@ -90,7 +93,9 @@ for tag_num=tag_num_range
         %      dbname - alternate tidal base: def = tidaldb.mat
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if(do_parts(3)==1)
-            tidebehavextr(tagid,10,[.42,.85,.6],16,[.42,.85,.6]);  %default
+
+            tidebehavextr(tagid,10,tideLV,16,tideLV);  %default
+
         end;
         %tidebehavextr(tagid);
         % make strict criteria so no tide is found
@@ -116,8 +121,9 @@ for tag_num=tag_num_range
         end;
         
         if(do_parts(5)==1)
-            likelihood_cliu(tag_num)
-            tidal_rmse_cliu(tag_num)
+
+            likelihood_cliu(tag_num,path_to_tags,tagname)
+            tidal_rmse_cliu(tag_num,path_to_tags,tagname)
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% Geolocate the tag                                              %%%

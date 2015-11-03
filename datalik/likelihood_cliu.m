@@ -8,7 +8,8 @@ addpath('../../hmm_smast/backfun/')
 tag_name=[num2str(fish_no),'_raw'];
 load([path_to_tags tagname]);
 tagno=[num2str(fish_no),'_',tag.tag_id];
-tideLV  = [0.22 0.85 0.2 2.0];
+global tideLV
+%tideLV  = [0.22 0.85 0.2 2.0];
 
 mean_ampli=[];std_ampli=[];mean_phase=[];std_phase=[];
 Twindow = 5;  %time window = 13 h

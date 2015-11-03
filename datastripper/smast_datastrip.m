@@ -21,7 +21,7 @@ function smast_datastrip(tagdata,dt)
 %    fvcomdb.mat
 %
 % EXAMPLE USAGE
-%    gen_fvcomdb
+%    smast_datastrip(tagdata,dt)
 %
 % Author(s):  
 %    Martin Pedersen
@@ -109,7 +109,7 @@ for i=1:length(tn)
     k=0; f=0;
     while k<dt*(6+1) && f~=1
 %        if tn(i) == t(j)
-        if (abs(tn(i) - t(j)) < 100) %time stamps are within a second should be OK
+        if (abs(tn(i) - t(j)) < 1000) %time stamps are within a second should be OK
             td.depth(i) = td.depth_org(j);
             td.temp(i) = td.temp_org(j);
             f=1;
