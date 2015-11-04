@@ -4,13 +4,15 @@ addpath(genpath('../'));
 addpath(genpath('../../preprocess/'));
 %addpath('/opt/matlab/googleearth');
 
-%ptags = [7,8,11,12,13,16,17,18,22,24,55,56]; %Doug Zemeckis priority tag list
-%ptags=[7,8,11,12,13,16,17,18,22,24];  %double tagged fish
-%ptags = [12,22,24,55,56];
-%ptags=7;
+global fvcom_tidaldb % path to fvcom tidal database
+fvcom_tidaldb = '~/Dropbox/Geolocation/preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat';
+
+ptags = [12,22,24,55,56];
+
 tag_num_range = ptags;
 
 global tideLV
+% tideLV  = [RMSE upper bound, R^2 lower bound, AMPLITUDE lower, AMPLITUDE upper]
 tideLV  = [0.42 0.85 0.2 2.0];
 
 % main loop over tags
