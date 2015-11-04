@@ -9,6 +9,15 @@ fvcom_tidaldb = '~/Dropbox/Geolocation/preprocess/gen_tidal_db/fvcomdb_gom3_v2.m
 global bottom_temperature  % path to fvcom bottom temperature
 bottom_temperature   = '~/Dropbox/Geolocation/data/bottom_temperature/gom3_btemp_davged_2003_2013.nc';
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% tag-specific paremeters  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu
+std_temp_offset=2.0; %higher value is more inclusive
+tag_depth_range = 250; % in meters
+tag_depth_accu = 0.008; % fraction of depth renge
+tag_temp_accu = 0.1; % in degree C
+
 ptags = [12,22,24,55,56];
 
 tag_num_range = ptags;

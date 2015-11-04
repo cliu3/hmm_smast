@@ -201,7 +201,20 @@ end
 
 
 %% loop over days, calculate daily likelihood distribution
-std_temp_offset=2.0;
+global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu
+if isempty(std_temp_offset)
+    std_temp_offset=2.0; %higher value is more inclusive
+end
+if isempty(tag_depth_range)
+    tag_depth_range = 250; % in meter
+end
+if isempty(tag_depth_accu)
+    tag_depth_accu = 0.008; % fraction of depth renge
+end
+if isempty(tag_temp_accu)
+    tag_temp_accu = 0.1; % in degree C
+end
+
 % fig3=figure('units','normalized','position',[.05 .05 .6 .9]);
 % plot_axis = [8e5,11e5,-2e5,2e5];
 % pause on
@@ -221,8 +234,8 @@ for i=1:ndays;
     if isfinite(day_tidal_depth(i))
         tide=1;
         %ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
-         ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
-            normcdf((day_tidal_depth(i)-250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep);
+         ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+tag_depth_range*tag_depth_accu)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
+            normcdf((day_tidal_depth(i)-tag_depth_range*tag_depth_accu)*ones(size(fvcom.dep)),fvcom.dep,std_dep);
         ObsLh_dep_tidal = ObsLh_dep_tidal ./ max(ObsLh_dep_tidal);
         
         ObsLh_dep_total=ObsLh_dep_tidal;
@@ -261,13 +274,13 @@ for i=1:ndays;
     
     
     if isfinite(day_tidal_depth(i))
-        ObsLh_temp_tidal = normcdf((day_tidal_depth_temp(i)+0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-...
-            normcdf((day_tidal_depth_temp(i)-0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
+        ObsLh_temp_tidal = normcdf((day_tidal_depth_temp(i)+tag_temp_accu)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-...
+            normcdf((day_tidal_depth_temp(i)-tag_temp_accu)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
         ObsLh_temp_tidal = ObsLh_temp_tidal ./ max(ObsLh_temp_tidal);
         ObsLh_temp_total=ObsLh_temp_tidal;
     else
-        ObsLh_temp = normcdf((day_max_depth_temp(i)+0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-...
-            normcdf((day_max_depth_temp(i)-0.1)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
+        ObsLh_temp = normcdf((day_max_depth_temp(i)+tag_temp_accu)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-...
+            normcdf((day_max_depth_temp(i)-tag_temp_accu)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
         ObsLh_temp = ObsLh_temp./max(ObsLh_temp);
         ObsLh_temp_total=ObsLh_temp;
         
