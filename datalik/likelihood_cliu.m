@@ -117,10 +117,12 @@ addpath('../')
 
 
 
+%load ~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/vemco.mat
 
 
 % ==== Load  FVCOM  ====
-load ../../preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat
+global fvcom_tidaldb
+load(fvcom_tidaldb)
 
 % search within radius
 %search_rad=200000; %m
@@ -135,17 +137,16 @@ end
 
 
 % load bottom temperature
-fname   = '../../bottom_temperature/gom3_btemp_davged_2003_2013.nc';
-
+global bottom_temperature
 % time
-time_mjd = double(ncread(fname,'time'));
+time_mjd = double(ncread(bottom_temperature,'time'));
 ntimes = numel(time_mjd);
 time_mdl = floor(time_mjd + datenum(1858,11,17,0,0,0));
-h = ncread(fname,'h');
+h = ncread(bottom_temperature,'h');
 nverts = numel(h);
 % bottom temperature
 fprintf('loading temperature data ... ');
-t = ncread(fname,'temp',[1 1],[nverts ntimes]);
+t = ncread(bottom_temperature,'temp',[1 1],[nverts ntimes]);
 fprintf('done loading temperature data\n\n');
 
 % ================
@@ -274,10 +275,6 @@ for i=1:ndays;
     end
 
     
-    
-    
-    
-    ObsLh(i,:)=ObsLh_dep_total.*ObsLh_temp_total;
     %%%%%%%%%%%%%%%%%%%%%%
     % recapture location attraction likelihood
     %%%%%%%%%%%%%%%%%%%%%%

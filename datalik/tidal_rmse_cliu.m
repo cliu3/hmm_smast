@@ -36,7 +36,8 @@ cost = cos(w*tag.dnum);
 
 
 % ==== Load & interp FVCOM  ====
-load ../../preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat
+global fvcom_tidaldb
+load(fvcom_tidaldb)
 
 %search_rad=2000; %m
 search_rad=-1; % minus value: use all nodes
