@@ -6,6 +6,8 @@ addpath(genpath('../../preprocess/'));
 
 global fvcom_tidaldb % path to fvcom tidal database
 fvcom_tidaldb = '~/Dropbox/Geolocation/preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat';
+global bottom_temperature  % path to fvcom bottom temperature
+bottom_temperature   = '~/Dropbox/Geolocation/data/bottom_temperature/gom3_btemp_davged_2003_2013.nc';
 
 ptags = [12,22,24,55,56];
 
