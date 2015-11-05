@@ -259,7 +259,7 @@ for i=1:ndays;
     
     % compute temp std for neighboring nodes
     std_temp=nan(size(fvcom.dep));
-    std_temp=std_temp+std_temp_offset;
+    
     fprintf('computing temp std for day %d\n',i)
     [~,iframe] = min(abs(int_dnum(i)-time_mdl));
     for nd=1:numel(node_idx)
@@ -271,6 +271,7 @@ for i=1:ndays;
         
         
     end
+    std_temp=std_temp+std_temp_offset;
     
     
     if isfinite(day_tidal_depth(i))
