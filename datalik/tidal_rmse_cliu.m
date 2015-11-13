@@ -230,6 +230,23 @@ ObsLh=ObsLh.*rmse_con;
 
 disp(sprintf('Saving -> %s.mat <- \n',filename))
 save(filename,'ObsLh')
+
+%% interpolate onto regular grid
+filename = ['datalikelihood' tagno '.mat'];
+fprintf('Interpolating likelihood onto regular grid ... \n');
+disp(sprintf('Loading %s...\n',filename))
+load(filename)
+[fvcom_lon,fvcom_lat]=my_project(fvcom.x,fvcom.y,'inverse');
+
+for i=1:ndays
+    F = TriScatteredInterp(fvcom_lon,fvcom_lat, ObsLh(i,:)');
+    TempLh=F(db.long,db.lat);
+    TempLh(db.land)=0;
+    LIK.tide(:,:,i)=TempLh;
+end
+filename = sprintf('datalikelihood%s',tagno);
+disp(sprintf('Saving -> %s.mat <- \n',filename))
+save(filename,'LIK')
 end
 
 
