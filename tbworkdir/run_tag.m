@@ -18,7 +18,8 @@ tag_depth_range = 250; % in meters
 tag_depth_accu = 0.008; % fraction of depth renge
 tag_temp_accu = 0.1; % in degree C
 
-ptags = [12,22,24,55,56];
+%ptags = [12,22,24,55,56];
+ptags = 7;
 
 tag_num_range = ptags;
 
@@ -42,15 +43,15 @@ for tag_num=tag_num_range
     %do_parts = 6;
     
     do_parts(1) = 0; %1 generate a new tidaldb, =0 use tidaldb.mat
-    do_parts(2) = 0; %2 strip
-    do_parts(3) = 0; %3 behavior
-    do_parts(4) = 0; %4 likelihood
+    do_parts(2) = 1; %2 strip
+    do_parts(3) = 1; %3 behavior
+    do_parts(4) = 1; %4 likelihood
     do_parts(5) = 1; %5 cliu likelihood & tidal constraint
     do_parts(6) = 1; %6 geolocate
     do_parts(7) = 1; %7 most probable track
     do_parts(8) = 0; %8 make a movie
     
-    fast_likelihood = 0; %=1 use fast scheme, =0 use more accurate scheme
+    fast_likelihood = 1; %=1 use fast scheme, =0 use more accurate scheme
     
     tagname = [num2str(tag_num) '_raw'];
     
@@ -73,7 +74,7 @@ for tag_num=tag_num_range
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Read in the raw data file from an SMAST-format tag             %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    path_to_tags = '../../tag_data/' ;
+    path_to_tags = '~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/' ;
     fprintf('loading %s\n',[path_to_tags tagname]);
     if(exist([path_to_tags tagname '.mat']))
         

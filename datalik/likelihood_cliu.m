@@ -23,7 +23,7 @@ w=2*pi/(p/24); % Angular frequency
 %tag.dnum=tag.dnum+4/24; %convert time to UTC
 
 
-load tidaldb.mat
+%load tidaldb.mat
 
 ntimes = numel(tag.dnum);
 

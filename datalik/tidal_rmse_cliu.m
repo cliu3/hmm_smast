@@ -47,7 +47,7 @@ search_rad=-1; % minus value: use all nodes
 inpcon = fvcom.comps;
 
 
-
+load tidaldb.mat
 
 
 fprintf('reconstructing FVCOM tidal signal ... \n');
