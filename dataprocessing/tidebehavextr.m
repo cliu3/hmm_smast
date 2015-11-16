@@ -213,27 +213,27 @@ year = str2num(datestr(td.time_plot(1),10));
 % since these are regionally-dependent, we will load them 
 % from an external file (using readdb.m) into the db struct
 %----------------------------------------------------------
-[junk,junk,ncomps] = size(db.amp);
-td.f = ones(ncomps,1);  % set to one 
-td.G = zeros(ncomps,1);  % gwc zero out for now 
-
-% see if the year is in the database
-[minny,imin] = min(abs(year-db.year_shift));
-if(minny ==0)
-  ii = imin;
-else
-  fprintf('year %d is not in the phase-amp shift data in the tidal database\n',year);
-  error('stopping...');
-end;
-
-% set the phase and amplitude shifts 
-[nn,ncomps] = size(db.amp_shift);
-td.f(1:ncomps) = db.amp_shift(ii,1:ncomps);
-td.G(1:ncomps) = db.phase_shift(ii,1:ncomps);
+% [junk,junk,ncomps] = size(db.amp);
+% td.f = ones(ncomps,1);  % set to one 
+% td.G = zeros(ncomps,1);  % gwc zero out for now 
+% 
+% % see if the year is in the database
+% [minny,imin] = min(abs(year-db.year_shift));
+% if(minny ==0)
+%   ii = imin;
+% else
+%   fprintf('year %d is not in the phase-amp shift data in the tidal database\n',year);
+%   error('stopping...');
+% end;
+% 
+% % set the phase and amplitude shifts 
+% [nn,ncomps] = size(db.amp_shift);
+% td.f(1:ncomps) = db.amp_shift(ii,1:ncomps);
+% td.G(1:ncomps) = db.phase_shift(ii,1:ncomps);
 
 
 %% Transform release and recapture positions to pixel coords
-[row,col] = size(db.depth);
+[row,col] = size(db.land);
 dlong = (db.long(1,col)-db.long(1,1))/(col-1);
 dlat  = (db.lat(row,1)-db.lat(1,1))/(row-1);
 R = mapmatrix(db.lat(1,1),db.long(1,1),dlat, dlong);

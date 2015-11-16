@@ -10,7 +10,8 @@ load(filename)
 days = mpt.time;
 
 
-load ~/Dropbox/Geolocation/preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat
+global fvcom_tidaldb
+load(fvcom_tidaldb)
 
 dir_name=[num2str(fish_no), '_out'];
 if ~exist(dir_name, 'dir')

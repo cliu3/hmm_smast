@@ -11,6 +11,18 @@ bottom_temperature   = '../../bottom_temperature/gom3_btemp_davged_2003_2013.nc'
 
 ptags = [12,22,24,55,56];
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% tag-specific paremeters  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu
+std_temp_offset=2.0; %higher value is more inclusive
+tag_depth_range = 250; % in meters
+tag_depth_accu = 0.008; % fraction of depth renge
+tag_temp_accu = 0.1; % in degree C
+
+%ptags = [12,22,24,55,56];
+ptags = 7;
+
 tag_num_range = ptags;
 
 global tideLV
@@ -36,12 +48,12 @@ for tag_num=tag_num_range
     do_parts(2) = 0; %2 strip
     do_parts(3) = 0; %3 behavior
     do_parts(4) = 0; %4 likelihood
-    do_parts(5) = 1; %5 cliu likelihood & tidal constraint
+    do_parts(5) = 0; %5 cliu likelihood & tidal constraint
     do_parts(6) = 1; %6 geolocate
     do_parts(7) = 1; %7 most probable track
     do_parts(8) = 0; %8 make a movie
     
-    fast_likelihood = 0; %=1 use fast scheme, =0 use more accurate scheme
+    fast_likelihood = 1; %=1 use fast scheme, =0 use more accurate scheme
     
     tagname = [num2str(tag_num) '_raw'];
     
@@ -55,16 +67,18 @@ for tag_num=tag_num_range
     if(do_parts(1)==1);
         %  gen_tidaldb(-71,-70,42,43,.02,{'M2','S2','N2','K1','O1'}); %for fixed tags
         %gen_tidaldb(-71,-66,40,45,.015,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM
-        gen_tidaldb(-71,-66,40,45,.05,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM
-        readdb
-        finddbvars
+        %gen_tidaldb(-71,-66,40,45,.05,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM
+        %readdb
+        %finddbvars
+        gen_tidaldb_draft(-71,-66,40,45,.01);
+        
     end;
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Read in the raw data file from an SMAST-format tag             %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    path_to_tags = '../../tag_data/' ;
+    path_to_tags = '~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/' ;
     fprintf('loading %s\n',[path_to_tags tagname]);
     if(exist([path_to_tags tagname '.mat']))
         
@@ -131,9 +145,9 @@ for tag_num=tag_num_range
         %%% resultxxxx.mat is created                                      %%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if(do_parts(6)==1)
-            hmmgeolocate(tagid,2,'on',[],true)
+            %hmmgeolocate(tagid,2,'on',[],true)
             %hmmgeolocate(tagid,2,'on',[10. 100.]);
-            %hmmgeolocate(tagid,2,'on',[1.,10.]);
+            hmmgeolocate(tagid,2,'on',[1.,10.]);
         end;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
