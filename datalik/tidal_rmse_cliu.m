@@ -242,6 +242,7 @@ for i=1:ndays
     F = TriScatteredInterp(fvcom_lon,fvcom_lat, ObsLh(i,:)');
     TempLh=F(db.long,db.lat);
     TempLh(db.land)=0;
+    TempLh(isnan(TempLh))=0;
     LIK.tide(:,:,i)=TempLh;
 end
 filename = sprintf('datalikelihood%s',tagno);

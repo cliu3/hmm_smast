@@ -69,18 +69,18 @@ disp(sprintf('Computation type: %s',type))
 disp(sprintf('Display iterations: %s',iter))
 
 days            = 1:length(td.d24)-1;
-[row,col,modes] = size(db.amp);
-modes           = 1:modes;
+[row,col] = size(db.lat);
+%modes           = 1:modes;
 LIK.type        = type;
 
-amplitude = zeros(row,col,modes(end));
-argument  = zeros(row,col,modes(end));
-freq      = zeros(row,col,modes(end));
-for mode=modes
-    amplitude(:,:,mode) = td.f(mode) .* db.amp(:,:,mode);
-    argument(:,:,mode)  = td.G(mode) - db.phase(:,:,mode);
-    freq(:,:,mode)      = ones(row,col) .* db.freq(mode);
-end
+% amplitude = zeros(row,col,modes(end));
+% argument  = zeros(row,col,modes(end));
+% freq      = zeros(row,col,modes(end));
+% for mode=modes
+%     amplitude(:,:,mode) = td.f(mode) .* db.amp(:,:,mode);
+%     argument(:,:,mode)  = td.G(mode) - db.phase(:,:,mode);
+%     freq(:,:,mode)      = ones(row,col) .* db.freq(mode);
+% end
 
 LIK.tide  = zeros(row,col,days(end));
 % tide2 = zeros(row,col,days(end));

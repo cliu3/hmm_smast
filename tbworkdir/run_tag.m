@@ -43,10 +43,10 @@ for tag_num=tag_num_range
     %do_parts = 6;
     
     do_parts(1) = 0; %1 generate a new tidaldb, =0 use tidaldb.mat
-    do_parts(2) = 1; %2 strip
-    do_parts(3) = 1; %3 behavior
-    do_parts(4) = 1; %4 likelihood
-    do_parts(5) = 1; %5 cliu likelihood & tidal constraint
+    do_parts(2) = 0; %2 strip
+    do_parts(3) = 0; %3 behavior
+    do_parts(4) = 0; %4 likelihood
+    do_parts(5) = 0; %5 cliu likelihood & tidal constraint
     do_parts(6) = 1; %6 geolocate
     do_parts(7) = 1; %7 most probable track
     do_parts(8) = 0; %8 make a movie
@@ -65,9 +65,11 @@ for tag_num=tag_num_range
     if(do_parts(1)==1);
         %  gen_tidaldb(-71,-70,42,43,.02,{'M2','S2','N2','K1','O1'}); %for fixed tags
         %gen_tidaldb(-71,-66,40,45,.015,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM
-        gen_tidaldb(-71,-66,40,45,.05,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM
-        readdb
-        finddbvars
+        %gen_tidaldb(-71,-66,40,45,.05,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM
+        %readdb
+        %finddbvars
+        gen_tidaldb_draft(-71,-66,40,45,.01);
+        
     end;
     
     
@@ -141,9 +143,9 @@ for tag_num=tag_num_range
         %%% resultxxxx.mat is created                                      %%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if(do_parts(6)==1)
-            hmmgeolocate(tagid,2,'on',[],true)
+            %hmmgeolocate(tagid,2,'on',[],true)
             %hmmgeolocate(tagid,2,'on',[10. 100.]);
-            %hmmgeolocate(tagid,2,'on',[1.,10.]);
+            hmmgeolocate(tagid,2,'on',[1.,10.]);
         end;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
