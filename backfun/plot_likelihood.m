@@ -5,10 +5,14 @@ if ~exist('plot_mpt'), plot_mpt = 0; end
 
 filename=['ObsLh',num2str(fish_no),'.mat'];
 load(filename)
-filename=['mpt',num2str(fish_no),'.mat'];
+filename=['tagdata',num2str(fish_no),'.mat'];
 load(filename)
-days = mpt.time;
+if plot_mpt==1
+    filename=['mpt',num2str(fish_no),'.mat'];
+    load(filename)
+end
 
+days = td.time_plot(td.d24);
 
 global fvcom_tidaldb
 load(fvcom_tidaldb)
@@ -19,6 +23,7 @@ if ~exist(dir_name, 'dir')
 end
 
 ndays=size(ObsLh,1);
+
 
 if plot_mpt==1
     [mpt_x,mpt_y] = my_project(mpt.long,mpt.lat,'forward');

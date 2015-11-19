@@ -1,4 +1,4 @@
-function [phi,normaliser,pred] = hmmfilter(s,db,td,LIK)
+function [phi,normaliser,pred,isDtoosmall] = hmmfilter(s,db,td,LIK)
 %HMMFILTER Perform the forward sweep of the filtering.
 %
 %   This function is called by hmmgeolocate.m and likelihood.m
@@ -18,6 +18,7 @@ numnames = length(names);
 icalc     = length(td.d24);
 phi       = zeros(row,col,icalc); % Density function
 pred      = phi;
+isDtoosmall = 0;
 
 % Posterior probability for initial position of fish
 post = zeros(row,col); post(td.y0,td.x0) = 1; % Dirac delta
@@ -74,7 +75,11 @@ for i=2:icalc
 %     pause(0.01)
     
     %if sum(isnan(post(:))) ~= 0, error('NaN found in predicted distribution at day %i',i), end
-    if sum(post(:)) == 0, error('Zero distribution at day %i, s = [%f,%f]\nIf you are estimating D try changing the bounds (in hmmgeolocate)',i,s(1),s(2)), end
+    if sum(post(:)) == 0
+        warning('Zero distribution at day %i, s = [%f,%f]\nIf you are estimating D try changing the bounds (in hmmgeolocate)',i,s(1),s(2));
+        isDtoosmall=1;
+        return
+    end
     % Store likelihood function to be optimized later for D
     % The normalising constant corresponds to the conditional distribution
     % of the depth given the previous measurements
