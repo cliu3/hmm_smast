@@ -1,7 +1,7 @@
 %clear all;
 %close all;
 addpath(genpath('../'));
-addpath(genpath('../../preprocess/'));
+%addpath(genpath('../../preprocess/'));
 %addpath('/opt/matlab/googleearth');
 
 global fvcom_tidaldb % path to fvcom tidal database
@@ -19,7 +19,7 @@ tag_depth_accu = 0.008; % fraction of depth renge
 tag_temp_accu = 0.1; % in degree C
 
 %ptags = [12,22,24,55,56];
-ptags = 8;
+ptags = 11;
 
 tag_num_range = ptags;
 
@@ -42,12 +42,12 @@ for tag_num=tag_num_range
     
     %do_parts = 6;
     
-    do_parts(1) = 0; %1 generate a new tidaldb, =0 use tidaldb.mat
-    do_parts(2) = 0; %2 strip
+    do_parts(1) = 1; %1 generate a new tidaldb, =0 use tidaldb.mat
+    do_parts(2) = 1; %2 strip
     do_parts(3) = 1; %3 behavior
-    do_parts(4) = 0; %4 likelihood
-    do_parts(5) = 0; %5 cliu likelihood & tidal constraint
-    do_parts(6) = 0; %6 geolocate
+    do_parts(4) = 1; %4 likelihood
+    do_parts(5) = 1; %5 cliu likelihood & tidal constraint
+    do_parts(6) = 1; %6 geolocate
     do_parts(7) = 1; %7 most probable track
     do_parts(8) = 0; %8 make a movie
     
