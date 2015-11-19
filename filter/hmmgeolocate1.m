@@ -211,8 +211,11 @@ result.UD_plot = post;
 %% Creating *.mat file
 filename = sprintf('result%s',td.tagno);
 disp(sprintf('Saving -> %s.mat <- in\n%s',filename,cd))
-save(filename,'result')
-%save(filename,'result','-v7.3');  %for large bathymetric databases / long tags struct is too large for v7 datatype
+try
+    save(filename,'result')
+catch EM
+    save(filename,'result','-v7.3');  %for large bathymetric databases / long tags struct is too large for v7 datatype
+end
 disp(sprintf('\nDONE geolocating!\n'))
 
 %% View smoothed distribution
