@@ -301,6 +301,14 @@ for i=1:ndays;
     
     
     ObsLh(i,:)=ObsLh_dep_total.*ObsLh_temp_total.*AttLh;
+    
+    % release location treatment
+    if i==1
+        [xl,yl]=my_project(tag.release_lon,tag.release_lat,'forward');
+        dist_rl = ( (fvcom.x-xl).^2+(fvcom.y-yl).^2 ).^0.5;
+        [~,rel_idx] = find(dist_rl==min(dist_rl));
+        ObsLh(i,rel_idx) = 1;
+    end
     %
 %         figure(2);clf;
 %         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh(i,:),'edgecolor','none','facecolor','interp');
