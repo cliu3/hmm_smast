@@ -174,7 +174,7 @@ end
 %thresh=tideLV(1);
 %thresh=0.8;
 %thresh=1.4;
-for i=1:ndays;
+for i=2:ndays;
     %figure(100);plot(time,eta_tag_fit{i});hold on;
     %plot(time,eta_tag_fit{i},'g');
     

@@ -106,11 +106,10 @@ disp(sprintf('Loading %s...\n',filename))
 figure(100);plot(tag.dnum,-tag.depth);hold on;
 set(gca,'xtick',[min(floor(tag.dnum)):max(floor(tag.dnum))])
 datetick('x','mmm dd','keepticks')
-thresh=0.2461;
-rmse_con=ones(ndays,numel(fvcom.x));
+
 %figh=figure('units','normalized','position',[.05 .05 .6 .9]);
 %loop over day
-rmse_tag=[];
+rmse_tag=nan(ndays,1);
 day_ampli=nan(ndays);
 for i=1:ndays;
     fprintf(['day: ' num2str(i) ' of ' num2str(ndays) ' \n'])
@@ -144,6 +143,8 @@ for i=1:ndays;
         tide(i)=2;
         
         idx=find(rmse==min(rmse(crit)));
+        rmse_tag(i) = min(rmse(crit));
+        
         idx=idx(1);
         intv=days_idx(idx):min(ntimes,days_idx(idx)+nwindow-1);
         time=tag.dnum(intv);
@@ -211,6 +212,10 @@ end
 figure()
 plot(day_ampli,'x-')
 title('daily amplitude')
+
+figure()
+plot(rmse_tag,'rx-')
+title('RMSE of daily fit')
 fprintf(['days with tidal fits: ' num2str(numel(find(tide==2))) ' of ' num2str(ndays) ' \n'])
 
 % 
