@@ -109,10 +109,10 @@ while 1
         
     else
         result.D = Duser; % Unit: km^2/d?gn % 2255 18/2
-        D2s  = k/db.h^2; result.D2s = D2s;
-        sEst = result.D*D2s;
-        s = kstest(sEst,25); % Calc size of conv kernel, stop if large
-        result.D = s/D2s;
+         D2s  = k/db.h^2; result.D2s = D2s;
+         sEst = result.D*D2s;
+%         s = kstest(sEst,25); % Calc size of conv kernel, stop if large
+%         result.D = s/D2s;
     end
     % [s I] = max(result.D)*D2s;
     % unc    = sqrt(2*s);
@@ -124,9 +124,9 @@ while 1
     %     warning('Diffusivity too large, overwriting! new D= %f, %f',result.D(1),result.D(2))
     % end
     % s = max(result.D(unique(td.behav))*D2s);
-    unc    = sqrt(2*s);
-    ks = ceil(unc*10+1);
-    ks = ks + mod(ks,2) + 1;
+%     unc    = sqrt(2*s);
+%     ks = ceil(unc*10+1);
+%     ks = ks + mod(ks,2) + 1;
     
     %% Plot likelihood function
     nevals = 5; % Number of evaluation points on likelihood curve

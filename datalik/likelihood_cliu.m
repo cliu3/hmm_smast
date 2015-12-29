@@ -4,7 +4,7 @@ function likelihood_cliu(fish_no,path_to_tags,tagname)
 % coorespoding temperature.
 
 
-addpath('../../hmm_smast/backfun/')
+%addpath('../../hmm_smast/backfun/')
 tag_name=[num2str(fish_no),'_raw'];
 load([path_to_tags tagname]);
 tagno=[num2str(fish_no),'_',tag.tag_id];
@@ -293,7 +293,7 @@ for i=1:ndays;
     % recapture location attraction likelihood
     %%%%%%%%%%%%%%%%%%%%%%
     
-    t_remain=ndays-i;
+    t_remain=ndays-i+1;
     sigma = max( 1000*tag.recap_uncertainty_km, 0.5*25000*t_remain);
     AttLh = normpdf(dist_r,0,sigma); %25000: typical cod swimming speed (30 cm/s)
     AttLh = AttLh./max(AttLh);
@@ -301,14 +301,15 @@ for i=1:ndays;
     
     
     ObsLh(i,:)=ObsLh_dep_total.*ObsLh_temp_total.*AttLh;
-    
-    % release location treatment
-    if i==1
-        [xl,yl]=my_project(tag.release_lon,tag.release_lat,'forward');
-        dist_rl = ( (fvcom.x-xl).^2+(fvcom.y-yl).^2 ).^0.5;
-        [~,rel_idx] = find(dist_rl==min(dist_rl));
-        ObsLh(i,rel_idx) = 1;
-    end
+end    
+% release location treatment
+
+[xl,yl]=my_project(tag.release_lon,tag.release_lat,'forward');
+dist_rl = ( (fvcom.xc-xl).^2+(fvcom.yc-yl).^2 ).^0.5;
+rel_idx = dist_rl==min(dist_rl);
+ObsLh(1,fvcom.tri(rel_idx,:)) = 1;
+
+% ObsLh(1,fvcom.tri(rel_idx,:))
     %
 %         figure(2);clf;
 %         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh(i,:),'edgecolor','none','facecolor','interp');
@@ -344,7 +345,7 @@ for i=1:ndays;
     %     %export_fig(['22_out/22_',num2str(i,'%02d'),'.png']);
     %     saveas(fig3,[tag_name,'_out/',tag_name,'_',num2str(i,'%02d'),'.png'],'png');
     %     hold off
-end
+
 
 filename = sprintf('ObsLh%s',tagno);
 disp(sprintf('Saving -> %s.mat <- \n',filename))

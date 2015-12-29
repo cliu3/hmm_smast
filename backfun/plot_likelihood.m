@@ -18,7 +18,7 @@ global fvcom_tidaldb
 load(fvcom_tidaldb)
 
 dir_name=[num2str(fish_no), '_out'];
-if ~exist(dir_name, 'dir')
+if ~exist(['./',dir_name], 'dir')
     mkdir(dir_name);
 end
 
