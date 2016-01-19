@@ -201,10 +201,14 @@ end
 
 
 %% loop over days, calculate daily likelihood distribution
-global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu
+global std_temp_offset std_depth_offset tag_depth_range tag_depth_accu tag_temp_accu
 if isempty(std_temp_offset)
     std_temp_offset=2.0; %higher value is more inclusive
 end
+if isempty(std_depth_offset)
+    std_depth_offset=2.0; %higher value is more inclusive
+end
+std_dep = std_dep + std_depth_offset;
 if isempty(tag_depth_range)
     tag_depth_range = 250; % in meter
 end
