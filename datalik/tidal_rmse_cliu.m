@@ -1,4 +1,6 @@
 function tidal_rmse_cliu(fish_no,path_to_tags,tagname)
+% Perform longer tidal fit to determine low activity days and perform tidal
+% exclusion on likelihood functions
 %calculate rmse between tag and fvcom, create tidal signal threshold on
 %likelihood funcion
 
@@ -80,7 +82,11 @@ tidecon1 = zeros(ncon,4);
 
 %% fitting
 
-tide = zeros(1,ndays);
+%tide = zeros(1,ndays);
+filename = ['ObsLh' tagno '.mat'];
+disp(sprintf('Loading %s...\n',filename))
+load(filename)
+
 rmse_con=ones(ndays,numel(fvcom.x));
 %figh=figure('units','normalized','position',[.05 .05 .6 .9]);
 %loop over day
@@ -194,7 +200,7 @@ for i=2:ndays;
         
         for nd=1:numel(node_idx)
             
-            %calculate tidal range % time of high tide
+            %calculate tidal signal RMSE
             eta1_window=eta1{nd}(intv)-mean(eta1{nd}(intv));
             rmse_eta(node_idx(nd))= sqrt(mean( (eta_tag_fit{i}-eta1_window).^2));
             
@@ -222,14 +228,12 @@ for i=2:ndays;
     
 end
 
-filename = ['ObsLh' tagno '.mat'];
-disp(sprintf('Loading %s...\n',filename))
-load(filename)
+
 
 ObsLh=ObsLh.*rmse_con;
 
 disp(sprintf('Saving -> %s.mat <- \n',filename))
-save(filename,'ObsLh')
+save(filename,'ObsLh','tide')
 
 %% interpolate onto regular grid
 filename = ['datalikelihood' tagno '.mat'];
