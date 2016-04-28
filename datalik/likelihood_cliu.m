@@ -225,6 +225,12 @@ end
 dist_r = ( (fvcom.x-xr).^2+(fvcom.y-yr).^2 ).^0.5;
 
 ObsLh=nan(ndays,numel(node_idx));
+
+tide = zeros(1,ndays); % tide: activity level classification
+% 2 - low activity
+% 1 - moderate activity
+% 0 - high activity
+
 for i=1:ndays;
     %for i=1:12
 
@@ -232,7 +238,7 @@ for i=1:ndays;
     
     
     if isfinite(day_tidal_depth(i))
-        tide=1;
+        tide(i)=1;
         %ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
          ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+tag_depth_range*tag_depth_accu)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...
             normcdf((day_tidal_depth(i)-tag_depth_range*tag_depth_accu)*ones(size(fvcom.dep)),fvcom.dep,std_dep);
@@ -240,7 +246,7 @@ for i=1:ndays;
         
         ObsLh_dep_total=ObsLh_dep_tidal;
     else
-        tide=0;
+        tide(i)=0;
         ObsLh_dep = normcdf( -day_max_depth(i)*ones(size(fvcom.dep)), -fvcom.dep,std_dep) ./ ...
             normcdf(zeros(size(fvcom.dep)),-fvcom.dep,std_dep);
 %         %
@@ -348,7 +354,7 @@ end
 
 filename = sprintf('ObsLh%s',tagno);
 disp(sprintf('Saving -> %s.mat <- \n',filename))
-save(filename,'ObsLh')
+save(filename,'ObsLh','tide')
 
 
 end
