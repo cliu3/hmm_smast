@@ -36,7 +36,7 @@ function smast_datastrip(tagdata,dt)
 % set the time step (use argument dt if present)
 if nargin < 2, dt = tagdata.max_intvl_seconds/60; end; 
 
-td.deltat = round(dt);
+td.deltat = dt;
 
 %-------------------------------------------------------------------
 % Set tag timeseries of time and depth, tag number, and time step
@@ -82,7 +82,7 @@ datestr(td.time_org(end))
 % from floating point depending on the format of the raw tag time
 % we should consider either resplining the raw data to a common time (why would that be bad)
 % or transferring to the common time with an exact threshold (within +/- a few seconds is fine)
-  
+% fixed - CL 5/26/2016 
 
 % Subsample in 'dt' min sample intervals
 disp('Subsampling...')
