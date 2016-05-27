@@ -249,7 +249,7 @@ if db.land(td.y0,td.x0)
             if ~db.land(y,x), td.x0 = x; td.y0 = y; end
     end, end
 end
-if db.land(td.y1,td.x1)
+if td.catch_unc > 0 && db.land(td.y1,td.x1)
     warning('Recapture position is on land!')
     newx = td.x1 + [-1 0 1]; newx(newx < 1) = [];
     newy = td.y1 + [-1 0 1]; newy(newy < 1) = [];

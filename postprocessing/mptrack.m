@@ -210,33 +210,39 @@ end
 
 %%
 M(db.land) = -inf;
-dist=zeros(size(M));
-rp=ceil(td.catch_unc./db.h);
-flag=0;
-for x = 1:col
-    for y = 1:row
-        %if sqrt((x-x_rec)^2+(y-y_rec)^2)<=rp
-        if sqrt((Tx(y,x,end-1)-td.x1)^2+(Ty(y,x,end-1)-td.y1)^2)<=rp
-            %dist(Ty(y,x,end-1),Tx(y,x,end-1))=1;
-            dist(y,x)=1;
-            flag=1;
+if td.catch_unc > 0
+    dist=zeros(size(M));
+    rp=ceil(td.catch_unc./db.h);
+    flag=0;
+    for x = 1:col
+        for y = 1:row
+            %if sqrt((x-x_rec)^2+(y-y_rec)^2)<=rp
+            if sqrt((Tx(y,x,end-1)-td.x1)^2+(Ty(y,x,end-1)-td.y1)^2)<=rp
+                %dist(Ty(y,x,end-1),Tx(y,x,end-1))=1;
+                dist(y,x)=1;
+                flag=1;
+            end
         end
     end
-end
-if (flag==1)
-    Mr=M;
-    Mr(~logical(dist))=-inf;
-    [val ind] = max(Mr(:));
-    %[val ind] = max(M(:));
-    [ym xm]  = ind2sub([row col],ind);
-else
-    dist1=sqrt((Tx(:,:,end-1)-td.x1).^2+(Ty(:,:,end-1)-td.y1).^2);
-    [vali ind1]=min(dist1(:));
-    [ym1 xm1]  = ind2sub([row col],ind1);
-    ym=Ty(ym1,xm1,end-1);xm=Tx(ym1,xm1,end-1);
     
+    if (flag==1)
+        Mr=M;
+        Mr(~logical(dist))=-inf;
+        [val ind] = max(Mr(:));
+        %[val ind] = max(M(:));
+        [ym xm]  = ind2sub([row col],ind);
+    else
+        dist1=sqrt((Tx(:,:,end-1)-td.x1).^2+(Ty(:,:,end-1)-td.y1).^2);
+        [vali ind1]=min(dist1(:));
+        [ym1 xm1]  = ind2sub([row col],ind1);
+        ym=Ty(ym1,xm1,end-1);xm=Tx(ym1,xm1,end-1);
+        
+    end
+    
+else
+    [val ind] = max(M(:));
+    [ym xm]  = ind2sub([row col],ind);
 end
-
 mpt.long_pix_clean = shiftdim(Tx(ym,xm,:),2); mpt.long_pix = mpt.long_pix_clean;
 mpt.lat_pix_clean  = shiftdim(Ty(ym,xm,:),2); mpt.lat_pix = mpt.lat_pix_clean;
 
