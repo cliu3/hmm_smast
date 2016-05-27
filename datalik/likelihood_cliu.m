@@ -44,12 +44,13 @@ cost = cos(w*tag.dnum);
 
 figure(1);plot(tag.dnum,tag.depth,'b-')
 hold on
-%loop over day
+%loop over day to detect tidal signal
 td_detected=nan(size(tag.dnum));
 td_used=td_detected;
 day_tidal_depth=nan(size(days));
 day_tidal_depth_temp=day_tidal_depth;
 day_max_depth=nan(size(days));
+fprintf('Detecting tidal signal...\n');
 for i=1:ndays;
     fprintf(['day: ' num2str(i) ' of ' num2str(ndays) ' \n'])
     days_idx=find(int_dnum == days(i));
@@ -224,9 +225,10 @@ end
 % pause on
 % plot_axis = [8.2e5,9.5e5,-0.9e5,0.5e5];
 
-% recap location
-[xr,yr]=my_project(tag.recapture_lon,tag.recapture_lat,'forward');
-dist_r = ( (fvcom.x-xr).^2+(fvcom.y-yr).^2 ).^0.5;
+if (tag.recap_uncertainty_km > 0)
+    [xr,yr]=my_project(tag.recapture_lon,tag.recapture_lat,'forward');
+    dist_r = ( (fvcom.x-xr).^2+(fvcom.y-yr).^2 ).^0.5;
+end
 
 ObsLh=nan(ndays,numel(node_idx));
 
@@ -302,15 +304,20 @@ for i=1:ndays;
     %%%%%%%%%%%%%%%%%%%%%%
     % recapture location attraction likelihood
     %%%%%%%%%%%%%%%%%%%%%%
+    % recap location
+    if (tag.recap_uncertainty_km > 0)
     
-    t_remain=ndays-i+1;
-    sigma = max( 1000*tag.recap_uncertainty_km, 0.5*25000*t_remain);
-    AttLh = normpdf(dist_r,0,sigma); %25000: typical cod swimming speed (30 cm/s)
-    AttLh = AttLh./max(AttLh);
-    
-    
+        t_remain=ndays-i+1;
+        sigma = max( 1000*tag.recap_uncertainty_km, 0.5*25000*t_remain);
+        AttLh = normpdf(dist_r,0,sigma); %25000: typical cod swimming speed (30 cm/s)
+        AttLh = AttLh./max(AttLh);
+        
+    else
+        AttLh = 1;
+    end
     
     ObsLh(i,:)=ObsLh_dep_total.*ObsLh_temp_total.*AttLh;
+    
 end    
 % release location treatment
 
