@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ge_axes</title>
+  <meta name="keywords" content="ge_axes">
+  <meta name="description" content="Reference page in help browser:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; ge_axes.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>ge_axes
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Reference page in help browser:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function kmlStr = ge_axes(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Reference page in help browser: 
+ 
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_axes.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>	</li><li><a href="ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>	Reference page in help browser:</li><li><a href="ge_plot3.html" class="code" title="function output = ge_plot3(X,Y,Z,varargin)">ge_plot3</a>	Reference page in help browser:</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/demo/demo_ge_axes.html" class="code" title="function demo_ge_axes()">demo_ge_axes</a>	</li><li><a href="../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/demo/demo_ge_quiver3_2.html" class="code" title="function demo_ge_quiver3_2()">demo_ge_quiver3_2</a>	Define the location of the Collada model origin:</li><li><a href="../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/tests/test_dyn_vis.html" class="code" title="">test_dyn_vis</a>	</li><li><a href="../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/tests/test_ge_quiver3.html" class="code" title="">test_ge_quiver3</a>	Define the location of the Collada model origin:</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function kmlStr = ge_axes(varargin)</a>
+0002 <span class="comment">% Reference page in help browser:</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_axes.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation</span>
+0005 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</span>
+0006 <span class="comment">%</span>
+0007 
+0008 
+0009 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0010 
+0011    altitudeMode = <span class="string">'relativeToGround'</span>;
+0012       lineWidth = 1;
+0013       lineColor = <span class="string">'40FFFFFF'</span>;
+0014       msgToScreen = false;
+0015       region = <span class="string">' '</span>;
+0016 <span class="comment">%    xyLineColor</span>
+0017 <span class="comment">%    yzLineColor</span>
+0018 <span class="comment">%    xzLineColor</span>
+0019 <span class="comment">%    hLineColor</span>
+0020 <span class="comment">%    tLineColor</span>
+0021 <span class="comment">%    rLineColor</span>
+0022 <span class="comment">%    hAxisLength</span>
+0023 <span class="comment">%    tAxisLength</span>
+0024 <span class="comment">%    rAxisLength</span>
+0025 
+0026 
+0027 <a href="parsepairs.html" class="code" title="">parsepairs</a>  
+0028 
+0029 <span class="keyword">if</span> msgToScreen
+0030     disp([<span class="string">'Running: '</span>,mfilename,<span class="string">'...'</span>])
+0031 <span class="keyword">end</span>
+0032 
+0033 <span class="keyword">if</span> ~all(ismember(axesType,<span class="string">'xyzh'</span>))
+0034    error([<span class="string">'Function: '</span> mfilename <span class="string">' - Only '</span>,39,<span class="string">'x'</span>,39,<span class="string">', '</span>,39,<span class="string">'y'</span>,39,<span class="string">', '</span>,39,<span class="keyword">...</span>
+0035           <span class="string">'z'</span>,39,<span class="string">', and '</span>,39,<span class="string">'h'</span>,39,<span class="string">' are allowed in'</span>,10,<span class="string">'parameter '</span>,39,<span class="string">'axesType'</span>,39,<span class="string">'.'</span>])
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="keyword">if</span> exist(<span class="string">'xyLineColor'</span>,<span class="string">'var'</span>)==0
+0039     xyLineColor = lineColor;
+0040 <span class="keyword">end</span>
+0041 <span class="keyword">if</span> exist(<span class="string">'yzLineColor'</span>,<span class="string">'var'</span>)==0
+0042     yzLineColor = lineColor;
+0043 <span class="keyword">end</span>
+0044 <span class="keyword">if</span> exist(<span class="string">'xzLineColor'</span>,<span class="string">'var'</span>)==0
+0045     xzLineColor = lineColor;
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="keyword">if</span> ~isempty(findstr(axesType,<span class="string">'h'</span>))
+0049     <span class="keyword">if</span> exist(<span class="string">'hLineColor'</span>,<span class="string">'var'</span>)==0
+0050         hLineColor = lineColor;
+0051     <span class="keyword">end</span>
+0052     <span class="keyword">if</span> exist(<span class="string">'hAxisLength'</span>,<span class="string">'var'</span>)==0
+0053         error([<span class="string">'You should include parameter '</span>,39,<span class="string">'hAxisLength'</span>,39,<span class="string">' in the call'</span>,10,<span class="string">'to function '</span>,mfilename,<span class="string">'.'</span>])
+0054     <span class="keyword">end</span>
+0055 <span class="keyword">end</span>
+0056 
+0057 <span class="keyword">if</span> ~isempty(findstr(axesType,<span class="string">'x'</span>))&amp;&amp;exist(<span class="string">'xTick'</span>,<span class="string">'var'</span>)==0 ||<span class="keyword">...</span>
+0058    ~isempty(findstr(axesType,<span class="string">'y'</span>))&amp;&amp;exist(<span class="string">'yTick'</span>,<span class="string">'var'</span>)==0 ||<span class="keyword">...</span>
+0059    ~isempty(findstr(axesType,<span class="string">'z'</span>))&amp;&amp;exist(<span class="string">'zTick'</span>,<span class="string">'var'</span>)==0 ||<span class="keyword">...</span>
+0060    ~isempty(findstr(axesType,<span class="string">'h'</span>))&amp;&amp;exist(<span class="string">'hTick'</span>,<span class="string">'var'</span>)==0   
+0061          error([mfilename,<span class="string">': You must specify tick positions for all axes'</span>,10,<span class="keyword">...</span>
+0062              <span class="string">'included in parameter '</span>,39,<span class="string">'axesType'</span>,39,<span class="string">'.'</span>,10,<span class="keyword">...</span>
+0063              <span class="string">'See &lt;a href=&quot;matlab:doc('</span>,39,mfilename,39,<span class="string">')&quot;&gt;doc '</span>,mfilename,<span class="keyword">...</span>
+0064              <span class="string">'&lt;/a&gt; for details.'</span>])
+0065 <span class="keyword">end</span>
+0066 
+0067 
+0068 <span class="keyword">if</span> exist(<span class="string">'axesType'</span>,<span class="string">'var'</span>)==0
+0069     error([<span class="string">'Inclusion of parameter '</span>,39,<span class="string">'axesType'</span>,39,<span class="string">' is compulsory.'</span>])
+0070 <span class="keyword">else</span>
+0071     L = length(axesType);
+0072     <span class="keyword">if</span> ~xor(ismember(L,[2,3]),isequal(axesType,<span class="string">'h'</span>))
+0073         error([<span class="string">'See &lt;a href=&quot;matlab:doc('</span>,39,mfilename,39,<span class="string">')&quot;&gt;doc '</span>,mfilename,<span class="string">'&lt;/a&gt; for details on how to use'</span>,10,<span class="keyword">...</span>
+0074         <span class="string">'parameter '</span>,39,<span class="string">'axesType'</span>,39,<span class="string">'.'</span>])
+0075     <span class="keyword">end</span>
+0076     clear L
+0077 <span class="keyword">end</span>
+0078 
+0079 <span class="keyword">if</span> exist(<span class="string">'axesOrigin'</span>,<span class="string">'var'</span>)==0&amp;&amp;isequal(<span class="string">'h'</span>,axesType)
+0080     error([<span class="string">'Inclusion of parameter '</span>,39,<span class="string">'axesOrigin'</span>,39,<span class="string">' is compulsory when'</span>,10,<span class="keyword">...</span>
+0081            <span class="string">'parameter '</span>,39,<span class="string">'axesType'</span>,39,<span class="string">' is set to '</span>,39,<span class="string">'h'</span>,39,<span class="string">'.'</span>])
+0082 <span class="keyword">end</span>
+0083 
+0084 <span class="keyword">if</span> sum(ismember(<span class="string">'xyz'</span>,axesType))&lt;=2&amp;&amp;exist(<span class="string">'axesOrigin'</span>,<span class="string">'var'</span>)==0
+0085     error([mfilename, <span class="string">': You need to specify parameter '</span>,39,<span class="string">'axesOrigin'</span>,39,<span class="string">' .'</span>])
+0086 <span class="keyword">else</span>
+0087     <span class="keyword">if</span> exist(<span class="string">'axesOrigin'</span>,<span class="string">'var'</span>)==0
+0088         <span class="keyword">if</span> exist(<span class="string">'xTick'</span>,<span class="string">'var'</span>)
+0089             axesOrigin(1)=min(xTick);
+0090         <span class="keyword">end</span>
+0091 
+0092         <span class="keyword">if</span> exist(<span class="string">'yTick'</span>,<span class="string">'var'</span>)
+0093             axesOrigin(2)=min(yTick);
+0094         <span class="keyword">end</span>
+0095 
+0096         <span class="keyword">if</span> exist(<span class="string">'zTick'</span>,<span class="string">'var'</span>)
+0097             axesOrigin(3)=min(zTick);
+0098         <span class="keyword">end</span>
+0099     <span class="keyword">end</span>
+0100 <span class="keyword">end</span>
+0101 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0102 <span class="comment">%%%% start drawing Cartesian planes as specified %%%%</span>
+0103 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0104 
+0105 
+0106 kmlStrXY=<span class="string">''</span>;
+0107 kmlStrXZ=<span class="string">''</span>;
+0108 kmlStrYZ=<span class="string">''</span>;
+0109 
+0110 kmlStrH=<span class="string">''</span>;
+0111 
+0112 
+0113 <span class="keyword">if</span> exist(<span class="string">'xTick'</span>,<span class="string">'var'</span>)&amp;&amp;~isempty(findstr(<span class="string">'x'</span>,axesType))&amp;&amp;<span class="keyword">...</span>
+0114    exist(<span class="string">'yTick'</span>,<span class="string">'var'</span>)&amp;&amp;~isempty(findstr(<span class="string">'y'</span>,axesType))
+0115    
+0116    <span class="comment">%%% Draw xy-plane only:</span>
+0117     XV = [];
+0118     YV = [];
+0119     ZV = [];    
+0120     
+0121     minY = min(yTick);
+0122     maxY = max(yTick);
+0123     
+0124     <span class="keyword">for</span> xT=1:length(xTick)
+0125         XV = [XV;xTick(xT);xTick(xT);NaN];
+0126         YV = [YV;minY;maxY;NaN];
+0127     <span class="keyword">end</span>
+0128 
+0129     minX = min(xTick);
+0130     maxX = max(xTick);
+0131     
+0132     <span class="keyword">for</span> yT=1:length(yTick)
+0133         XV = [XV;minX;maxX;NaN];
+0134         YV = [YV;yTick(yT);yTick(yT);NaN];
+0135     <span class="keyword">end</span>
+0136 
+0137     <span class="keyword">if</span> isequal(<span class="string">'altitudeMode'</span>,<span class="string">'clampToGround'</span>)
+0138         L = length(xTick)*3+length(yTick)*3;    
+0139         ZV = [ZV;ones(L,1)];
+0140         clear L
+0141     <span class="keyword">else</span>
+0142         L = length(xTick)*3+length(yTick)*3;
+0143         ZV = [ZV;ones(L,1)*axesOrigin(3)];
+0144         clear L
+0145     <span class="keyword">end</span>
+0146     
+0147     kmlStrXY = <a href="ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'xy-plane (ge_axes)'</span>,<span class="keyword">...</span>
+0148                 <a href="ge_plot3.html" class="code" title="function output = ge_plot3(X,Y,Z,varargin)">ge_plot3</a>(XV,YV,ZV,<span class="keyword">...</span>
+0149                    <span class="string">'altitudeMode'</span>,altitudeMode,<span class="keyword">...</span>
+0150                       <span class="string">'lineColor'</span>,xyLineColor,<span class="keyword">...</span>
+0151                       <span class="string">'lineWidth'</span>,lineWidth,<span class="keyword">...</span>
+0152                       <span class="string">'name'</span>,<span class="string">'grid line'</span>));
+0153 <span class="keyword">end</span>
+0154 
+0155 <span class="keyword">if</span> exist(<span class="string">'xTick'</span>,<span class="string">'var'</span>)&amp;&amp;~isempty(findstr(<span class="string">'x'</span>,axesType))&amp;&amp;<span class="keyword">...</span>
+0156    exist(<span class="string">'zTick'</span>,<span class="string">'var'</span>)&amp;&amp;~isempty(findstr(<span class="string">'z'</span>,axesType))
+0157 
+0158    <span class="comment">%%% Draw xz-plane only</span>
+0159 
+0160     XV = [];
+0161     YV = [];
+0162     ZV = [];    
+0163 
+0164    <span class="comment">% altitudeMode = 'relativeToGround';</span>
+0165     
+0166     minZ = min(zTick);
+0167     maxZ = max(zTick);
+0168     
+0169     <span class="keyword">for</span> xT=1:length(xTick)
+0170         XV = [XV;xTick(xT);xTick(xT);NaN];
+0171         ZV = [ZV;minZ;maxZ;NaN];
+0172     <span class="keyword">end</span>
+0173 
+0174     minX = min(xTick);
+0175     maxX = max(xTick);
+0176     
+0177     <span class="keyword">for</span> zT=1:length(zTick)
+0178         XV = [XV;minX;maxX;NaN];
+0179         ZV = [ZV;zTick(zT);zTick(zT);NaN];
+0180     <span class="keyword">end</span>
+0181 
+0182     L = length(xTick)*3+length(zTick)*3;    
+0183     YV = [YV;ones(L,1)*axesOrigin(2)];
+0184     clear L
+0185     
+0186     kmlStrXZ = <a href="ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'xz-plane (ge_axes)'</span>,<span class="keyword">...</span>
+0187                 <a href="ge_plot3.html" class="code" title="function output = ge_plot3(X,Y,Z,varargin)">ge_plot3</a>(XV,YV,ZV,<span class="keyword">...</span>
+0188                    <span class="string">'altitudeMode'</span>,altitudeMode,<span class="keyword">...</span>
+0189                       <span class="string">'lineColor'</span>,xzLineColor,<span class="keyword">...</span>
+0190                       <span class="string">'lineWidth'</span>,lineWidth,<span class="keyword">...</span>
+0191                       <span class="string">'name'</span>,<span class="string">'grid line'</span>)); 
+0192 <span class="keyword">end</span>
+0193 
+0194 <span class="keyword">if</span> exist(<span class="string">'yTick'</span>,<span class="string">'var'</span>)&amp;&amp;~isempty(findstr(<span class="string">'y'</span>,axesType))&amp;&amp;<span class="keyword">...</span>
+0195    exist(<span class="string">'zTick'</span>,<span class="string">'var'</span>)&amp;&amp;~isempty(findstr(<span class="string">'z'</span>,axesType))
+0196     
+0197    <span class="comment">%%% Draw yz-plane only</span>
+0198 
+0199     XV = [];
+0200     YV = [];
+0201     ZV = [];    
+0202 
+0203     <span class="comment">%   altitudeMode = 'relativeToGround';</span>
+0204     
+0205     minZ = min(zTick);
+0206     maxZ = max(zTick);
+0207     
+0208     <span class="keyword">for</span> yT=1:length(yTick)
+0209         YV = [YV;yTick(yT);yTick(yT);NaN];
+0210         ZV = [ZV;minZ;maxZ;NaN];
+0211     <span class="keyword">end</span>
+0212 
+0213     minY = min(yTick);
+0214     maxY = max(yTick);
+0215     
+0216     <span class="keyword">for</span> zT=1:length(zTick)
+0217         YV = [YV;minY;maxY;NaN];
+0218         ZV = [ZV;zTick(zT);zTick(zT);NaN];
+0219     <span class="keyword">end</span>
+0220 
+0221     L = length(zTick)*3+length(yTick)*3;    
+0222     XV = [XV;ones(L,1)*axesOrigin(1)];
+0223     clear L
+0224 
+0225     kmlStrYZ = <a href="ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'yz-plane (ge_axes)'</span>,<span class="keyword">...</span>
+0226                 <a href="ge_plot3.html" class="code" title="function output = ge_plot3(X,Y,Z,varargin)">ge_plot3</a>(XV,YV,ZV,<span class="keyword">...</span>
+0227                    <span class="string">'altitudeMode'</span>,altitudeMode,<span class="keyword">...</span>
+0228                       <span class="string">'lineColor'</span>,yzLineColor,<span class="keyword">...</span>
+0229                       <span class="string">'lineWidth'</span>,lineWidth,<span class="keyword">...</span>
+0230                            <span class="string">'name'</span>,<span class="string">'grid line'</span>)); 
+0231     
+0232     
+0233 <span class="keyword">end</span>  
+0234 
+0235 
+0236 
+0237 
+0238 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0239 <span class="comment">%%%% start drawing radial planes as specified %%%%</span>
+0240 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0241 
+0242 
+0243 <span class="keyword">if</span> exist(<span class="string">'hTick'</span>,<span class="string">'var'</span>)&amp;&amp;~isempty(findstr(<span class="string">'h'</span>,axesType))
+0244    
+0245    <span class="comment">%%% Draw heading-plane only:</span>
+0246     XV = [];
+0247     YV = [];
+0248     ZV = [];    
+0249         
+0250     <span class="keyword">for</span> hT=1:length(hTick)
+0251         XV = [XV;axesOrigin(1);axesOrigin(1)+hAxisLength*sin(<a href="deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>(hTick(hT)));NaN];
+0252         YV = [YV;axesOrigin(2);axesOrigin(2)+hAxisLength*cos(<a href="deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>(hTick(hT)));NaN];
+0253     <span class="keyword">end</span>
+0254 
+0255 
+0256     <span class="keyword">if</span> isequal(<span class="string">'altitudeMode'</span>,<span class="string">'clampToGround'</span>)
+0257         L = length(xTick)*3;    
+0258         ZV = [ZV;ones(L,1)];
+0259         clear L
+0260     <span class="keyword">else</span>
+0261         L = length(hTick)*3;
+0262         ZV = [ZV;ones(L,1)*axesOrigin(3)];
+0263         clear L
+0264     <span class="keyword">end</span>
+0265     
+0266     kmlStrH = <a href="ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'heading-plane (ge_axes)'</span>,<span class="keyword">...</span>
+0267                 <a href="ge_plot3.html" class="code" title="function output = ge_plot3(X,Y,Z,varargin)">ge_plot3</a>(XV,YV,ZV,<span class="keyword">...</span>
+0268                    <span class="string">'altitudeMode'</span>,altitudeMode,<span class="keyword">...</span>
+0269                       <span class="string">'lineColor'</span>,hLineColor,<span class="keyword">...</span>
+0270                       <span class="string">'lineWidth'</span>,lineWidth,<span class="keyword">...</span>
+0271                       <span class="string">'region'</span>, region, <span class="keyword">...</span>
+0272                            <span class="string">'name'</span>,<span class="string">'grid line'</span>));
+0273 <span class="keyword">end</span>
+0274 
+0275 kmlStr = [kmlStrXY,kmlStrXZ,kmlStrYZ,kmlStrH];
+0276 
+0277 <span class="keyword">if</span> msgToScreen
+0278     disp([<span class="string">'Running: '</span>,mfilename,<span class="string">'...Done'</span>])
+0279 <span class="keyword">end</span>
+0280     
+0281          
+0282 <span class="comment">%                       'id',id,...</span>
+0283 <span class="comment">%                    'idTag',idTag,...</span>
+0284 <span class="comment">%                     'name',name,...</span>
+0285 <span class="comment">%              'description',description,...</span>
+0286 <span class="comment">%                'timeStamp',timeStamp,...</span>
+0287 <span class="comment">%            'timeSpanStart',timeSpanStart,...</span>
+0288 <span class="comment">%             'timeSpanStop',timeSpanStop,...</span>
+0289 <span class="comment">%               'visibility',visibility,...</span>
+0290 <span class="comment">%                'lineColor',lineColor,...</span>
+0291 <span class="comment">%                'lineWidth',lineWidth,...</span>
+0292 
+0293 <span class="comment">%                  'extrude',extrude,...</span>
+0294 <span class="comment">%               'tessellate',tessellate,...</span>
+0295 <span class="comment">%              'forceAsLine',forceAsLine);</span></pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

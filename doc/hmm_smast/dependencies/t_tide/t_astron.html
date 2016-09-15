@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of t_astron</title>
+  <meta name="keywords" content="t_astron">
+  <meta name="description" content="T_ASTRON Computes astronomical Variables">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="index.html">t_tide</a> &gt; t_astron.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/t_tide&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>t_astron
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>T_ASTRON Computes astronomical Variables</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [astro,ader] = t_astron(jd) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> T_ASTRON Computes astronomical Variables
+ [A,ADER] = ASTRON(JD) computes the astronomical variables 
+            A=[tau,s,h,p,np,pp] (cycles) 
+  and their time derivatives 
+            ADER=[dtau,ds,dh,dp,dnp,dpp] (cycles/day) 
+  at the matlab time JD (UTC, but see code for details) where
+
+    tau = lunar time
+    s = mean longitude of the moon
+    h = mean longitude of the sun
+    p = mean longitude of the lunar perigee 
+    np = negative of the longitude of the mean ascending node
+    pp = mean longitude of the perihelion (solar perigee)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="t_getconsts.html" class="code" title="function [const,sat,shallow]=t_getconsts(ctime);">t_getconsts</a>	T_GETCONSTS Gets constituent data structures</li><li><a href="t_vuf.html" class="code" title="function [v,u,f]=t_vuf(ltype,ctime,ju,lat);">t_vuf</a>	T_VUF Computes nodal modulation corrections.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [astro,ader] = t_astron(jd)</a>
+0002 <span class="comment">% T_ASTRON Computes astronomical Variables</span>
+0003 <span class="comment">% [A,ADER] = ASTRON(JD) computes the astronomical variables</span>
+0004 <span class="comment">%            A=[tau,s,h,p,np,pp] (cycles)</span>
+0005 <span class="comment">%  and their time derivatives</span>
+0006 <span class="comment">%            ADER=[dtau,ds,dh,dp,dnp,dpp] (cycles/day)</span>
+0007 <span class="comment">%  at the matlab time JD (UTC, but see code for details) where</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%    tau = lunar time</span>
+0010 <span class="comment">%    s = mean longitude of the moon</span>
+0011 <span class="comment">%    h = mean longitude of the sun</span>
+0012 <span class="comment">%    p = mean longitude of the lunar perigee</span>
+0013 <span class="comment">%    np = negative of the longitude of the mean ascending node</span>
+0014 <span class="comment">%    pp = mean longitude of the perihelion (solar perigee)</span>
+0015 <span class="comment">%</span>
+0016 
+0017 <span class="comment">%</span>
+0018 <span class="comment">%    The formulae for calculating these ephemerides (other than tau)</span>
+0019 <span class="comment">%    were taken from pages 98 and 107 of the Explanatory Supplement to</span>
+0020 <span class="comment">%    the Astronomical Ephemeris and the American Ephemeris and Nautical</span>
+0021 <span class="comment">%    Almanac (1961). They require EPHEMERIS TIME (ET), now TERRESTRIAL</span>
+0022 <span class="comment">%    TIME (TT) and are based on observations made in the 1700/1800s.</span>
+0023 <span class="comment">%    In a bizarre twist, the current definition of time is derived</span>
+0024 <span class="comment">%    by reducing observations of planetary motions using these formulas.</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%    The current world master clock is INTERNATIONAL ATOMIC TIME (TAI).</span>
+0027 <span class="comment">%    The length of the second is based on inverting the actual</span>
+0028 <span class="comment">%    locations of the planets over the period 1956-65 into &quot;time&quot;</span>
+0029 <span class="comment">%    using these formulas, and an offset added to keep the scale</span>
+0030 <span class="comment">%    continuous with previous defns. Thus</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%                     TT = TAI + 32.184 seconds.</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%    Universal Time UT is a time scale that is 00:00 at midnight (i.e.,</span>
+0035 <span class="comment">%    based on the earth's rotation rather than on planetary motions).</span>
+0036 <span class="comment">%    Coordinated Universal Time (UTC) is kept by atomic clocks, the</span>
+0037 <span class="comment">%    length of the second is the same as for TAI but leap seconds are</span>
+0038 <span class="comment">%    inserted at intervals so that it provides UT to within 1 second.</span>
+0039 <span class="comment">%    This is necessary because the period of the earth's rotation is</span>
+0040 <span class="comment">%    slowly increasing (the day was exactly 86400 seconds around 1820,</span>
+0041 <span class="comment">%    it is now about 2 ms longer). 22 leap seconds have been added in</span>
+0042 <span class="comment">%    the last 27 years.</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%    As of 1/1/99,    TAI = UTC + 32 seconds.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%    Thus,             TT = UTC + 62.184 seconds</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%    GPS time was synchronized with UTC 6/1/1980 ( = TAI - 19 secs),</span>
+0049 <span class="comment">%    but is NOT adjusted for leap seconds. Your receiver might do this</span>
+0050 <span class="comment">%    automatically...or it might not.</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">%    Does any of this matter? The moon longitude is the fastest changing</span>
+0053 <span class="comment">%    parameter at 13 deg/day. A time error of one minute implies a</span>
+0054 <span class="comment">%    position error of less than 0.01 deg. This would almost always be</span>
+0055 <span class="comment">%    unimportant for tidal work.</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">%    The lunar time (tau) calculation requires UT as a base.  UTC is</span>
+0058 <span class="comment">%    close enough - an error of 1 second, the biggest difference that</span>
+0059 <span class="comment">%    can occur between UT and UTC, implies a Greenwich phase error of</span>
+0060 <span class="comment">%    0.01 deg.  In Doodson's definition (Proc R. Soc. A, vol 100,</span>
+0061 <span class="comment">%    reprinted in International Hydrographic Review, Appendix to</span>
+0062 <span class="comment">%    Circular Letter 4-H, 1954) mean lunar time is taken to begin at</span>
+0063 <span class="comment">%    &quot;lunar midnight&quot;.</span>
+0064 
+0065 <span class="comment">% B. Beardsley  12/29/98, 1/11/98</span>
+0066 <span class="comment">% R. Pawlowicz  9/1/01</span>
+0067 <span class="comment">% Version 1.0</span>
+0068 
+0069 
+0070 <span class="comment">% Compute number of days from epoch of 12:00 UT Dec 31, 1899.</span>
+0071 <span class="comment">% (January 0.5 1900 ET)</span>
+0072 d=jd(:)'-datenum(1899,12,31,12,0,0);
+0073 D=d/10000;
+0074 
+0075 <span class="comment">% Compute astronomical constants at time d1.</span>
+0076 args=[ones(size(jd));
+0077       d;
+0078       D.*D;
+0079       D.^3];
+0080 
+0081 <span class="comment">% These are the coefficients of the formulas in the Explan. Suppl.</span>
+0082 
+0083 sc= [ 270.434164,13.1763965268,-0.0000850, 0.000000039];
+0084 hc= [ 279.696678, 0.9856473354, 0.00002267,0.000000000];
+0085 pc= [ 334.329556, 0.1114040803,-0.0007739,-0.00000026];
+0086 npc=[-259.183275, 0.0529539222,-0.0001557,-0.000000050];
+0087 <span class="comment">%  first coeff was 281.220833 in Foreman but Expl. Suppl. has 44.</span>
+0088 ppc=[ 281.220844, 0.0000470684, 0.0000339, 0.000000070];
+0089 
+0090 <span class="comment">% Compute the parameters; we only need the factional part of the cycle.</span>
+0091 astro=rem( [sc;hc;pc;npc;ppc]*args./360.0 ,1);
+0092 
+0093 <span class="comment">% Compute lunar time tau, based on fractional part of solar day.</span>
+0094 <span class="comment">% We add the hour angle to the longitude of the sun and subtract the</span>
+0095 <span class="comment">% longitude of the moon.</span>
+0096 tau=rem(jd(:)',1)+astro(2,:)-astro(1,:);
+0097 astro=[tau;astro];
+0098 
+0099 <span class="comment">% Compute rates of change.</span>
+0100 dargs=[zeros(size(jd));
+0101        ones(size(jd));
+0102        2.0e-4.*D;
+0103        3.0e-4.*D.*D];
+0104 
+0105 ader=[sc;hc;pc;npc;ppc]*dargs./360.0;
+0106 
+0107 dtau=1.0+ader(2,:)-ader(1,:);
+0108 
+0109 ader=[dtau;ader];
+0110</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

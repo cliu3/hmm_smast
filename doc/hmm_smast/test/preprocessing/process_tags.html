@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of process_tags</title>
+  <meta name="keywords" content="process_tags">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="../index.html">test</a> &gt; <a href="index.html">preprocessing</a> &gt; process_tags.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/test/preprocessing&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>process_tags
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="check_tag.html" class="code" title="function [] = check_harmonics(tag);">check_tag</a>	Check harmonics from a fixed bottom tag and compare with FVCOM database at the same location</li><li><a href="common_meta.html" class="code" title="">common_meta</a>	project</li><li><a href="process_staroddi.html" class="code" title="function [tag] = process_staroddi(tag)">process_staroddi</a>	Read raw tag data and generate a Matlab file containing all information</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 clear all;close all;
+0002 addpath(genpath(<span class="string">'../../dependencies/t_tide/'</span>)); 
+0003 <span class="comment">% process all the tags</span>
+0004 
+0005 <span class="comment">% raw tag directory</span>
+0006 tagdir = <span class="string">'raw_tag_data'</span>;
+0007 
+0008 <span class="comment">% remove all the existing tag files</span>
+0009 <span class="comment">% system('rm *.mat');</span>
+0010 
+0011 <span class="comment">% load the project summary info from Doug's spreadsheet</span>
+0012 <span class="comment">%fname = 'Inventory of SCCZ DST Recaptures.xlsx';</span>
+0013 fname = <span class="string">'Inventory_of_tags.xlsx'</span>;
+0014 [numeric,txt,raw]= xlsread(fname);
+0015 [ntags,ncols] = size(numeric);
+0016 
+0017 
+0018 ptags=[7, 8];
+0019 
+0020 tagset = ptags;
+0021 
+0022 <span class="comment">% loop over tags</span>
+0023 <span class="keyword">for</span> i=tagset  
+0024   clear tag;
+0025 
+0026   tag.datafile  = [tagdir <span class="string">'/'</span> strtrim(char(txt(i+1,14)))];
+0027   <span class="keyword">if</span>(strcmp(tag.datafile,[tagdir <span class="string">'/NONE'</span>])); 
+0028     <span class="keyword">continue</span>
+0029   <span class="keyword">end</span>;
+0030 
+0031   <span class="comment">% set project metadata</span>
+0032   <a href="common_meta.html" class="code" title="">common_meta</a>;
+0033 
+0034   <span class="comment">% set tag-specific metadata</span>
+0035   tag.fish_id   = numeric(i,1);
+0036   tag.tag_id    = char(txt(i+1,2));
+0037   tag.type      = char(txt(i+1,3));
+0038   tag.length    = numeric(i,10); 
+0039   tag.sex       = char(txt(i+1,11));
+0040   tag.maturity  = numeric(i,12);
+0041   tag.release_dnum = (numeric(i,8) + datenum(1900,1,0,0,0,0));
+0042   tag.recapture_lon = numeric(i,19); 
+0043   tag.recapture_lat = numeric(i,18); 
+0044   tag.recapture_dnum = (numeric(i,15) + datenum(1900,1,0,0,0,0));
+0045   tag.recap_uncertainty_km = numeric(i,21); 
+0046 
+0047 
+0048   <span class="comment">% for stationaey tags release location = recap location</span>
+0049   <span class="keyword">if</span> ismember(i,63:89)
+0050       tag.release_lon = tag.recapture_lon;
+0051       tag.release_lat = tag.recapture_lat;
+0052   <span class="keyword">end</span>
+0053   
+0054   <span class="comment">%set time-dependent fields</span>
+0055   <span class="keyword">if</span>(strcmp(tag.type,<span class="string">'STAR-ODDI'</span>));
+0056     tag = <a href="process_staroddi.html" class="code" title="function [tag] = process_staroddi(tag)">process_staroddi</a>(tag);
+0057   <span class="keyword">elseif</span>(strcmp(tag.type,<span class="string">'LOTEK'</span>));
+0058     <span class="comment">%fprintf('something up with LOTEK tags, skipping \n');</span>
+0059     <span class="comment">%continue</span>
+0060     tag = process_lotek(tag);
+0061   <span class="keyword">else</span>
+0062     fprintf(<span class="string">'type is %s\n'</span>,tag.type);
+0063     error(<span class="string">'not setup to read the type'</span>);
+0064   <span class="keyword">end</span>;
+0065 
+0066   <span class="comment">%check the tidal harmonics over first few days</span>
+0067   <span class="comment">%fname = [num2str(tag.fish_id) '_' tag.tag_id];</span>
+0068   fname = [num2str(tag.fish_id) <span class="string">'_raw'</span>];
+0069   save(fname,<span class="string">'tag'</span>);
+0070 
+0071   <a href="check_tag.html" class="code" title="function [] = check_harmonics(tag);">check_tag</a>(tag);
+0072 <span class="keyword">end</span>;</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

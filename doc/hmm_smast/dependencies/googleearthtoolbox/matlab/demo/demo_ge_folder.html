@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_ge_folder</title>
+  <meta name="keywords" content="demo_ge_folder">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="../index.html">matlab</a> &gt; <a href="index.html">demo</a> &gt; demo_ge_folder.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/googleearthtoolbox/matlab/demo&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>demo_ge_folder
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function demo_ge_folder() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_cylinder.html" class="code" title="function output = ge_cylinder(X,Y,radius,height,varargin)">ge_cylinder</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>	Reference page in help browser:</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function demo_ge_folder()</a>
+0002 
+0003 N = 250;
+0004 
+0005 X_NE = -180+rand(N,1)*180;
+0006 Y_NE = rand(N,1)*90;
+0007 
+0008 X_NW = rand(N,1)*180;
+0009 Y_NW = rand(N,1)*90;
+0010 
+0011 X_SE = -180+rand(N,1)*180;
+0012 Y_SE = -90+rand(N,1)*90;
+0013 
+0014 X_SW = rand(N,1)*180;
+0015 Y_SW = -90+rand(N,1)*90;
+0016 
+0017 kmlStr_NE=<span class="string">''</span>;
+0018 kmlStr_NW=<span class="string">''</span>;
+0019 kmlStr_SE=<span class="string">''</span>;
+0020 kmlStr_SW=<span class="string">''</span>;
+0021 
+0022 <span class="keyword">for</span> k=1:N
+0023     S = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_cylinder.html" class="code" title="function output = ge_cylinder(X,Y,radius,height,varargin)">ge_cylinder</a>(X_NE(k),Y_NE(k),5e4,5e5,<span class="keyword">...</span>
+0024                                 <span class="string">'polyColor'</span>,<span class="string">'FF0000FF'</span>,<span class="keyword">...</span>
+0025                                 <span class="string">'lineColor'</span>,<span class="string">'FF0000FF'</span>,<span class="keyword">...</span>
+0026                                 <span class="string">'divisions'</span>,3);
+0027     kmlStr_NE = [kmlStr_NE,S];
+0028 <span class="keyword">end</span>
+0029 
+0030 <span class="keyword">for</span> k=1:N
+0031     S = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_cylinder.html" class="code" title="function output = ge_cylinder(X,Y,radius,height,varargin)">ge_cylinder</a>(X_NW(k),Y_NW(k),5e4,5e5,<span class="keyword">...</span>
+0032                                 <span class="string">'polyColor'</span>,<span class="string">'FF00FF00'</span>,<span class="keyword">...</span>
+0033                                 <span class="string">'lineColor'</span>,<span class="string">'FF00FF00'</span>,<span class="keyword">...</span>
+0034                                 <span class="string">'divisions'</span>,3);
+0035     kmlStr_NW = [kmlStr_NW,S];
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="keyword">for</span> k=1:N
+0039     S = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_cylinder.html" class="code" title="function output = ge_cylinder(X,Y,radius,height,varargin)">ge_cylinder</a>(X_SE(k),Y_SE(k),5e4,5e5,<span class="keyword">...</span>
+0040                                 <span class="string">'polyColor'</span>,<span class="string">'FFFF0000'</span>,<span class="keyword">...</span>
+0041                                 <span class="string">'lineColor'</span>,<span class="string">'FFFF0000'</span>,<span class="keyword">...</span>
+0042                                 <span class="string">'divisions'</span>,3);
+0043     kmlStr_SE = [kmlStr_SE,S];
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="keyword">for</span> k=1:N
+0047     S = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_cylinder.html" class="code" title="function output = ge_cylinder(X,Y,radius,height,varargin)">ge_cylinder</a>(X_SW(k),Y_SW(k),5e4,5e5,<span class="keyword">...</span>
+0048                                 <span class="string">'polyColor'</span>,<span class="string">'FFFF00FF'</span>,<span class="keyword">...</span>
+0049                                 <span class="string">'lineColor'</span>,<span class="string">'FFFF00FF'</span>,<span class="keyword">...</span>
+0050                                 <span class="string">'divisions'</span>,3);
+0051     kmlStr_SW = [kmlStr_SW,S];
+0052 <span class="keyword">end</span>
+0053 
+0054 NorthStr = [<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'Eastern hemisphere'</span>,kmlStr_NE),<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'Western hemisphere'</span>,kmlStr_NW)];
+0055 SouthStr = [<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'Eastern hemisphere'</span>,kmlStr_SE),<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'Western hemisphere'</span>,kmlStr_SW)];
+0056 
+0057 kmlStr_all = [<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'Northern hemisphere'</span>,NorthStr),<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'Southern hemisphere'</span>,SouthStr)];
+0058 
+0059 
+0060 kmlFileName = <span class="string">'demo_ge_folder.kml'</span>;
+0061 
+0062 <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>(kmlFileName,kmlStr_all)
+0063</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

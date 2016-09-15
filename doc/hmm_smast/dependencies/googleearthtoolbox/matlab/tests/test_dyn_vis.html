@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of test_dyn_vis</title>
+  <meta name="keywords" content="test_dyn_vis">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="../index.html">matlab</a> &gt; <a href="index.html">tests</a> &gt; test_dyn_vis.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/googleearthtoolbox/matlab/tests&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>test_dyn_vis
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>	</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_axes.html" class="code" title="function kmlStr = ge_axes(varargin)">ge_axes</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_quiver3.html" class="code" title="function tag_str = ge_quiver3(XM,YM,ZM,UM,VM,WM,varargin)">ge_quiver3</a>	Reference page in help browser:</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 clear
+0002 close all
+0003 clc
+0004 
+0005 <span class="comment">%Define the location of the Collada model origin:</span>
+0006 X = 0;    <span class="comment">%latitude  [degrees]</span>
+0007 Y = 0;    <span class="comment">%longitude [degrees]</span>
+0008 Z = 1e5;  <span class="comment">%elevation [m]</span>
+0009 
+0010 <span class="comment">%Define the URL of the Collada model:</span>
+0011 arrowStr = <span class="string">'redcone.dae'</span>;
+0012 
+0013 <span class="comment">%Initialize kml strings as null character arrays:</span>
+0014 kmlStr1 = <span class="string">''</span>;
+0015 kmlStr2 = <span class="string">''</span>;
+0016 
+0017 <span class="comment">%Use Google's date format:</span>
+0018 S = <span class="string">'yyyy-mm-ddTHH:MM:SSZ'</span>;
+0019 
+0020 <span class="keyword">for</span> m=[1,2]
+0021   <span class="keyword">for</span> a=0:359
+0022 
+0023   tStart = datestr(now+a+(m-1)*365,S);
+0024   tEnd = datestr(now+a+1+(m-1)*365,S);
+0025 
+0026      <span class="keyword">if</span> m==1
+0027        <span class="comment">%vary heading</span>
+0028        U = sin(<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>(a));
+0029        V = cos(<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>(a));
+0030        W = 0;
+0031        kmlStr1 = [kmlStr1,<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_quiver3.html" class="code" title="function tag_str = ge_quiver3(XM,YM,ZM,UM,VM,WM,varargin)">ge_quiver3</a>(X,Y,Z,U,V,W,<span class="keyword">...</span>
+0032                   <span class="string">'modelLinkStr'</span>,arrowStr,<span class="keyword">...</span>
+0033                     <span class="string">'arrowScale'</span>,1e6,<span class="keyword">...</span>
+0034                   <span class="string">'altitudeMode'</span>,<span class="string">'relativeToGround'</span>,<span class="keyword">...</span>
+0035                  <span class="string">'timeSpanStart'</span>,tStart,<span class="keyword">...</span>
+0036                   <span class="string">'timeSpanStop'</span>,tEnd,<span class="keyword">...</span>
+0037                    <span class="string">'msgToScreen'</span>,true)];
+0038      <span class="keyword">elseif</span> m==2
+0039        <span class="comment">%vary tilt</span>
+0040        U = 0;
+0041        V = cos(<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>(a));
+0042        W = sin(<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>(a));
+0043        kmlStr2 = [kmlStr2,<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_quiver3.html" class="code" title="function tag_str = ge_quiver3(XM,YM,ZM,UM,VM,WM,varargin)">ge_quiver3</a>(X,Y,Z,U,V,W,<span class="keyword">...</span>
+0044                   <span class="string">'modelLinkStr'</span>,arrowStr,<span class="keyword">...</span>
+0045                     <span class="string">'arrowScale'</span>,1e6,<span class="keyword">...</span>
+0046                   <span class="string">'altitudeMode'</span>,<span class="string">'relativeToGround'</span>,<span class="keyword">...</span>
+0047                  <span class="string">'timeSpanStart'</span>,tStart,<span class="keyword">...</span>
+0048                   <span class="string">'timeSpanStop'</span>,tEnd,<span class="keyword">...</span>
+0049                    <span class="string">'msgToScreen'</span>,true)];
+0050     <span class="keyword">end</span>
+0051   <span class="keyword">end</span>
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="comment">%Add xyz-axes to the kml file to facilitate</span>
+0055 <span class="comment">%better interpretation:</span>
+0056 
+0057 kmlStr3 = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_axes.html" class="code" title="function kmlStr = ge_axes(varargin)">ge_axes</a>(<span class="string">'axesType'</span>,<span class="string">'xyz'</span>,<span class="keyword">...</span>
+0058                      <span class="string">'xTick'</span>,X+[0:0.25:1],<span class="keyword">...</span>
+0059                      <span class="string">'yTick'</span>,Y+[0:0.25:1],<span class="keyword">...</span>
+0060                      <span class="string">'zTick'</span>,Z+[0:2e4:1e5],<span class="keyword">...</span>
+0061                <span class="string">'xyLineColor'</span>,<span class="string">'400000FF'</span>,<span class="keyword">...</span>
+0062                <span class="string">'xzLineColor'</span>,<span class="string">'4000FF00'</span>,<span class="keyword">...</span>
+0063                <span class="string">'yzLineColor'</span>,<span class="string">'40FF0000'</span>,<span class="keyword">...</span>
+0064                  <span class="string">'lineWidth'</span>,2,<span class="keyword">...</span>
+0065               <span class="string">'altitudeMode'</span>,<span class="string">'relativeToGround'</span>);
+0066 
+0067 <span class="comment">%Organize the results into a folder structure:</span>
+0068 f01 = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'axes'</span>,kmlStr3);
+0069 f02 = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'vary heading'</span>,kmlStr1);
+0070 f03 = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'vary tilt'</span>,kmlStr2);
+0071 
+0072 <span class="comment">%Write the 3 foldered kmlStr's to a file:</span>
+0073 <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>(<span class="string">'example_quiver3.kml'</span>,[f01,f02,f03]);</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of lssinfit</title>
+  <meta name="keywords" content="lssinfit">
+  <meta name="description" content="LSSINFIT Fit a sinewave to input data by LS.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">backfun</a> &gt; lssinfit.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/backfun&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>lssinfit
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LSSINFIT Fit a sinewave to input data by LS.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LSSINFIT Fit a sinewave to input data by LS.
+
+   This function is called by tidebehavextr.m
+
+   This function should not be called manually by the user.
+
+   Date: 24/7 - 2007, ver. 0.5
+   HMM geolocation toolbox, IMM and DIFRES</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="tidal_threash_test.html" class="code" title="function tidal_threash_test(fish_no)">tidal_threash_test</a>	calculate rmse between tag and fvcom, create tidal signal constraint on</li><li><a href="../../hmm_smast/datalik/likelihood_cliu.html" class="code" title="function likelihood_cliu(fish_no,path_to_tags,tagname)">likelihood_cliu</a>	Construction of likelihood function after (Le Bris et al, 2013 eq (2))</li><li><a href="../../hmm_smast/datalik/tidal_rmse_cliu.html" class="code" title="function tidal_rmse_cliu(fish_no,path_to_tags,tagname)">tidal_rmse_cliu</a>	Perform longer tidal fit to determine low activity days and perform tidal</li><li><a href="../../hmm_smast/dataprocessing/tidebehavextr.html" class="code" title="function tidebehavextr(tagno,tideFL,tideLV,behavFL,behavLV,DBname)">tidebehavextr</a>	TIDEBEHAVEXTR  Extract tidal and behaviour information from a raw data file.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)</a>
+0002 <span class="comment">%LSSINFIT Fit a sinewave to input data by LS.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   This function is called by tidebehavextr.m</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   This function should not be called manually by the user.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Date: 24/7 - 2007, ver. 0.5</span>
+0009 <span class="comment">%   HMM geolocation toolbox, IMM and DIFRES</span>
+0010 
+0011 
+0012 <span class="comment">%p=12.42; %period in hours</span>
+0013 <span class="comment">%w=2*pi/(p/24); % Angular frequency</span>
+0014 
+0015 out=0;
+0016 X=[ons cost sint];
+0017 Y=ts; Y2=Y; [n m]=size(X); 
+0018 <span class="comment">% n is number of observations</span>
+0019 <span class="comment">% m is number of paramters</span>
+0020 
+0021 <span class="comment">% Solve normal equations</span>
+0022 theta = (X'*X)\X'*Y;
+0023 Yhat1=X*theta; <span class="comment">% predictions</span>
+0024 res=Yhat1-Y; <span class="comment">% residuals</span>
+0025 
+0026 rsquare = 1 - sum(res.^2)./sum((Y-mean(Y)).^2);
+0027 rmse = sqrt(sum(res.^2)/(n-m));
+0028 ampli = sqrt(theta(2)^2 + theta(3)^2);
+0029 lengthres = length(res);
+0030 df = n-m-1;
+0031 S = sum(res.^2)/(df);
+0032 mwh = theta(1);
+0033 alpha = theta(2);
+0034 beta = theta(3);
+0035 <span class="keyword">if</span> nargin == 5
+0036     resvar=zeros(n,1);
+0037     <span class="keyword">for</span> i=1:n
+0038         <span class="comment">%tmp = res; tmp(i)=[]; % remove residual before finding variance</span>
+0039         <span class="comment">%resvar(i) = sum(tmp.^2)/(df);</span>
+0040         resvar(i) = S - res(i)^2/df;
+0041     <span class="keyword">end</span>
+0042 
+0043     H=X/(X'*X)*X'; <span class="comment">% hat matrix</span>
+0044     studres = res./sqrt(resvar.*(1-diag(H))); <span class="comment">% studentized residuals</span>
+0045 
+0046     <span class="comment">% Remove outliers</span>
+0047     index=find(abs(studres)&gt;lim);
+0048     outFound=length(index);
+0049     <span class="keyword">if</span> outFound &lt; 7 &amp; outFound &gt; 0
+0050         out = outFound;
+0051         Y(index)=[]; X(index,:)=[];
+0052         theta = (X'*X)\X'*Y;
+0053         Yhat=X*theta;
+0054         res=Yhat-Y;
+0055         rsquare = 1-sum(res.^2)./sum((Y-mean(Y)).^2);
+0056         rmse = sqrt(mean(res.^2));
+0057     <span class="keyword">end</span>
+0058 
+0059     ampli = sqrt(theta(2)^2 + theta(3)^2);
+0060 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

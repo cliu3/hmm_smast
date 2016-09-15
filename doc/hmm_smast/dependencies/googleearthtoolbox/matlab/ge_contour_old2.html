@@ -1,0 +1,519 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ge_contour_old2</title>
+  <meta name="keywords" content="ge_contour_old2">
+  <meta name="description" content="Reference page in help browser:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; ge_contour_old2.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>ge_contour_old2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Reference page in help browser:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function varargout = ge_contour(x,y,z,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Reference page in help browser:
+
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_contourf.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="ge_poly.html" class="code" title="function output = ge_poly(X,Y,varargin)">ge_poly</a>	Reference page in help browser:</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function A = parsecontarray(C,nearInf)</a></li><li><a href="#_sub2" class="code">function IO = isclosed(myRecord,thresholdDiff)</a></li><li><a href="#_sub3" class="code">function IO = isinner(myRecord,otherRecord,lineValues)</a></li><li><a href="#_sub4" class="code">function innerBoundsStr=buildinnerstr(contourCell,isInnerArray,altitude)</a></li><li><a href="#_sub5" class="code">function S = conv2colorstr(B,G,R)</a></li><li><a href="#_sub6" class="code">function IO=hasouter(contourCell,myIndex)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = ge_contour(x,y,z,varargin)</a>
+0002 <span class="comment">% Reference page in help browser:</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_contourf.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation</span>
+0005 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</span>
+0006 <span class="comment">%</span>
+0007 
+0008 
+0009 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0010 
+0011 
+0012 id = <span class="string">'contour'</span>;
+0013 idTag = <span class="string">'id'</span>;
+0014 name = <span class="string">'ge_contour'</span>;
+0015 timeStamp = <span class="string">' '</span>;
+0016 timeSpanStart = <span class="string">' '</span>;
+0017 timeSpanStop = <span class="string">' '</span>;
+0018 description = <span class="string">''</span>;
+0019 visibility = 1;
+0020 lineColor = <span class="string">''</span>;
+0021 lineAlpha = <span class="string">'FF'</span>;
+0022 lineColorPolyMax = <span class="string">'00000000'</span>;
+0023 lineWidth = 0.25;
+0024 snippet = <span class="string">' '</span>;
+0025 extrude = 0;
+0026 tessellate = 1;
+0027 altitudeMode = <span class="string">'clampToGround'</span>;
+0028 msgToScreen = false;
+0029 region   = <span class="string">' '</span>;
+0030 cMap = <span class="string">'jet'</span>;
+0031 nearInf = abs(max(z(:))*10);
+0032 <span class="comment">%       cLimHigh = max(max(z(2:end-1,2:end-1)));</span>
+0033 <span class="comment">%        cLimLow = min(min(z(2:end-1,2:end-1)));</span>
+0034 altitude = 1.0;
+0035 polyAlpha = <span class="string">'00'</span>;
+0036 polyColor = <span class="string">'000000'</span>;
+0037 autoClose = true;
+0038 tinyRes = 1e-4;
+0039 lineValues = [];
+0040 numClasses = [];
+0041 numClassesDefault = 15;
+0042 cLimHigh = max(z(:));
+0043 cLimLow = min(z(:));
+0044 
+0045 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/value pairs.</span>
+0046 
+0047 minz = min(z(:));
+0048 maxz = max(z(:));
+0049 
+0050 
+0051 userSetsLineColor = ~strcmp(lineColor,<span class="string">''</span>);
+0052 <span class="keyword">if</span> userSetsLineColor
+0053     lineColorUser = lineColor;
+0054 <span class="keyword">end</span>
+0055     
+0056 <span class="keyword">if</span> isempty(numClasses)&amp;~isempty(lineValues)
+0057     <span class="keyword">if</span> cLimHigh&lt;maxz
+0058         lineValues = unique([lineValues,maxz,nearInf]);
+0059     <span class="keyword">else</span>
+0060         lineValues = unique([lineValues,nearInf]);
+0061     <span class="keyword">end</span>
+0062 <span class="keyword">elseif</span> ~isempty(numClasses)&amp;isempty(lineValues)
+0063     <span class="keyword">if</span> cLimHigh&lt;maxz
+0064         TMP = linspace(cLimLow,cLimHigh,numClasses+1);
+0065         lineValues = [TMP(1:end),maxz,nearInf];
+0066     <span class="keyword">else</span>
+0067         lineValues = [linspace(cLimLow,cLimHigh,numClasses+1),nearInf];
+0068     <span class="keyword">end</span>
+0069 <span class="keyword">elseif</span> isempty(numClasses)&amp;isempty(lineValues)
+0070     <span class="comment">% do nothing</span>
+0071 <span class="keyword">else</span>
+0072     error(<span class="string">'Cannot have both lineValues and numClasses'</span>)
+0073 <span class="keyword">end</span>
+0074 
+0075 
+0076 
+0077 <span class="comment">% if cLimHigh&lt;maxz</span>
+0078 <span class="comment">%     lineValues = [linspace(cLimLow,cLimHigh,numClasses+1),maxz,nearInf];</span>
+0079 <span class="comment">% else</span>
+0080 <span class="comment">%     lineValues = [linspace(cLimLow,cLimHigh,numClasses+1),nearInf];</span>
+0081 <span class="comment">% end</span>
+0082 
+0083 
+0084 [nR,nC] = size(z);
+0085 tmp_z = ones([nR,nC]+2)*nearInf;
+0086 tmp_z(2:end-1,2:end-1) = z;
+0087 z = tmp_z;
+0088 
+0089 <span class="keyword">if</span> msgToScreen
+0090     disp([<span class="string">'Running '</span> mfilename <span class="string">'...'</span>])
+0091 <span class="keyword">end</span>
+0092 
+0093 <span class="keyword">if</span> lineWidth==0
+0094     lineColor=<span class="string">'00000000'</span>;
+0095 <span class="keyword">end</span>
+0096 
+0097 <span class="keyword">if</span>( isempty( x ) || isempty( y ) || isempty(z) )
+0098     error(<span class="string">'empty coordinates passed to ge_contour().'</span>);
+0099 <span class="keyword">end</span>
+0100 
+0101 
+0102 <span class="keyword">if</span> ~(isequal(altitudeMode,<span class="string">'clampToGround'</span>)||<span class="keyword">...</span>
+0103         isequal(altitudeMode,<span class="string">'relativeToGround'</span>)||<span class="keyword">...</span>
+0104         isequal(altitudeMode,<span class="string">'absolute'</span>))
+0105 
+0106     error([<span class="string">'Variable '</span>,39,<span class="string">'altitudeMode'</span>,39, <span class="string">' should be one of '</span> ,39,<span class="string">'clampToGround'</span>,39,<span class="string">', '</span>,10,39,<span class="string">'relativeToGround'</span>,39,<span class="string">', or '</span>,39,<span class="string">'absolute'</span>,39,<span class="string">'.'</span> ])
+0107 
+0108 <span class="keyword">end</span>
+0109 
+0110 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0111 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0112 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0113 
+0114 
+0115 <span class="keyword">if</span> ndims(x)==2 &amp;&amp; all(size(x)&gt;1)
+0116     xv = x(1,:);
+0117 <span class="keyword">else</span>
+0118     xv = x;
+0119 <span class="keyword">end</span>
+0120 
+0121 <span class="keyword">if</span> ndims(y)==2 &amp;&amp; all(size(y)&gt;1)
+0122     yv = y(:,1);
+0123 <span class="keyword">else</span>
+0124     yv = y;
+0125 <span class="keyword">end</span>
+0126 
+0127 dx = ((xv(end)-xv(1))/(numel(xv)-1))*tinyRes;
+0128 xv = [xv(1)-dx,xv,xv(end)+dx];
+0129 dy = ((yv(end)-yv(1))/(numel(yv)-1))*tinyRes;
+0130 yv = [yv(1)-dy;yv;yv(end)+dy];
+0131 
+0132 contourArray = contourc(xv,yv,z,lineValues);
+0133 
+0134 
+0135 <span class="comment">%save contourcresult.mat contourArray</span>
+0136 
+0137 <span class="keyword">if</span> ischar(cMap)
+0138 
+0139     figHandles = get(0,<span class="string">'children'</span>);
+0140 
+0141     <span class="keyword">while</span> true
+0142         RIx = round(rand*1e9);
+0143         <span class="keyword">if</span> ~ismember(RIx,figHandles)
+0144             figure(RIx)
+0145             eval([<span class="string">'C1 = colormap('</span> cMap <span class="string">'(256));'</span>]);
+0146             <span class="keyword">break</span>
+0147         <span class="keyword">end</span>
+0148     <span class="keyword">end</span>
+0149     close(RIx)
+0150     clear RIx
+0151 
+0152 <span class="keyword">else</span>
+0153     C1 = cMap;
+0154 <span class="keyword">end</span>
+0155 
+0156 X = linspace(0,1,size(C1,1))';
+0157 YRed = C1(:,1);
+0158 YGreen = C1(:,2);
+0159 YBlue = C1(:,3);
+0160 
+0161 
+0162 
+0163 polyClosedThreshold = 1e-5; <span class="comment">% Declare polygons closed when their start...</span>
+0164 <span class="comment">% and end points are separated by a distance...</span>
+0165 <span class="comment">% less than this value.</span>
+0166 
+0167 contourCell = <a href="#_sub1" class="code" title="subfunction A = parsecontarray(C,nearInf)">parsecontarray</a>(contourArray,nearInf);
+0168 <span class="comment">% lineValuesMinMax = min(z(:));</span>
+0169 <span class="comment">%</span>
+0170 <span class="comment">% for k=1:size(contourCell,1)</span>
+0171 <span class="comment">%     lineValuesMinMax = [lineValuesMinMax;contourCell{k,1}];</span>
+0172 <span class="comment">% end</span>
+0173 <span class="comment">% lineValuesMinMax = unique([lineValuesMinMax(:);max(z(:))]);</span>
+0174 
+0175 
+0176 
+0177 <span class="comment">% colorLevelInc = 0;</span>
+0178 nRecords = size(contourCell,1);
+0179 isInnerArray=repmat(NaN,[nRecords,1]);
+0180 <span class="comment">% aa=[]</span>
+0181 kmlStr = <span class="string">''</span>;
+0182 <span class="keyword">for</span> m = 1:nRecords <span class="comment">% my</span>
+0183 
+0184     isInnerArray(:) = NaN;
+0185 
+0186     <span class="keyword">for</span> o = [1:m-1,m+1:nRecords]
+0187 
+0188         <span class="comment">% isinner(myRecord,otherRecord)</span>
+0189         isInnerArray(o,1)=<a href="#_sub3" class="code" title="subfunction IO = isinner(myRecord,otherRecord,lineValues)">isinner</a>(contourCell(m,1:4),contourCell(o,1:4),lineValues);
+0190 
+0191     <span class="keyword">end</span>
+0192 
+0193     <span class="keyword">if</span> <a href="#_sub2" class="code" title="subfunction IO = isclosed(myRecord,thresholdDiff)">isclosed</a>(contourCell(m,:),polyClosedThreshold)
+0194 
+0195         <span class="keyword">if</span> <a href="#_sub6" class="code" title="subfunction IO=hasouter(contourCell,myIndex)">hasouter</a>(contourCell,m)
+0196             colorLevelInc = 1;
+0197         <span class="keyword">else</span>
+0198             colorLevelInc = 0;
+0199         <span class="keyword">end</span>
+0200 
+0201         levelDiff = abs(contourCell{m,1}-lineValues);
+0202         colorLevel = find(levelDiff==min(levelDiff));
+0203         colorDist = (cLimHigh-cLimLow);        
+0204         <span class="keyword">if</span> colorLevel==1|colorLevel==numel(lineValues)-1
+0205             f = (mean(lineValues(colorLevel+colorLevelInc+[0]))-cLimLow)/colorDist;
+0206 <span class="comment">%         elseif colorLevel==numel(lineValues)-1</span>
+0207 <span class="comment">%             f = (mean(lineValues(colorLevel+colorLevelInc+[1]))-cLimLow)/colorDist</span>
+0208         <span class="keyword">else</span>
+0209             f = (mean(lineValues(colorLevel+colorLevelInc+[0,1]))-cLimLow)/colorDist;
+0210         <span class="keyword">end</span> <span class="comment">%colorLevel==1</span>
+0211 
+0212         <span class="keyword">if</span> f&lt;0
+0213             f=0;
+0214         <span class="keyword">end</span>
+0215         <span class="keyword">if</span> f&gt;1
+0216             f=1;
+0217         <span class="keyword">end</span>
+0218 
+0219         YIRed = interp1(X,YRed,f);
+0220         YIGreen = interp1(X,YGreen,f);
+0221         YIBlue = interp1(X,YBlue,f);
+0222         <span class="keyword">if</span> userSetsLineColor
+0223             lineColor = [lineAlpha,lineColorUser];
+0224         <span class="keyword">else</span>
+0225             lineColor = [lineAlpha,<a href="#_sub5" class="code" title="subfunction S = conv2colorstr(B,G,R)">conv2colorstr</a>(YIRed,YIGreen,YIBlue)];
+0226         <span class="keyword">end</span>
+0227         <span class="comment">%             polyColorCell{colorLevel+colorLevelInc,1} = polyColor;</span>
+0228         innerBoundsStr = <span class="string">''</span>; <span class="comment">%buildinnerstr(contourCell,isInnerArray,altitude);</span>
+0229 
+0230         <span class="keyword">if</span> colorLevel+colorLevelInc==1
+0231             colorClassStr = sprintf(<span class="string">'less than %f'</span>,lineValues(colorLevel));
+0232             actualLineColor = lineColor;
+0233         <span class="keyword">elseif</span> colorLevel+colorLevelInc&gt;=numel(lineValues)-2
+0234             colorClassStr = sprintf(<span class="string">'more than %f'</span>,lineValues(colorLevel-1));
+0235             actualLineColor = lineColorPolyMax;
+0236             <span class="comment">%actualLineColor = lineColor;</span>
+0237         <span class="keyword">else</span>
+0238             colorClassStr = sprintf(<span class="string">'%f-%f'</span>,lineValues(colorLevel+colorLevelInc-1),lineValues(colorLevel+colorLevelInc));
+0239             actualLineColor = lineColor;
+0240         <span class="keyword">end</span>
+0241 
+0242         kmlStr=[kmlStr,<a href="ge_poly.html" class="code" title="function output = ge_poly(X,Y,varargin)">ge_poly</a>(contourCell{m,3},contourCell{m,4},<span class="keyword">...</span>
+0243             <span class="string">'altitude'</span>,altitude,<span class="keyword">...</span>
+0244             <span class="string">'innerBoundsStr'</span>,innerBoundsStr,<span class="keyword">...</span>
+0245             <span class="string">'lineColor'</span>,actualLineColor,<span class="keyword">...</span>
+0246             <span class="string">'lineWidth'</span>,lineWidth,<span class="keyword">...</span>
+0247             <span class="string">'polyColor'</span>,[polyAlpha,lineColor(3:8)],<span class="keyword">...</span>
+0248             <span class="string">'autoClose'</span>,autoClose,<span class="keyword">...</span>
+0249             <span class="string">'region'</span>, region, <span class="keyword">...</span>
+0250             <span class="string">'timeSpanStart'</span>,timeSpanStart,<span class="keyword">...</span>
+0251             <span class="string">'timeSpanStop'</span>,timeSpanStop,<span class="keyword">...</span>
+0252             <span class="string">'altitudeMode'</span>,altitudeMode,<span class="keyword">...</span>
+0253             <span class="string">'tessellate'</span>,tessellate,<span class="keyword">...</span>
+0254             <span class="string">'extrude'</span>,extrude,<span class="keyword">...</span>
+0255             <span class="string">'visibility'</span>,visibility,<span class="keyword">...</span>
+0256             <span class="string">'name'</span>,colorClassStr)];
+0257     <span class="keyword">else</span>
+0258         warning([<span class="string">'Contour line record in '</span>,39,<span class="string">'contourCell{'</span>,<span class="keyword">...</span>
+0259             num2str(m),<span class="string">',1}'</span>,39,<span class="string">' skipped'</span>,10,<span class="keyword">...</span>
+0260             <span class="string">'because it is not closed.'</span>])
+0261     <span class="keyword">end</span>
+0262     <span class="comment">%     end</span>
+0263 <span class="keyword">end</span>
+0264 
+0265 <span class="comment">% save contourcell.mat contourCell</span>
+0266 <span class="comment">% figure</span>
+0267 <span class="comment">% for k=1:size(contourCell,1)</span>
+0268 <span class="comment">%     plot(contourCell{k,3},contourCell{k,4},'-k.')</span>
+0269 <span class="comment">%     hold on</span>
+0270 <span class="comment">% end</span>
+0271 <span class="comment">%</span>
+0272 
+0273 <span class="keyword">if</span> nargout==1
+0274     varargout{1} = kmlStr;
+0275 <span class="keyword">elseif</span> nargout==2
+0276     varargout{1} = kmlStr;
+0277     varargout{2} = polyColorCell;
+0278 <span class="keyword">else</span>
+0279 <span class="keyword">end</span>
+0280 
+0281 <span class="comment">% aa</span>
+0282 
+0283 
+0284 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0285 <span class="comment">% % % % % % % %      LOCAL FUNCTIONS START HERE       % % % % % % % % % %</span>
+0286 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0287 
+0288 
+0289 
+0290 <a name="_sub1" href="#_subfunctions" class="code">function A = parsecontarray(C,nearInf)</a>
+0291 
+0292 <span class="comment">% column 1: level</span>
+0293 <span class="comment">% column 2: number of points</span>
+0294 <span class="comment">% column 3: xcoords</span>
+0295 <span class="comment">% column 4: ycoords</span>
+0296 
+0297 curCol = 1;
+0298 n = 1;
+0299 
+0300 <span class="keyword">while</span> curCol&lt;size(C,2)
+0301 
+0302     L = C(2,curCol);
+0303     lineValue = C(1,curCol);
+0304     <span class="keyword">if</span> lineValue~=nearInf
+0305         A{n,1} = C(1,curCol);
+0306         A{n,2} = L;
+0307         A{n,3} = C(1,curCol+1:curCol+L);
+0308         A{n,4} = C(2,curCol+1:curCol+L);
+0309         <span class="comment">%lineValuesTmp(n,1) = C(1,curCol);</span>
+0310         n = n + 1;
+0311     <span class="keyword">end</span>
+0312 
+0313     curCol = curCol + L + 1;
+0314 
+0315 <span class="keyword">end</span>
+0316 
+0317 <span class="comment">%lineValues = unique(lineValuesTmp);</span>
+0318 
+0319 
+0320 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0321 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0322 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0323 <a name="_sub2" href="#_subfunctions" class="code">function IO = isclosed(myRecord,thresholdDiff)</a>
+0324 
+0325 L = myRecord{1,2};
+0326 xDiff = [myRecord{1,3}(1),myRecord{1,4}(1)];
+0327 yDiff = [myRecord{1,3}(L),myRecord{1,4}(L)];
+0328 
+0329 IO = all(abs(xDiff-yDiff)&lt;thresholdDiff);
+0330 
+0331 <a name="_sub3" href="#_subfunctions" class="code">function IO = isinner(myRecord,otherRecord,lineValues)</a>
+0332 
+0333 <span class="comment">% It seems that contourc sometimes rounds off in a weird way...therefore</span>
+0334 <span class="comment">% a tweak is necessary here, in order not to end up with empty 'myIndexVec'</span>
+0335 <span class="comment">% and 'otherIndexVec' variables.</span>
+0336 <span class="comment">% check whether adjacent levels are concerned:</span>
+0337 <span class="comment">% myIndexVec = find(lineValues==myRecord{1,1});</span>
+0338 <span class="comment">% otherIndexVec = find(lineValues==otherRecord{1,1});</span>
+0339 TMP = unique(lineValues);
+0340 dTMP = TMP(2:end)-TMP(1:end-1);
+0341 smallestDist = min(unique(dTMP));
+0342 roundOffFactor = 100;
+0343 
+0344 myRecordRound = round(myRecord{1,1}/(smallestDist/roundOffFactor))*<span class="keyword">...</span>
+0345     (smallestDist/roundOffFactor);
+0346 otherRecordRound = round(otherRecord{1,1}/(smallestDist/roundOffFactor))*<span class="keyword">...</span>
+0347     (smallestDist/roundOffFactor);
+0348 
+0349 lineValuesRound = round(lineValues/(smallestDist/roundOffFactor))*<span class="keyword">...</span>
+0350     (smallestDist/roundOffFactor);
+0351 
+0352 myIndexVec = find(lineValuesRound==myRecordRound);
+0353 otherIndexVec = find(lineValuesRound==otherRecordRound);
+0354 
+0355 
+0356 <span class="comment">% firstTest = any(abs(myIndexVec-otherIndexVec)==[1,0]);</span>
+0357 firstTest = ismember(myIndexVec-otherIndexVec,[-1,0,1]);
+0358 
+0359 <span class="comment">% check whether the points of otherRecord fall within those of myRecord.</span>
+0360 
+0361 <span class="keyword">if</span> ~firstTest
+0362     IO = false;
+0363 <span class="keyword">else</span>
+0364     IN = inpolygon(otherRecord{1,3},otherRecord{1,4},<span class="keyword">...</span>
+0365         myRecord{1,3},myRecord{1,4});
+0366     secondTest = all(IN);
+0367 <span class="keyword">end</span>
+0368 
+0369 IO = firstTest &amp;&amp; secondTest;
+0370 
+0371 
+0372 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0373 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0374 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0375 
+0376 
+0377 <a name="_sub4" href="#_subfunctions" class="code">function innerBoundsStr=buildinnerstr(contourCell,isInnerArray,altitude)</a>
+0378 innerBoundsStr=<span class="string">''</span>;
+0379 oIndex = find(isInnerArray==1)';
+0380 
+0381 <span class="comment">% clf</span>
+0382 <span class="comment">% for u=oIndex</span>
+0383 <span class="comment">%     plot(contourCell{u,3},contourCell{u,4},'-b')</span>
+0384 <span class="comment">%     hold on</span>
+0385 <span class="comment">%     axis image</span>
+0386 <span class="comment">% end</span>
+0387 
+0388 <span class="comment">% initialize 'contained' array:</span>
+0389 contained=~(triu(ones(numel(oIndex))).*tril(ones(numel(oIndex))));
+0390 <span class="keyword">if</span> isempty(oIndex)
+0391     iVec = [];
+0392 <span class="keyword">elseif</span> numel(oIndex)==1
+0393     iVec = oIndex(1);
+0394 <span class="keyword">else</span>
+0395     <span class="keyword">for</span> i = 1:numel(oIndex)
+0396         <span class="keyword">for</span> j = [1:i-1,i+1:numel(oIndex)]
+0397 
+0398             u = oIndex(i);
+0399             v = oIndex(j);
+0400             <span class="keyword">if</span> all(inpolygon(contourCell{u,3},contourCell{u,4},<span class="keyword">...</span>
+0401                     contourCell{v,3},contourCell{v,4}))
+0402                 contained(i,j) = 0;
+0403             <span class="keyword">end</span>
+0404         <span class="keyword">end</span>
+0405     <span class="keyword">end</span>
+0406     iVec = oIndex(sum(contained,2)==numel(oIndex)-1);
+0407 <span class="keyword">end</span>
+0408 
+0409 <span class="keyword">for</span> elem = iVec
+0410     innerBoundsStr = [innerBoundsStr,<span class="keyword">...</span>
+0411         <span class="string">'&lt;innerBoundaryIs&gt;'</span>,char(10),<span class="keyword">...</span>
+0412         <span class="string">'   &lt;LinearRing&gt;'</span>,char(10),<span class="keyword">...</span>
+0413         <span class="string">'      &lt;coordinates&gt;'</span>,char(10),<span class="keyword">...</span>
+0414         sprintf(<span class="string">'          %.16g,%.16g,%.16g \n'</span>,[contourCell{elem,3}',contourCell{elem,4}',<span class="keyword">...</span>
+0415         altitude*ones(size(contourCell{elem,4}'))]'),char(10),<span class="keyword">...</span>
+0416         <span class="string">'      &lt;/coordinates&gt;'</span>,char(10),<span class="keyword">...</span>
+0417         <span class="string">'   &lt;/LinearRing&gt;'</span>,char(10),<span class="keyword">...</span>
+0418         <span class="string">'&lt;/innerBoundaryIs&gt;'</span>,char(10)];
+0419 <span class="keyword">end</span>
+0420 
+0421 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0422 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0423 <span class="comment">% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %</span>
+0424 
+0425 
+0426 <a name="_sub5" href="#_subfunctions" class="code">function S = conv2colorstr(B,G,R)</a>
+0427 <span class="comment">% Please note that this conv2colorstr is different from that in</span>
+0428 <span class="comment">% ge_colorbar. This one writes KML formatted hexadecimal</span>
+0429 <span class="comment">% colorstrings, ge_colorbar() writes HTML formatted colorstr.</span>
+0430 
+0431 
+0432 S=<span class="string">'000000'</span>;
+0433 
+0434 hexB = dec2hex(round(B*255));
+0435 hexG = dec2hex(round(G*255));
+0436 hexR = dec2hex(round(R*255));
+0437 
+0438 LB = length(hexB);
+0439 LG = length(hexG);
+0440 LR = length(hexR);
+0441 
+0442 S(3-LB:2)=hexB;
+0443 S(5-LG:4)=hexG;
+0444 S(7-LR:6)=hexR;
+0445 
+0446 
+0447 <a name="_sub6" href="#_subfunctions" class="code">function IO=hasouter(contourCell,myIndex)</a>
+0448 
+0449 nRecords = size(contourCell,1);
+0450 
+0451 inVec=repmat(NaN,[nRecords,1]);
+0452 uVec=[1:myIndex-1,myIndex+1:nRecords];
+0453 <span class="keyword">for</span> u=uVec
+0454     <span class="keyword">if</span> contourCell{u,1}==contourCell{myIndex,1}
+0455         inVec(u) = all(inpolygon(contourCell{myIndex,3},contourCell{myIndex,4},<span class="keyword">...</span>
+0456             contourCell{u,3},contourCell{u,4}));
+0457     <span class="keyword">else</span>
+0458         inVec(u) = false;
+0459     <span class="keyword">end</span>
+0460 <span class="keyword">end</span>
+0461 
+0462 IO=any(inVec(uVec));
+0463 
+0464 
+0465 
+0466 
+0467</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

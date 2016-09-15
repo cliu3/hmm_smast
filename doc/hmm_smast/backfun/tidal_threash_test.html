@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tidal_threash_test</title>
+  <meta name="keywords" content="tidal_threash_test">
+  <meta name="description" content="calculate rmse between tag and fvcom, create tidal signal constraint on">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">backfun</a> &gt; tidal_threash_test.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/backfun&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>tidal_threash_test
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>calculate rmse between tag and fvcom, create tidal signal constraint on</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function tidal_threash_test(fish_no) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">calculate rmse between tag and fvcom, create tidal signal constraint on
+likelihood funcion</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="lssinfit.html" class="code" title="function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)">lssinfit</a>	LSSINFIT Fit a sinewave to input data by LS.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function tidal_threash_test(fish_no)</a>
+0002 <span class="comment">%calculate rmse between tag and fvcom, create tidal signal constraint on</span>
+0003 <span class="comment">%likelihood funcion</span>
+0004 
+0005 tag_name=[num2str(fish_no),<span class="string">'_raw'</span>];
+0006 load([tag_name,<span class="string">'.mat'</span>])
+0007 tagno=[num2str(fish_no),<span class="string">'_'</span>,tag.tag_id];
+0008 
+0009 <span class="keyword">global</span> tideLV
+0010 <span class="comment">%tideLV  = [0.42 0.85 0.2 2.0];</span>
+0011 <span class="comment">%tideLV  = [0.42 0.92 0.2 2.0];</span>
+0012 <span class="comment">%tideLV  = [0.42 0.95 0.2 2.0];</span>
+0013 
+0014 mean_ampli=[];std_ampli=[];mean_phase=[];std_phase=[];
+0015 Twindow = 13;  <span class="comment">%time window = 13 h</span>
+0016 <span class="comment">% for Twindow=10:0.5:20</span>
+0017 nwindow = floor(Twindow*3600/tag.min_intvl_seconds); <span class="comment">% window size in data point numbers</span>
+0018 
+0019 <span class="comment">%p: M2 period in hours</span>
+0020 p = 12.420601;
+0021 w=2*pi/(p/24); <span class="comment">% Angular frequency</span>
+0022 
+0023 <span class="comment">%tag.dnum=tag.dnum+4/24; %convert time to UTC</span>
+0024 
+0025 plot_axis = [8e5,11e5,-2e5,2e5];
+0026 
+0027 
+0028 ntimes = numel(tag.dnum);
+0029 
+0030 int_dnum = floor(tag.dnum);
+0031 dbeg = int_dnum(1);
+0032 dend = int_dnum(end);
+0033 days = dbeg:dend;
+0034 ndays = numel(days);
+0035 
+0036 sint = sin(w*tag.dnum);
+0037 cost = cos(w*tag.dnum);
+0038 
+0039 
+0040 <span class="comment">% ==== Load &amp; interp FVCOM  ====</span>
+0041 <span class="keyword">global</span> fvcom_tidaldb
+0042 load(fvcom_tidaldb)
+0043 
+0044 <span class="comment">%search_rad=2000; %m</span>
+0045 search_rad=-1; <span class="comment">% minus value: use all nodes</span>
+0046 
+0047 
+0048 <span class="comment">%Define tidal constituents and values</span>
+0049 inpcon = fvcom.comps;
+0050 
+0051 
+0052 
+0053 filename=[<span class="string">'ObsLh_'</span>,num2str(fish_no),<span class="string">'.mat'</span>];
+0054 disp(sprintf(<span class="string">'Loading %s...\n'</span>,filename))
+0055 <span class="comment">%load(filename)</span>
+0056 
+0057 
+0058 
+0059 <span class="comment">% fprintf('reconstructing FVCOM tidal signal ... \n');</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">% %find FVCOM harmonic constants at grid points within radius from tag location</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">% [xt,yt]=my_project(tag.release_lon,tag.release_lat,'forward');</span>
+0064 <span class="comment">% [xr,yr]=my_project(tag.recapture_lon,tag.recapture_lat,'forward');</span>
+0065 <span class="comment">% if (search_rad&gt;0)</span>
+0066 <span class="comment">%     node_idx=find( sqrt((xt-fvcom.x).^2 + (yt-fvcom.y).^2)&lt;=search_rad );</span>
+0067 <span class="comment">% else</span>
+0068 <span class="comment">%     node_idx=1:numel(fvcom.x);</span>
+0069 <span class="comment">% end</span>
+0070 <span class="comment">% [~,node_tag]=min( sqrt((xt-fvcom.x).^2 + (yt-fvcom.y).^2) );</span>
+0071 <span class="comment">% pha1=zeros(numel(node_idx),numel(fvcom.comps));</span>
+0072 <span class="comment">% amp1=zeros(numel(node_idx),numel(fvcom.comps));</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">%</span>
+0075 <span class="comment">%</span>
+0076 <span class="comment">% %Load names,freq from ttide database and merge it to variable tidecon</span>
+0077 <span class="comment">% %following ttide format</span>
+0078 <span class="comment">% ttstuff = load('t_constituents.mat');</span>
+0079 <span class="comment">% ncon     = length(inpcon);</span>
+0080 <span class="comment">% % Allocate names and freq to later load from ttide database</span>
+0081 <span class="comment">% names   = cell(ncon,1);</span>
+0082 <span class="comment">% freq    = zeros(ncon,1);</span>
+0083 <span class="comment">% tidecon1 = zeros(ncon,4);</span>
+0084 <span class="comment">%</span>
+0085 <span class="comment">% for nd=1:numel(node_idx)</span>
+0086 <span class="comment">%     if (mod(nd,500)==0)</span>
+0087 <span class="comment">%         fprintf('node: %d/%d\n',nd,numel(node_idx))</span>
+0088 <span class="comment">%     end</span>
+0089 <span class="comment">%     pha1(nd,:)=fvcom.phase(node_idx(nd),:);</span>
+0090 <span class="comment">%     amp1(nd,:)=fvcom.amp(node_idx(nd),:)*0.01; %cm to m</span>
+0091 <span class="comment">%     for ic = 1:length(inpcon)</span>
+0092 <span class="comment">%         names(ic) = inpcon(ic);</span>
+0093 <span class="comment">%         idf = strcmp(ttstuff.const.name,inpcon(ic));</span>
+0094 <span class="comment">%         freq(ic,:)  = ttstuff.const.freq(idf,:);</span>
+0095 <span class="comment">%         tidecon1(ic,:) = [amp1(nd,ic) 0.0 pha1(nd,ic) 0.0];</span>
+0096 <span class="comment">%     end</span>
+0097 <span class="comment">%</span>
+0098 <span class="comment">%     % create timeseries with the defined tidal harmonics info with ttide</span>
+0099 <span class="comment">%     eta1{nd}= t_predic(tag.dnum,names,freq,tidecon1);</span>
+0100 <span class="comment">%</span>
+0101 <span class="comment">% end</span>
+0102 
+0103 
+0104 
+0105 <span class="comment">%% fitting</span>
+0106 figure(100);plot(tag.dnum,-tag.depth);hold on;
+0107 set(gca,<span class="string">'xtick'</span>,[min(floor(tag.dnum)):max(floor(tag.dnum))])
+0108 datetick(<span class="string">'x'</span>,<span class="string">'mmm dd'</span>,<span class="string">'keepticks'</span>)
+0109 
+0110 <span class="comment">%figh=figure('units','normalized','position',[.05 .05 .6 .9]);</span>
+0111 <span class="comment">%loop over day</span>
+0112 rmse_tag=nan(ndays,1);
+0113 day_ampli=nan(ndays);
+0114 <span class="keyword">for</span> i=1:ndays;
+0115     fprintf([<span class="string">'day: '</span> num2str(i) <span class="string">' of '</span> num2str(ndays) <span class="string">' \n'</span>])
+0116     days_idx=find(int_dnum == days(i));
+0117     rmse=[];rsquare=[];ampli=[];
+0118     <span class="keyword">if</span> (days_idx(1)+nwindow &gt; ntimes)
+0119         <span class="keyword">break</span>
+0120     <span class="keyword">end</span>
+0121     [day_depth(i),day_max_dep_ind]=max(tag.depth(days_idx));
+0122     day_temp(i)=tag.temp(days_idx(day_max_dep_ind));
+0123     <span class="comment">%move window for each data point</span>
+0124     <span class="keyword">for</span> j=1:numel(days_idx)
+0125         <span class="keyword">if</span> (days_idx(j)+nwindow &gt; ntimes)
+0126             <span class="keyword">break</span>
+0127         <span class="keyword">end</span>
+0128         intv=days_idx(j):min(ntimes,days_idx(j)+nwindow-1);
+0129         [rmse(j) rsquare(j) ampli(j) jnk jnk mwh(j) alpha beta]=<a href="lssinfit.html" class="code" title="function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)">lssinfit</a>(ones(numel(intv),1), cost(intv), sint(intv),tag.depth(intv));
+0130         <span class="comment">%phase(j) = deg2rad(191.25) - acos(alpha/ampli(j)); %phase is in Greenwich phase, 191.25 is phase lag of matlab datenum=0</span>
+0131         
+0132         <span class="comment">%             figure(1);plot(tag.dnum(intv),tag.depth(intv),'bx-')</span>
+0133         <span class="comment">%             hold on</span>
+0134         <span class="comment">%             figure(1);plot(tag.dnum(intv),pred,'r-')</span>
+0135         <span class="comment">%             xlim([min(tag.dnum(intv)) max(tag.dnum(intv))])</span>
+0136     <span class="keyword">end</span>
+0137     
+0138     <span class="comment">% Find intervals with tidal information according to criteria</span>
+0139     crit = (rmse&lt;tideLV(1) &amp; rsquare&gt;tideLV(2) &amp; ampli&gt;tideLV(3) &amp; ampli&lt;tideLV(4));
+0140     <span class="comment">%crit=ones(numel(rmse));</span>
+0141     <span class="comment">%find best fit for each day and reconstruct corresponding fvcom signal</span>
+0142     <span class="keyword">if</span> (sum(crit)&gt;0)
+0143         tide(i)=2;
+0144         
+0145         idx=find(rmse==min(rmse(crit)));
+0146         rmse_tag(i) = min(rmse(crit));
+0147         
+0148         idx=idx(1);
+0149         intv=days_idx(idx):min(ntimes,days_idx(idx)+nwindow-1);
+0150         time=tag.dnum(intv);
+0151         day_ampli(i) = ampli(idx);
+0152         
+0153         eta_tag{i}=tag.depth(intv)-mean(tag.depth(intv));
+0154         <span class="comment">%eta_tag{i}=tag.depth(intv);</span>
+0155         
+0156         <span class="comment">% nonlinear sine fit</span>
+0157         f=fit(time,eta_tag{i},<span class="string">'sin1'</span>);
+0158         eta_tag_fit{i}=f(time);
+0159         
+0160         figure(100);plot(time,-(eta_tag_fit{i}+mean(tag.depth(intv))),<span class="string">'g'</span>,<span class="string">'LineWidth'</span>,3);hold on;
+0161         <span class="comment">%plot(time,eta_tag_fit{i},'g');</span>
+0162         
+0163         
+0164 <span class="comment">%         eta_tagnode=eta1{find(node_idx==node_tag)}(intv)-mean(eta1{find(node_idx==node_tag)}(intv));</span>
+0165 <span class="comment">%         %plot(time,eta_tagnode,'r');</span>
+0166 <span class="comment">%</span>
+0167 <span class="comment">%         % calculate rmse_tag</span>
+0168 <span class="comment">%</span>
+0169 <span class="comment">%         rmse_tag(i)=rms(eta_tagnode-eta_tag_fit{i});</span>
+0170 <span class="comment">%</span>
+0171 <span class="comment">%         % calculate rmse map</span>
+0172 <span class="comment">%         rmse_eta=nan(size(fvcom.x));</span>
+0173 <span class="comment">%</span>
+0174 <span class="comment">%         for nd=1:numel(node_idx)</span>
+0175 <span class="comment">%</span>
+0176 <span class="comment">%             %calculate tidal range % time of high tide</span>
+0177 <span class="comment">%             eta1_window=eta1{nd}(intv)-mean(eta1{nd}(intv));</span>
+0178 <span class="comment">%             rmse_eta(node_idx(nd))= sqrt(mean( (eta_tag_fit{i}-eta1_window).^2));</span>
+0179 <span class="comment">%</span>
+0180 <span class="comment">%</span>
+0181 <span class="comment">%             % figure(1);plot(time,eta1{nd},'r');hold on</span>
+0182 <span class="comment">%         end</span>
+0183 <span class="comment">%</span>
+0184 <span class="comment">%         rmse_con(i,rmse_eta&lt;=thresh)=1;</span>
+0185 <span class="comment">%         rmse_con(i,rmse_eta&gt;thresh)=0;</span>
+0186 <span class="comment">%</span>
+0187 <span class="comment">%         %         figure(figh)</span>
+0188 <span class="comment">%         %         clf</span>
+0189 <span class="comment">%         %         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',rmse_eta,'edgecolor','none','facecolor','interp');</span>
+0190 <span class="comment">%         %         axis equal;%axis(plot_axis);</span>
+0191 <span class="comment">%         %         caxis([0 0.3]);</span>
+0192 <span class="comment">%         %         [a,b]=min(rmse_eta);</span>
+0193 <span class="comment">%         %         hold on</span>
+0194 <span class="comment">%         %         %plot(fvcom.x(b),fvcom.y(b),'ro')</span>
+0195 <span class="comment">%         %         %plot(xt,yt,'ko')</span>
+0196 <span class="comment">%         %         colorbar()</span>
+0197 <span class="comment">%         %</span>
+0198 <span class="comment">%         %         caxis([0,thresh]);</span>
+0199 <span class="comment">%</span>
+0200 <span class="comment">%</span>
+0201 <span class="comment">%         H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);</span>
+0202 <span class="comment">%         set(H,'FontSize',16,'Color','k');</span>
+0203         <span class="comment">%</span>
+0204         <span class="comment">%         %pause(1)</span>
+0205         <span class="comment">%</span>
+0206         <span class="comment">%         figure(100);plot(time,eta1{find(node_idx==b)}(intv),'r');</span>
+0207         
+0208         
+0209     <span class="keyword">end</span>
+0210     
+0211 <span class="keyword">end</span>
+0212 figure()
+0213 plot(day_ampli,<span class="string">'x-'</span>)
+0214 title(<span class="string">'daily amplitude'</span>)
+0215 
+0216 figure()
+0217 plot(rmse_tag,<span class="string">'rx-'</span>)
+0218 title(<span class="string">'RMSE of daily fit'</span>)
+0219 fprintf([<span class="string">'days with tidal fits: '</span> num2str(numel(find(tide==2))) <span class="string">' of '</span> num2str(ndays) <span class="string">' \n'</span>])
+0220 
+0221 <span class="comment">%</span>
+0222 <span class="comment">% ObsLh=ObsLh.*rmse_con';</span>
+0223 <span class="comment">% tide(sum(ObsLh)==0)=0;</span>
+0224 <span class="comment">%</span>
+0225 <span class="comment">% disp(sprintf('Saving -&gt; %s.mat &lt;- \n',filename))</span>
+0226 <span class="comment">% save(filename,'ObsLh','tide','days')</span>
+0227 <span class="keyword">end</span>
+0228 
+0229</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

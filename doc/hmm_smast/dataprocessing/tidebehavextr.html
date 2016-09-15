@@ -1,0 +1,423 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tidebehavextr</title>
+  <meta name="keywords" content="tidebehavextr">
+  <meta name="description" content="TIDEBEHAVEXTR  Extract tidal and behaviour information from a raw data file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">dataprocessing</a> &gt; tidebehavextr.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dataprocessing&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>tidebehavextr
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>TIDEBEHAVEXTR  Extract tidal and behaviour information from a raw data file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function tidebehavextr(tagno,tideFL,tideLV,behavFL,behavLV,DBname) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">TIDEBEHAVEXTR  Extract tidal and behaviour information from a raw data file.
+   TIDEBEHAVEXTR(TAGNO,TIDEFL,TIDELV,BEHAVFL,BEHAVLV,DBNAME)
+
+   - TAGNO identify the raw data file from the datastrip function to  
+   search for in the current directory, eg. TAGNO = '2255' loads raw2255.mat.
+
+     Optional arguments
+
+   - TIDEFL is the length of the fitting interval in hours for the
+   tidal extraction, eg. TIDEFL = 9.
+   default value is 10.
+   - TIDELV is the limit values that determine whether an interval
+   contains tidal information, TIDELV = [RMSE RSQUARE AMPLITUDE]
+   RMSE is the root mean square error in metres, eg. RMSE = 0.3
+   RSQUARE is the coefficient of determination, eg. RSQUARE = 0.9
+   AMPLITUDE is the amplitude of the fit in metres, eg. RSQUARE = 0.1
+   default values are TIDELV = [0.42 0.85 0.6].
+   - BEHAVFL is the length of the fitting interval in hours for the
+   behaviour extraction, eg. BEHAVFL = 15
+   default value is 16.
+   - BEHAVLV is the limit values that determine whether an interval
+   contains tidal information, BEHAVLV = [RMSE RSQUARE AMPLITUDE]
+   default values are BEHAVLV = [0.42 0.85 0.6].
+   - DBNAME is the file name of an alternative tidal data base
+   default is 'tidaldb.mat'
+
+   DEPENDENCIES - the function needs access to the following files
+
+     rawTAGNO.mat
+     tidaldb.mat
+     lssinfit.m
+
+  EXAMPLE
+   TIDEBEHAVEXTR('2255',10,[0.42 0.85 0.6],16,[0.42 0.85 0.6])
+   results in the file tagdata2255.mat being stored in the current dir
+
+   Date: 28/11 - 2008, ver. 0.57
+   HMM geolocation toolbox, DTU Informatics and DTU Aqua
+
+   Author(s): 
+      Martin Pedersen
+
+   Revision History
+      2009:  G. Cowles (SMAST) - removed the phase/amplitude shifts which were 
+             hard coded for the North Sea. 
+             These are now set using readdb and stored as part of the db structure
+             They are accessed here in the db structure as:
+                db.year_shift, db.phase_shift, db.amp_shift
+      
+==============================================================================</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../hmm_smast/backfun/flipdb.html" class="code" title="function db = flipdb(db,dir)">flipdb</a>	</li><li><a href="../../hmm_smast/backfun/lssinfit.html" class="code" title="function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)">lssinfit</a>	LSSINFIT Fit a sinewave to input data by LS.</li><li><a href="../../hmm_smast/backfun/mapmatrix.html" class="code" title="function M = mapmatrix(y,x,dy,dx)">mapmatrix</a>	MAPMATRIX Create a matrix that converts indices to lat/long.</li><li><a href="../../hmm_smast/backfun/maptopix.html" class="code" title="function [px py] = maptopix(M,lat,lon)">maptopix</a>	MAPTOPIX Uses a mapmatrix to convert from lat/long to indices.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../hmm_smast/tbworkdir/run_tag.html" class="code" title="">run_tag</a>	clear all;</li><li><a href="../../hmm_smast/test/run_tag.html" class="code" title="">run_tag</a>	clear all;</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function tidebehavextr(tagno,tideFL,tideLV,behavFL,behavLV,DBname)</a>
+0002 
+0003 <span class="comment">%TIDEBEHAVEXTR  Extract tidal and behaviour information from a raw data file.</span>
+0004 <span class="comment">%   TIDEBEHAVEXTR(TAGNO,TIDEFL,TIDELV,BEHAVFL,BEHAVLV,DBNAME)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   - TAGNO identify the raw data file from the datastrip function to</span>
+0007 <span class="comment">%   search for in the current directory, eg. TAGNO = '2255' loads raw2255.mat.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%     Optional arguments</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   - TIDEFL is the length of the fitting interval in hours for the</span>
+0012 <span class="comment">%   tidal extraction, eg. TIDEFL = 9.</span>
+0013 <span class="comment">%   default value is 10.</span>
+0014 <span class="comment">%   - TIDELV is the limit values that determine whether an interval</span>
+0015 <span class="comment">%   contains tidal information, TIDELV = [RMSE RSQUARE AMPLITUDE]</span>
+0016 <span class="comment">%   RMSE is the root mean square error in metres, eg. RMSE = 0.3</span>
+0017 <span class="comment">%   RSQUARE is the coefficient of determination, eg. RSQUARE = 0.9</span>
+0018 <span class="comment">%   AMPLITUDE is the amplitude of the fit in metres, eg. RSQUARE = 0.1</span>
+0019 <span class="comment">%   default values are TIDELV = [0.42 0.85 0.6].</span>
+0020 <span class="comment">%   - BEHAVFL is the length of the fitting interval in hours for the</span>
+0021 <span class="comment">%   behaviour extraction, eg. BEHAVFL = 15</span>
+0022 <span class="comment">%   default value is 16.</span>
+0023 <span class="comment">%   - BEHAVLV is the limit values that determine whether an interval</span>
+0024 <span class="comment">%   contains tidal information, BEHAVLV = [RMSE RSQUARE AMPLITUDE]</span>
+0025 <span class="comment">%   default values are BEHAVLV = [0.42 0.85 0.6].</span>
+0026 <span class="comment">%   - DBNAME is the file name of an alternative tidal data base</span>
+0027 <span class="comment">%   default is 'tidaldb.mat'</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   DEPENDENCIES - the function needs access to the following files</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%     rawTAGNO.mat</span>
+0032 <span class="comment">%     tidaldb.mat</span>
+0033 <span class="comment">%     lssinfit.m</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%  EXAMPLE</span>
+0036 <span class="comment">%   TIDEBEHAVEXTR('2255',10,[0.42 0.85 0.6],16,[0.42 0.85 0.6])</span>
+0037 <span class="comment">%   results in the file tagdata2255.mat being stored in the current dir</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%   Date: 28/11 - 2008, ver. 0.57</span>
+0040 <span class="comment">%   HMM geolocation toolbox, DTU Informatics and DTU Aqua</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%   Author(s):</span>
+0043 <span class="comment">%      Martin Pedersen</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%   Revision History</span>
+0046 <span class="comment">%      2009:  G. Cowles (SMAST) - removed the phase/amplitude shifts which were</span>
+0047 <span class="comment">%             hard coded for the North Sea.</span>
+0048 <span class="comment">%             These are now set using readdb and stored as part of the db structure</span>
+0049 <span class="comment">%             They are accessed here in the db structure as:</span>
+0050 <span class="comment">%                db.year_shift, db.phase_shift, db.amp_shift</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">%==============================================================================</span>
+0053 
+0054 warning(<span class="string">'on'</span>)
+0055 <span class="comment">% Define default values</span>
+0056 <span class="keyword">if</span> nargin &lt; 2 || isempty(tideFL),  tideFL  = 10; <span class="keyword">end</span>
+0057 <span class="keyword">if</span> nargin &lt; 3 || isempty(tideLV),  tideLV  = [0.42 0.85 0.6]; <span class="keyword">end</span>
+0058 <span class="keyword">if</span> nargin &lt; 4 || isempty(behavFL), behavFL = 16; <span class="keyword">end</span>
+0059 <span class="keyword">if</span> nargin &lt; 5 || isempty(behavLV), behavLV = [0.42 0.85 0.6]; <span class="keyword">end</span>
+0060 <span class="keyword">if</span> nargin &lt; 6 || isempty(DBname), DBname = <span class="string">'tidaldb.mat'</span>; <span class="keyword">end</span>
+0061 
+0062 
+0063 <span class="comment">% Error messages</span>
+0064 <span class="keyword">if</span> tideFL &lt;= 0, error(<span class="string">'Bad input for tideFL!'</span>), <span class="keyword">end</span>
+0065 <span class="keyword">if</span> (tideLV(1) &lt;= 0 || (tideLV(2)&lt;=0 || tideLV(2)&gt;=1) || tideLV(3)&lt;=0 ), error(<span class="string">'Bad input in tideLV!'</span>), <span class="keyword">end</span>
+0066 <span class="keyword">if</span> behavFL &lt;= 0, error(<span class="string">'Bad input for behavFL!'</span>), <span class="keyword">end</span>
+0067 <span class="keyword">if</span> (behavLV(1) &lt;= 0 || (behavLV(2)&lt;=0 || behavLV(2)&gt;=1) || behavLV(3)&lt;=0 ), error(<span class="string">'Bad input in behavLV!'</span>), <span class="keyword">end</span>
+0068 
+0069 filename = [<span class="string">'raw'</span> tagno <span class="string">'.mat'</span>];
+0070 disp(sprintf(<span class="string">'\n\nLoading %s...'</span>,filename))
+0071 load(filename), 
+0072 td.DBname = DBname; db=1;
+0073 disp([<span class="string">'Loading DB:'</span> td.DBname])
+0074 load(td.DBname)
+0075 dbdir = which(td.DBname); 
+0076 td.dbdir = dbdir;
+0077 save([td.dbdir(1:end-length(td.DBname)) td.DBname <span class="string">'_BAK.mat'</span>],<span class="string">'db'</span>);
+0078 LDB = length(td.DBname);
+0079 <span class="keyword">if</span> (db.lat(1,1) -db.lat(<span class="keyword">end</span>,end))  &lt; 0, db = <a href="../../hmm_smast/backfun/flipdb.html" class="code" title="function db = flipdb(db,dir)">flipdb</a>(db,<span class="string">'lat'</span>); save([td.dbdir(1:end-LDB) td.DBname],<span class="string">'db'</span>); <span class="keyword">end</span>
+0080 <span class="keyword">if</span> (db.long(1,1)-db.long(<span class="keyword">end</span>,end)) &gt; 0, db = <a href="../../hmm_smast/backfun/flipdb.html" class="code" title="function db = flipdb(db,dir)">flipdb</a>(db,<span class="string">'long'</span>);save([td.dbdir(1:end-LDB) td.DBname],<span class="string">'db'</span>); <span class="keyword">end</span>
+0081 
+0082 <span class="comment">% LDB = length(DBname);</span>
+0083 <span class="comment">% if (db.lat(1,1) -db.lat(end,end))  &lt; 0, db = flipdb(db,'lat'); save([dbdir(1:end-LDB) DBname],'db'); end</span>
+0084 <span class="comment">% if (db.long(1,1)-db.long(end,end)) &gt; 0, db = flipdb(db,'long');save([dbdir(1:end-LDB) DBname],'db'); end</span>
+0085 disp(sprintf(<span class="string">'\n=== Processing raw data of tag #%s ==='</span>,td.tagno))
+0086 
+0087 <span class="keyword">if</span> isfield(td,<span class="string">'deltat'</span>), td.dt = td.deltat; fprintf(<span class="string">'Creating field dt from detalt %f minutes\n'</span>,td.dt), <span class="keyword">end</span>
+0088 <span class="keyword">if</span> ~isfield(td,<span class="string">'dt'</span>), td.dt = 10; disp(<span class="string">'No dt field found in td struct, assuming dt=10 as default'</span>), <span class="keyword">end</span>
+0089 
+0090 <span class="comment">% Change dims of td.time, td.depth and td.temp</span>
+0091 [A B] = size(td.time);  <span class="keyword">if</span> A &gt; 1, td.time =td.time';  <span class="keyword">end</span>
+0092 [A B] = size(td.depth); <span class="keyword">if</span> A &gt; 1, td.depth=td.depth'; <span class="keyword">end</span>
+0093 [A B] = size(td.temp);  <span class="keyword">if</span> A &gt; 1, td.temp =td.temp';  <span class="keyword">end</span>
+0094 
+0095 <span class="comment">% Find indices of 24 hours</span>
+0096 SR = round(24*60/td.dt);
+0097 first24 = ceil(SR*(ceil(td.time(1))+1/1440-td.time(1)));
+0098 <span class="keyword">if</span> first24 == 1
+0099     td.d24 = [first24:SR:length(td.time) length(td.time)];
+0100 <span class="keyword">else</span>
+0101     td.d24 = [1 first24:SR:length(td.time) length(td.time)];
+0102 <span class="keyword">end</span>
+0103 
+0104 <span class="comment">% gwc, I think the problem is that td.d24 is somehow not an integer range</span>
+0105 <span class="comment">% this is because td.dt which is the time step in minutes is not an integer</span>
+0106 <span class="comment">% we need I guess to make that an integer, luckily it is for us an integer</span>
+0107 
+0108 lengthtime = length(td.time); 
+0109 <span class="comment">%p=12.42; %period in hours</span>
+0110 p = 12.420601; 
+0111 w=2*pi/(p/24); <span class="comment">% Angular frequency</span>
+0112 sint = sin(w*td.time)';
+0113 cost = cos(w*td.time)';
+0114 ts = td.depth';
+0115 
+0116 td.diffs = ones(length(td.d24)-1,1);
+0117 
+0118 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0119 <span class="comment">%%%%%%%%%%%%%%%%%%  TIDAL INFORMATION  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0120 <span class="comment">% Extract summary statistics of sine fit</span>
+0121 disp(sprintf(<span class="string">'Extracting tidal information...\nIn %1.2f hour intervals using limit values:\n%1.2f &gt; rmse, %1.2f &lt; rsquare, %1.2f &lt; amplitude\n\n'</span>,tideFL,tideLV(1),tideLV(2),tideLV(3)))
+0122 td.tideLV = tideLV; 
+0123 td.tideFL = round(60/td.dt*tideFL); <span class="comment">% td.tideFL is fitlength in sample points</span>
+0124 ons = ones(td.tideFL,1);
+0125 loop = 1:(lengthtime-td.tideFL);
+0126 rmse = zeros(1,(lengthtime-td.tideFL)); rsquare = rmse; ampli = rmse; out = rmse; tj=0;
+0127 tic
+0128 <span class="keyword">for</span> i=loop
+0129     intv = i:td.tideFL+i-1;
+0130     [rmse(i) rsquare(i) ampli(i) out(i)]=<a href="../../hmm_smast/backfun/lssinfit.html" class="code" title="function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)">lssinfit</a>(ons,cost(intv), sint(intv),ts(intv));
+0131 <span class="comment">%    plot(cost(intv),'b'); hold on; plot(sint(intv),'r'); plot(ts(intv),'g');</span>
+0132     <span class="keyword">if</span> ~mod(i,floor(lengthtime/100)), disp(sprintf(<span class="string">'\b.'</span>)), <span class="keyword">end</span>
+0133     <span class="keyword">if</span> ~mod(i,floor(lengthtime/9.99)), disp(sprintf(<span class="string">'\b%1.0f%% (%1.2f sec)\n'</span>,100*i/loop(end),toc)),tic, <span class="keyword">end</span>
+0134 <span class="comment">%    pause</span>
+0135 <span class="comment">%    clf</span>
+0136 <span class="keyword">end</span>
+0137 disp(sprintf(<span class="string">'\b100%% (%1.2f sec)\n\n'</span>,toc))
+0138 
+0139 <span class="comment">%% Find intervals with tidal information according to criteria</span>
+0140 crit = [(rmse&lt;td.tideLV(1) &amp; rsquare&gt;td.tideLV(2) &amp; ampli&gt;td.tideLV(3)) zeros(1,td.tideFL)];
+0141 
+0142 <span class="comment">%fprintf('found %d good intervals of %d with tide signal \n',numel(crit),numel(rmse));</span>
+0143 
+0144 i=1;
+0145 td.tideFound = zeros(1,lengthtime);
+0146 <span class="keyword">while</span> i &lt; length(crit)+1
+0147     <span class="keyword">if</span> crit(i) == 1
+0148         td.tideFound(i:i+td.tideFL-1) = 1;
+0149         i=i+td.tideFL-1;
+0150     <span class="keyword">end</span>
+0151     i=i+1;
+0152 <span class="keyword">end</span>
+0153 
+0154 <span class="comment">%% Determine the best fits</span>
+0155 td.tideUsed = zeros(1,lengthtime); td.tide = zeros(1,length(td.d24)-1); td.tideBestfit = td.tide; td.rmse = td.tide+1;
+0156 lengthrmse = length(rmse);
+0157 <span class="keyword">for</span> i=1:length(td.d24)-1
+0158     intv = td.d24(i):min([td.d24(i+1)-1 lengthrmse]);
+0159     <span class="keyword">if</span> sum(crit(intv)) &gt; 0
+0160         [td.rmse(i) minind] = min(rmse(intv));
+0161         td.tideBestfit(i) = minind + td.d24(i) -1;
+0162         td.tideUsed(td.tideBestfit(i):td.tideBestfit(i)+td.tideFL-1) = 1;
+0163         td.tide(i) = 1;
+0164     <span class="keyword">end</span>  
+0165     <span class="keyword">if</span> tj==1, <span class="keyword">break</span>, <span class="keyword">end</span>
+0166 <span class="keyword">end</span>
+0167 
+0168 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0169 <span class="comment">%%%%%%%%%%%%%%%%%%  BEHAVIOUR  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0170 <span class="comment">%% Extract summary statistics of sine fit</span>
+0171 disp(sprintf(<span class="string">'Classifying behaviour...\nIn %1.2f hour intervals using limit values:\n%1.2f &gt; rmse, %1.2f &lt; rsquare, %1.2f &lt; amplitude\n\n'</span>,behavFL,behavLV(1),behavLV(2),behavLV(3)))
+0172 td.behavLV = behavLV; 
+0173 td.behavFL = round(60/td.dt*behavFL); <span class="comment">% td.behavFL is fitlength in sample points</span>
+0174 ons = ones(td.behavFL,1);
+0175 loop = 1:(lengthtime-td.behavFL);
+0176 rmse = zeros(1,(lengthtime-td.behavFL)); rsquare = rmse; ampli = rmse;  out = rmse; tj=0;
+0177 outlim = 3; <span class="comment">% data with stud. residuals above this level are outliers</span>
+0178 tic
+0179 <span class="keyword">for</span> i=loop
+0180     intv = i:td.behavFL+i-1;
+0181     [rmse(i) rsquare(i) ampli(i) out(i)]=<a href="../../hmm_smast/backfun/lssinfit.html" class="code" title="function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)">lssinfit</a>(ons,cost(intv),sint(intv),ts(intv),outlim);
+0182     <span class="keyword">if</span> ~mod(i,floor(lengthtime/100)), disp(sprintf(<span class="string">'\b.'</span>)), <span class="keyword">end</span>
+0183     <span class="keyword">if</span> ~mod(i,floor(lengthtime/9.99)), disp(sprintf(<span class="string">'\b%1.0f%% (%1.2f sec)\n'</span>,100*i/loop(end),toc)),tic, <span class="keyword">end</span>
+0184 <span class="keyword">end</span>
+0185 
+0186 disp(sprintf(<span class="string">'\b100%% (%1.2f sec)\n\n'</span>,toc))
+0187 
+0188 <span class="comment">% Make behaviour vector</span>
+0189 crit = [(rmse&lt;td.behavLV(1) &amp; rsquare&gt;td.behavLV(2) &amp; ampli&gt;td.behavLV(3)) zeros(1,td.behavFL)];
+0190 td.behavFound = ones(1,lengthtime)+1; 
+0191 td.behav = ones(1,length(td.d24)-1)+1; tj = 0;
+0192 td.behavrsq = zeros(1,length(td.behav)) + 0.5; <span class="comment">% Uniformly distributed between the two modes</span>
+0193 lengthrmse = length(rmse);
+0194 
+0195 <span class="keyword">for</span> i=1:length(td.d24)-1
+0196     intv = td.d24(i):min([td.d24(i+1)-1 lengthrmse]);
+0197     <span class="keyword">if</span> sum(crit(intv)) &gt; 0
+0198         [minval minind] = min(rmse(intv));
+0199         globind = minind + (td.d24(i):td.d24(i)+td.behavFL-1);
+0200         td.behavFound(globind) = 1;
+0201         td.behav(i) = 1;
+0202         td.behavrsq(i) = rsquare(intv(minind));
+0203     <span class="keyword">end</span>  
+0204     <span class="keyword">if</span> tj==1, <span class="keyword">break</span>, <span class="keyword">end</span>
+0205 <span class="keyword">end</span>
+0206 
+0207 <span class="comment">%% Determine values of f and G (computed by nodal.exe)</span>
+0208 year = str2num(datestr(td.time_plot(1),10));
+0209 
+0210 <span class="comment">%----------------------------------------------------------</span>
+0211 <span class="comment">% gwc</span>
+0212 <span class="comment">% load phase and amplitude modifications by year</span>
+0213 <span class="comment">% since these are regionally-dependent, we will load them</span>
+0214 <span class="comment">% from an external file (using readdb.m) into the db struct</span>
+0215 <span class="comment">%----------------------------------------------------------</span>
+0216 <span class="comment">% [junk,junk,ncomps] = size(db.amp);</span>
+0217 <span class="comment">% td.f = ones(ncomps,1);  % set to one</span>
+0218 <span class="comment">% td.G = zeros(ncomps,1);  % gwc zero out for now</span>
+0219 <span class="comment">%</span>
+0220 <span class="comment">% % see if the year is in the database</span>
+0221 <span class="comment">% [minny,imin] = min(abs(year-db.year_shift));</span>
+0222 <span class="comment">% if(minny ==0)</span>
+0223 <span class="comment">%   ii = imin;</span>
+0224 <span class="comment">% else</span>
+0225 <span class="comment">%   fprintf('year %d is not in the phase-amp shift data in the tidal database\n',year);</span>
+0226 <span class="comment">%   error('stopping...');</span>
+0227 <span class="comment">% end;</span>
+0228 <span class="comment">%</span>
+0229 <span class="comment">% % set the phase and amplitude shifts</span>
+0230 <span class="comment">% [nn,ncomps] = size(db.amp_shift);</span>
+0231 <span class="comment">% td.f(1:ncomps) = db.amp_shift(ii,1:ncomps);</span>
+0232 <span class="comment">% td.G(1:ncomps) = db.phase_shift(ii,1:ncomps);</span>
+0233 
+0234 
+0235 <span class="comment">%% Transform release and recapture positions to pixel coords</span>
+0236 [row,col] = size(db.land);
+0237 dlong = (db.long(1,col)-db.long(1,1))/(col-1);
+0238 dlat  = (db.lat(row,1)-db.lat(1,1))/(row-1);
+0239 R = <a href="../../hmm_smast/backfun/mapmatrix.html" class="code" title="function M = mapmatrix(y,x,dy,dx)">mapmatrix</a>(db.lat(1,1),db.long(1,1),dlat, dlong);
+0240 [td.x1 td.y1] = <a href="../../hmm_smast/backfun/maptopix.html" class="code" title="function [px py] = maptopix(M,lat,lon)">maptopix</a>(R,td.catch_lat,td.catch_long);
+0241 [td.x0 td.y0] = <a href="../../hmm_smast/backfun/maptopix.html" class="code" title="function [px py] = maptopix(M,lat,lon)">maptopix</a>(R,td.rel_lat,td.rel_long);
+0242 td.x1 = round(td.x1); td.y1 = round(td.y1); td.x0 = round(td.x0); td.y0 = round(td.y0);
+0243 <span class="comment">% Check if release or recapture are on land</span>
+0244 <span class="keyword">if</span> db.land(td.y0,td.x0)
+0245     warning(<span class="string">'Release position is on land!'</span>)
+0246     newx = td.x0 + [-1 0 1]; newx(newx &lt; 1) = [];
+0247     newy = td.y0 + [-1 0 1]; newy(newy &lt; 1) = [];
+0248     <span class="keyword">for</span> x = newx, <span class="keyword">for</span> y = newy
+0249             <span class="keyword">if</span> ~db.land(y,x), td.x0 = x; td.y0 = y; <span class="keyword">end</span>
+0250     <span class="keyword">end</span>, <span class="keyword">end</span>
+0251 <span class="keyword">end</span>
+0252 <span class="keyword">if</span> td.catch_unc &gt; 0 &amp;&amp; db.land(td.y1,td.x1)
+0253     warning(<span class="string">'Recapture position is on land!'</span>)
+0254     newx = td.x1 + [-1 0 1]; newx(newx &lt; 1) = [];
+0255     newy = td.y1 + [-1 0 1]; newy(newy &lt; 1) = [];
+0256     <span class="keyword">for</span> x = newx, <span class="keyword">for</span> y = newy
+0257             <span class="keyword">if</span> ~db.land(y,x), td.x1 = x; td.y1 = y; <span class="keyword">end</span>
+0258     <span class="keyword">end</span>, <span class="keyword">end</span>
+0259 <span class="keyword">end</span>
+0260 
+0261 td
+0262 
+0263 <span class="comment">%% Creating *.mat file</span>
+0264 filename = sprintf(<span class="string">'tagdata%s'</span>,td.tagno);
+0265 disp(sprintf(<span class="string">'Saving -&gt; %s.mat &lt;- in\n%s'</span>,filename,cd))
+0266 save(filename,<span class="string">'td'</span>)
+0267 disp(sprintf(<span class="string">'\nDONE with tidal and behaviour extraction! \n\nNow run --&gt; datalikelihood \n\nto create/update the datalikelihood matrix!\n'</span>))
+0268 
+0269 <span class="comment">%% Plotting</span>
+0270 <span class="comment">%t = td.time_plot;</span>
+0271 t = td.time;
+0272 close all
+0273 parts = [1 round(length(t)/2) length(t)];
+0274 figure, hold on
+0275 <span class="keyword">for</span> i = 1:2
+0276     tt  = t(parts(i):parts(i+1));
+0277     tsF = td.tideFound(parts(i):parts(i+1));
+0278     tsU = td.tideUsed(parts(i):parts(i+1));
+0279     [f_tsf f_sf] = stairs(tt,tsF);
+0280     f_tsf = [f_tsf(1);f_tsf;f_tsf(end)]; f_sf = [0;f_sf;0];
+0281     pl=patch(f_tsf,f_sf*min(td.depth),<span class="string">'g'</span>);
+0282     set(pl,<span class="string">'EdgeColor'</span>,[0.6 1 0.4])
+0283     set(pl,<span class="string">'FaceColor'</span>,[0.5 1 0.3]) <span class="comment">% ligth green</span>
+0284     [f_tsf f_sf] = stairs(tt,tsU);
+0285     f_tsf = [f_tsf(1);f_tsf;f_tsf(end)]; f_sf = [0;f_sf;0];
+0286     pl=patch(f_tsf,f_sf*min(td.depth),<span class="string">'g'</span>);
+0287     set(pl,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>)
+0288     set(pl,<span class="string">'FaceColor'</span>,[0 0.8 0]) <span class="comment">% ligth green</span>
+0289 <span class="keyword">end</span>
+0290 plot(t,td.depth,<span class="string">'b'</span>),
+0291 <span class="comment">%set(gca,'ydir','reverse');</span>
+0292 xlabel(<span class="string">'Julian day'</span>),
+0293 <span class="comment">%datetick('x','keeplimits'), xlabel('Date'),</span>
+0294 axis tight, , title(<span class="string">'Result of tidal classification'</span>)
+0295  ylabel(<span class="string">'Depth, m'</span>)
+0296 hold off
+0297 set(gcf,<span class="string">'position'</span>,[50 100 850 220])
+0298 
+0299 figure, hold on
+0300 <span class="keyword">for</span> i = 1:2
+0301     tt  = t(parts(i):parts(i+1));
+0302     tsF = td.behavFound(parts(i):parts(i+1));
+0303     [f_tsf f_sf] = stairs(tt,abs(tsF-2));
+0304     f_tsf = [f_tsf(1);f_tsf;f_tsf(end)]; f_sf = [0;f_sf;0];
+0305     pl=patch(f_tsf,f_sf*min(td.depth),<span class="string">'g'</span>);
+0306     set(pl,<span class="string">'EdgeColor'</span>,[0.6 1 0.4])
+0307     set(pl,<span class="string">'FaceColor'</span>,[0.5 1 0.3]) <span class="comment">% ligth green</span>
+0308 <span class="keyword">end</span>
+0309 plot(t,td.depth,<span class="string">'b'</span>),
+0310 <span class="comment">%set(gca,'ydir','reverse');</span>
+0311 xlabel(<span class="string">'Julian day'</span>),
+0312 <span class="comment">%datetick('x','keeplimits'), xlabel('Date'),</span>
+0313 axis tight,  title(<span class="string">'Result of behaviour classification'</span>)
+0314  ylabel(<span class="string">'Depth, m'</span>)
+0315 hold off
+0316 set(gcf,<span class="string">'position'</span>,[50 340 850 220])
+0317 
+0318 <span class="comment">% plot release and recapture and show database area</span>
+0319 figure, cmap = [1 1 1;0. 0.7 0.]; <span class="comment">% white water, green land</span>
+0320 surf(db.long,db.lat,db.land-1);
+0321 colormap(cmap), shading flat, hold on, view(2), axis tight, grid on
+0322 rel = plot(td.rel_long,td.rel_lat,<span class="string">'v'</span>,<span class="string">'markersize'</span>,10,<span class="string">'markerfacecolor'</span>,<span class="string">'g'</span>,<span class="string">'markeredgecolor'</span>,<span class="string">'k'</span>);
+0323 rec = plot(td.catch_long,td.catch_lat,<span class="string">'^'</span>,<span class="string">'markersize'</span>,10,<span class="string">'markerfacecolor'</span>,<span class="string">'r'</span>,<span class="string">'markeredgecolor'</span>,<span class="string">'k'</span>);
+0324 legend([rel rec],<span class="string">'Release position'</span>,<span class="string">'Recapture position'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>);
+0325 xlabel(<span class="string">'Longitude, deg'</span>), ylabel(<span class="string">'Latitude, deg'</span>), title(<span class="string">'Release and recapture'</span>)
+0326 hold off
+0327 <span class="comment">%set(gcf,'position',[150 100 500 350])</span></pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

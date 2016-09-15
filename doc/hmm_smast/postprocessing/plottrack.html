@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plottrack</title>
+  <meta name="keywords" content="plottrack">
+  <meta name="description" content="PLOTTRACK  Plot a track (eg. mpt or sampled track)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">postprocessing</a> &gt; plottrack.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/postprocessing&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>plottrack
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PLOTTRACK  Plot a track (eg. mpt or sampled track)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [handle] = plottrack(track,linsty,pltyp,opttrack,clean) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTTRACK  Plot a track (eg. mpt or sampled track)
+   HANDLE = PLOTTRACK(TRACK,LINSTY,PLTYP,OPTTRACK)
+
+   - TRACK a struct containing an output from eg. samptrack.
+
+     Optional arguments
+
+   - LINSTY line style for the tracks. Type help plot for more info
+   - PLTYP specifies the plot type, either '1d' or '2d'
+   - OPTTRACK input another track for comparison
+   - CLEAN do not show track with random variation within each grid cell
+   default is a non-clean track (clean = 0)
+
+  EXAMPLE   
+   PLOTTRACK(track,'x-','1d',track2,1)
+   where the variables track and track2 is created eg. by samptrack
+   or mptrack.
+
+   Date: 22/10 - 2008, ver. 0.52
+   HMM geolocation toolbox, DTU Informatics and DTU Aqua</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../hmm_smast/tbworkdir/run_tag.html" class="code" title="">run_tag</a>	clear all;</li><li><a href="../../hmm_smast/test/run_tag.html" class="code" title="">run_tag</a>	clear all;</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [handle] = plottrack(track,linsty,pltyp,opttrack,clean)</a>
+0002 <span class="comment">%PLOTTRACK  Plot a track (eg. mpt or sampled track)</span>
+0003 <span class="comment">%   HANDLE = PLOTTRACK(TRACK,LINSTY,PLTYP,OPTTRACK)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   - TRACK a struct containing an output from eg. samptrack.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%     Optional arguments</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   - LINSTY line style for the tracks. Type help plot for more info</span>
+0010 <span class="comment">%   - PLTYP specifies the plot type, either '1d' or '2d'</span>
+0011 <span class="comment">%   - OPTTRACK input another track for comparison</span>
+0012 <span class="comment">%   - CLEAN do not show track with random variation within each grid cell</span>
+0013 <span class="comment">%   default is a non-clean track (clean = 0)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%  EXAMPLE</span>
+0016 <span class="comment">%   PLOTTRACK(track,'x-','1d',track2,1)</span>
+0017 <span class="comment">%   where the variables track and track2 is created eg. by samptrack</span>
+0018 <span class="comment">%   or mptrack.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   Date: 22/10 - 2008, ver. 0.52</span>
+0021 <span class="comment">%   HMM geolocation toolbox, DTU Informatics and DTU Aqua</span>
+0022 
+0023 <span class="keyword">if</span> nargin &lt; 2 || isempty(linsty), linsty = <span class="string">'-b'</span>; <span class="keyword">end</span>
+0024 <span class="keyword">if</span> nargin &lt; 3 || isempty(pltyp), pltyp = <span class="string">'2d'</span>; <span class="keyword">end</span>
+0025 <span class="keyword">if</span> nargin &lt; 4 || isempty(opttrack), opttrack = []; <span class="keyword">end</span>
+0026 <span class="keyword">if</span> nargin &lt; 5, clean = 0; <span class="keyword">end</span>
+0027 
+0028 <span class="keyword">if</span> clean ~= 0, track.long = track.long_clean; track.lat = track.lat_clean; <span class="keyword">end</span>
+0029 
+0030 cmap = [1 1 1;0. 0.7 0.]; <span class="comment">% white water, green land</span>
+0031 lw = 1;
+0032 <span class="keyword">if</span> strcmp(pltyp,<span class="string">'2d'</span>) || strcmp(pltyp,<span class="string">'2D'</span>)
+0033     <span class="keyword">switch</span> size(track.long,2) 
+0034         <span class="keyword">case</span> 0
+0035             error(<span class="string">'Wrong track input!'</span>)
+0036         <span class="keyword">otherwise</span>
+0037             a = surf(track.maplong,track.maplat,track.land-1);
+0038             colormap(cmap), shading flat, hold on
+0039             view(2), axis tight, grid on
+0040             <span class="keyword">if</span> ~isempty(opttrack), opt = plot(opttrack.long,opttrack.lat,<span class="string">'r--'</span>,<span class="string">'linewidth'</span>,1.5); <span class="keyword">if</span> size(opttrack.long,2)&gt;1, lw = 2; <span class="keyword">end</span>, <span class="keyword">end</span>
+0041             st = plot(track.long,track.lat,linsty,<span class="string">'linewidth'</span>,lw);
+0042             rel = plot(track.long(1),track.lat(1),<span class="string">'v'</span>,<span class="string">'markersize'</span>,10,<span class="string">'markerfacecolor'</span>,<span class="string">'g'</span>,<span class="string">'markeredgecolor'</span>,<span class="string">'k'</span>);
+0043             rec = plot(track.long(<span class="keyword">end</span>,:),track.lat(<span class="keyword">end</span>,:),<span class="string">'^'</span>,<span class="string">'markersize'</span>,10,<span class="string">'markerfacecolor'</span>,<span class="string">'r'</span>,<span class="string">'markeredgecolor'</span>,<span class="string">'k'</span>);
+0044             rec_rp = plot(track.catch_long,track.catch_lat,<span class="string">'^'</span>,<span class="string">'markersize'</span>,10,<span class="string">'markerfacecolor'</span>,<span class="string">'y'</span>,<span class="string">'markeredgecolor'</span>,<span class="string">'k'</span>);
+0045             hold off
+0046             <span class="keyword">if</span> ~isempty(opttrack), legend([rel rec rec_rp st(end) opt(end)],<span class="string">'Release position'</span>,<span class="string">'Recapture position'</span>,<span class="string">'Reported Recapture position'</span>,<span class="string">'Track'</span>,<span class="string">'Optional track'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>)
+0047             <span class="keyword">else</span> legend([rel rec rec_rp st(end)],<span class="string">'Release position'</span>,<span class="string">'Estimated recapture position'</span>,<span class="string">'Reported Recapture position'</span>,<span class="string">'Track'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>), <span class="keyword">end</span>
+0048             xlabel(<span class="string">'Longitude, deg'</span>), ylabel(<span class="string">'Latitude, deg'</span>), title(<span class="string">'plottrack'</span>)
+0049             handle = a;
+0050     <span class="keyword">end</span>
+0051 <span class="keyword">elseif</span> strcmp(pltyp,<span class="string">'1d'</span>) || strcmp(pltyp,<span class="string">'1D'</span>)
+0052     <span class="keyword">switch</span> size(track.long,2)
+0053         <span class="keyword">case</span> 0
+0054             error(<span class="string">'Wrong track input'</span>)
+0055         <span class="keyword">otherwise</span>
+0056             a=subplot(211); hold on
+0057             <span class="keyword">if</span> ~isempty(opttrack), opt = plot(opttrack.long,<span class="string">'r--'</span>,<span class="string">'linewidth'</span>,1.5); <span class="keyword">if</span> size(opttrack.long,2)&gt;1, lw = 2; <span class="keyword">end</span>,<span class="keyword">end</span>
+0058             st = plot(1:length(track.long),track.long,linsty,<span class="string">'linewidth'</span>,lw); hold off
+0059             xlabel(<span class="string">'Time, days at liberty'</span>), ylabel(<span class="string">'Longitude, deg'</span>), axis tight
+0060             <span class="keyword">if</span> ~isempty(opttrack), legend([st(end) opt(end)],<span class="string">'Track'</span>,<span class="string">'Optional track'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>)
+0061             <span class="keyword">else</span> legend(st(end),<span class="string">'Track'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>), <span class="keyword">end</span>
+0062             b=subplot(212); hold on
+0063             <span class="keyword">if</span> ~isempty(opttrack), opt = plot(opttrack.time,opttrack.lat,<span class="string">'r--'</span>,<span class="string">'linewidth'</span>,1.5); <span class="keyword">end</span>
+0064             st = plot(track.time,track.lat,linsty,<span class="string">'linewidth'</span>,lw); datetick(<span class="string">'x'</span>); hold off
+0065             xlabel(<span class="string">'Time, date'</span>), ylabel(<span class="string">'Latitude, deg'</span>), axis tight
+0066             <span class="keyword">if</span> ~isempty(opttrack), legend([st(end) opt(end)],<span class="string">'Track'</span>,<span class="string">'Optional track'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>)
+0067             <span class="keyword">else</span> legend(st(end),<span class="string">'Track'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>), <span class="keyword">end</span>
+0068             handle = [a b];
+0069     <span class="keyword">end</span>
+0070 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

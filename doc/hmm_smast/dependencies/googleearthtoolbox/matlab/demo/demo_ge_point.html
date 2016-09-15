@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_ge_point</title>
+  <meta name="keywords" content="demo_ge_point">
+  <meta name="description" content="Example usage of the ge_point function.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="../index.html">matlab</a> &gt; <a href="index.html">demo</a> &gt; demo_ge_point.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/googleearthtoolbox/matlab/demo&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>demo_ge_point
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>Example usage of the ge_point function.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function demo_ge_point()%% Demo ge_point </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Example usage of the ge_point function.
+   X, Y should be decimal coordinates (WGS84)
+   Z is altitude in meters
+ 'help ge_point' for more info.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>	Reference page in help browser:</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function demo_ge_point()</a><span class="comment">%% Demo ge_point</span>
+0002 <span class="comment">% Example usage of the ge_point function.</span>
+0003 <span class="comment">%   X, Y should be decimal coordinates (WGS84)</span>
+0004 <span class="comment">%   Z is altitude in meters</span>
+0005 <span class="comment">% 'help ge_point' for more info.</span>
+0006 
+0007 t = 0:pi/20:1.5*pi;
+0008 
+0009 iconStrBase = <span class="string">'http://maps.google.com/mapfiles/kml/pal3/'</span>;
+0010 
+0011 tmp = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>(sin(t),cos(t),t*1e6,<span class="keyword">...</span>
+0012                         <span class="string">'iconURL'</span>,[iconStrBase,<span class="string">'/icon35.png'</span>],<span class="keyword">...</span>
+0013                     <span class="string">'msgToScreen'</span>,true,<span class="keyword">...</span>
+0014                            <span class="string">'name'</span>,<span class="string">''</span>);
+0015 
+0016 kmlStr01 = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'many points'</span>,tmp);
+0017 clear tmp
+0018 
+0019 kmlStr02 = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>(-1,2,3.56,<span class="keyword">...</span>
+0020                     <span class="string">'iconURL'</span>,[iconStrBase,<span class="string">'/icon18.png'</span>]);
+0021 
+0022 kmlStr03 = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>(0,2,3.56,<span class="keyword">...</span>
+0023                     <span class="string">'iconURL'</span>,[iconStrBase,<span class="string">'/icon41.png'</span>],<span class="keyword">...</span><span class="comment">    </span>
+0024     <span class="string">'description'</span>,[<span class="string">'&lt;A HREF=&quot;http://cod'</span>,<span class="keyword">...</span>
+0025     <span class="string">'e.google.com/p/googleearthtoolbox/&quot;&gt;Visit the GoogleEarth Toolb'</span>,<span class="keyword">...</span>
+0026     <span class="string">'ox for MATLAB website&lt;/A&gt;&lt;BR&gt;&lt;BR&gt;'</span>]);
+0027 
+0028 kmlStr04 = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>(1,2,3.56,<span class="keyword">...</span>
+0029                         <span class="string">'iconURL'</span>,[iconStrBase,<span class="string">'/icon31.png'</span>],<span class="keyword">...</span><span class="comment">);</span>
+0030                         <span class="string">'pointDataCell'</span>,{<span class="string">'var1'</span>,<span class="string">'value1'</span>;<span class="keyword">...</span>
+0031                                          <span class="string">'var2'</span>,<span class="string">'value2'</span>;<span class="keyword">...</span>
+0032                                          <span class="string">'var3'</span>,<span class="string">'value3'</span>;<span class="keyword">...</span>
+0033                                          <span class="string">'var4'</span>,<span class="string">'value4'</span>;<span class="keyword">...</span>
+0034                                          <span class="string">'var5'</span>,<span class="string">'value5'</span>;});
+0035 
+0036 
+0037 
+0038 <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>(<span class="string">'demo_ge_point.kml'</span>,[kmlStr01,kmlStr02,kmlStr03,kmlStr04],<span class="keyword">...</span>
+0039                                  <span class="string">'name'</span>,mfilename);</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

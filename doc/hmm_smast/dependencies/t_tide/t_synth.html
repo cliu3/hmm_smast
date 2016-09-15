@@ -1,0 +1,363 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of t_synth</title>
+  <meta name="keywords" content="t_synth">
+  <meta name="description" content="T_SYNTH Monte-Carlo test of the error estimation using synthetic data">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="index.html">t_tide</a> &gt; t_synth.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/t_tide&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>t_synth
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>T_SYNTH Monte-Carlo test of the error estimation using synthetic data</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [sm,lm,tcon]=t_synth(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> T_SYNTH Monte-Carlo test of the error estimation using synthetic data
+ A single test of the harmonic analysis involves:
+
+   1) Generation of a &quot;pure&quot; tidal signal with known constituents.
+   2) Contamination with noise (according to some statistical model).
+   3) The harmonic analysis resulting in constituent estimates.
+   4) Generation of confidence intervals for the estimates.
+
+ T_SYNTH runs multiple realizations of this sequence. In each 
+ realization, the added noise is different (but its statistical model
+ remains the same).  Statistically, one would hope that the &quot;true&quot; 
+ constituent components were somewhere within the 95% CI 95% of the 
+ time. Almost equivalently, the width of the 95% CI should match the
+ 95%-width of the histogram of estimates. The resulting plot shows 
+ the histogram of estimates, their 95% width, and the width of 95% 
+ CI for all realizations.
+
+ A variety of input parameters can be specified:
+
+       'freqs':   Frequencies to use (default {'M2','K1','S2'} ).
+
+       'tidecon': Constituents in run for specified frequencies in
+                  the form of a matrix with one row per constituent.
+                  Each row is of the form 
+                   [semi-major_axis_length, semi-minor_axis_length,
+                    ellipse_inclination (deg), Greenwich_phase (deg)]'
+                  If only one row is given, the same parameters are
+                  used for all constituents.
+                  default: [1 .1 45 60]
+             
+                  If you want to test things for a &quot;real&quot; time series,
+                  (e.g., an elevation series), set the two middle
+                  parameters to 0 - e.g., [1 0 0 60].
+                            
+       'time':    Time axis (hours) default [0:24*60] 
+
+       'nrun':    Number of simulations (default 100);
+
+       'error':   Formula for errors to be added to simulation (to be
+                  used in an EVAL statement). If the size of the 
+                  synthesized data matrix is needed, replace with SY. 
+                  Examples (of correlated bivariate gaussian white 
+                  noise) are:
+
+                    '.5*randn(SY)'
+                    '(1*randn(SY)*1+1e-6*i*randn(SY))*exp(i*pi/4)'
+               
+                  To get coloured noise, use the implicit function
+                  'colrand': e.g. to get noise with a wavenumber slope
+                  of -1.1
+                   
+                    '.5*colrand(SY,-1.1)';
+
+       'boota':   Bootstrap analysis. Either
+                   'c': Assume coloured uncorrelated noise.
+                   'w': Assume white bivariate noise.
+
+   Outputs: While running different realizations, text is output to
+   the console. Upon completion, a figure is drawn, in which coloured
+   histograms (a different colour for each constituent) of the 
+   stimated values of all realizations are drawn. + and - 2.5% 
+   percentiles are indicated with thick dashed bars (these limits are
+   taken as 1.96 * the standard deviation). Uncertainties for each 
+   realization are shown by thin solid lines; these should lie on top
+   of the thicker dashed curves if the error analysis is correct.  The 
+   upper set of plots uses the bootstrapped confidence intervals, and 
+   the lower set a 'linear' analysis.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="t_getconsts.html" class="code" title="function [const,sat,shallow]=t_getconsts(ctime);">t_getconsts</a>	T_GETCONSTS Gets constituent data structures</li><li><a href="t_tide.html" class="code" title="function [nameu,fu,tidecon,xout]=t_tide(xin,varargin);">t_tide</a>	T_TIDE Harmonic analysis of a time series</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function A=colrand(SY,slp)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [sm,lm,tcon]=t_synth(varargin)</a>
+0002 <span class="comment">% T_SYNTH Monte-Carlo test of the error estimation using synthetic data</span>
+0003 <span class="comment">% A single test of the harmonic analysis involves:</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   1) Generation of a &quot;pure&quot; tidal signal with known constituents.</span>
+0006 <span class="comment">%   2) Contamination with noise (according to some statistical model).</span>
+0007 <span class="comment">%   3) The harmonic analysis resulting in constituent estimates.</span>
+0008 <span class="comment">%   4) Generation of confidence intervals for the estimates.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% T_SYNTH runs multiple realizations of this sequence. In each</span>
+0011 <span class="comment">% realization, the added noise is different (but its statistical model</span>
+0012 <span class="comment">% remains the same).  Statistically, one would hope that the &quot;true&quot;</span>
+0013 <span class="comment">% constituent components were somewhere within the 95% CI 95% of the</span>
+0014 <span class="comment">% time. Almost equivalently, the width of the 95% CI should match the</span>
+0015 <span class="comment">% 95%-width of the histogram of estimates. The resulting plot shows</span>
+0016 <span class="comment">% the histogram of estimates, their 95% width, and the width of 95%</span>
+0017 <span class="comment">% CI for all realizations.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% A variety of input parameters can be specified:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%       'freqs':   Frequencies to use (default {'M2','K1','S2'} ).</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%       'tidecon': Constituents in run for specified frequencies in</span>
+0024 <span class="comment">%                  the form of a matrix with one row per constituent.</span>
+0025 <span class="comment">%                  Each row is of the form</span>
+0026 <span class="comment">%                   [semi-major_axis_length, semi-minor_axis_length,</span>
+0027 <span class="comment">%                    ellipse_inclination (deg), Greenwich_phase (deg)]'</span>
+0028 <span class="comment">%                  If only one row is given, the same parameters are</span>
+0029 <span class="comment">%                  used for all constituents.</span>
+0030 <span class="comment">%                  default: [1 .1 45 60]</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%                  If you want to test things for a &quot;real&quot; time series,</span>
+0033 <span class="comment">%                  (e.g., an elevation series), set the two middle</span>
+0034 <span class="comment">%                  parameters to 0 - e.g., [1 0 0 60].</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%       'time':    Time axis (hours) default [0:24*60]</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%       'nrun':    Number of simulations (default 100);</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%       'error':   Formula for errors to be added to simulation (to be</span>
+0041 <span class="comment">%                  used in an EVAL statement). If the size of the</span>
+0042 <span class="comment">%                  synthesized data matrix is needed, replace with SY.</span>
+0043 <span class="comment">%                  Examples (of correlated bivariate gaussian white</span>
+0044 <span class="comment">%                  noise) are:</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%                    '.5*randn(SY)'</span>
+0047 <span class="comment">%                    '(1*randn(SY)*1+1e-6*i*randn(SY))*exp(i*pi/4)'</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%                  To get coloured noise, use the implicit function</span>
+0050 <span class="comment">%                  'colrand': e.g. to get noise with a wavenumber slope</span>
+0051 <span class="comment">%                  of -1.1</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">%                    '.5*colrand(SY,-1.1)';</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">%       'boota':   Bootstrap analysis. Either</span>
+0056 <span class="comment">%                   'c': Assume coloured uncorrelated noise.</span>
+0057 <span class="comment">%                   'w': Assume white bivariate noise.</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">%   Outputs: While running different realizations, text is output to</span>
+0060 <span class="comment">%   the console. Upon completion, a figure is drawn, in which coloured</span>
+0061 <span class="comment">%   histograms (a different colour for each constituent) of the</span>
+0062 <span class="comment">%   stimated values of all realizations are drawn. + and - 2.5%</span>
+0063 <span class="comment">%   percentiles are indicated with thick dashed bars (these limits are</span>
+0064 <span class="comment">%   taken as 1.96 * the standard deviation). Uncertainties for each</span>
+0065 <span class="comment">%   realization are shown by thin solid lines; these should lie on top</span>
+0066 <span class="comment">%   of the thicker dashed curves if the error analysis is correct.  The</span>
+0067 <span class="comment">%   upper set of plots uses the bootstrapped confidence intervals, and</span>
+0068 <span class="comment">%   the lower set a 'linear' analysis.</span>
+0069 <span class="comment">%</span>
+0070 
+0071 
+0072 <span class="comment">% R. Pawlowicz 6/5/00</span>
+0073 <span class="comment">%             11/2/00 - Added linear analysis.</span>
+0074 <span class="comment">% Version 1.0</span>
+0075 
+0076 const=<a href="t_getconsts.html" class="code" title="function [const,sat,shallow]=t_getconsts(ctime);">t_getconsts</a>;
+0077 
+0078 <span class="comment">% Defaults</span>
+0079 
+0080 freqs={<span class="string">'M2'</span>,<span class="string">'K1'</span>,<span class="string">'S2'</span>};
+0081 <span class="comment">%   May Min Inc Gphase</span>
+0082 tcon=[1 .1 45 60];
+0083 t=[0:24*60];
+0084 nrun=100;
+0085 errstr=<span class="string">'.5*randn(SY)+.5*i*randn(SY)'</span>;
+0086 boota=<span class="string">'c'</span>;
+0087 
+0088 <span class="keyword">while</span> length(varargin)&gt;0,
+0089   <span class="keyword">if</span> isstr(varargin{1}),
+0090     <span class="keyword">switch</span> lower(varargin{1}(1:3)),
+0091       <span class="keyword">case</span> <span class="string">'fre'</span>,
+0092         freqs=varargin{2};
+0093       <span class="keyword">case</span> <span class="string">'tid'</span>,
+0094         tcon=varargin{2};
+0095       <span class="keyword">case</span> <span class="string">'tim'</span>,
+0096         t=varargin{2};
+0097       <span class="keyword">case</span> <span class="string">'nru'</span>,
+0098         nrun=varargin{2};
+0099       <span class="keyword">case</span> <span class="string">'err'</span>,
+0100         errstr=varargin{2};
+0101       <span class="keyword">case</span> <span class="string">'boo'</span>,
+0102         boota=varargin{2};
+0103       <span class="keyword">otherwise</span>,
+0104         error([<span class="string">'Can''t understand property:'</span> varargin{1}]);
+0105       <span class="keyword">end</span>;     
+0106     varargin([1 2])=[];
+0107   <span class="keyword">end</span>;
+0108 <span class="keyword">end</span>;
+0109 
+0110 
+0111 t=t-mean(t);
+0112 
+0113 nrunreq=length(freqs);
+0114 freq=zeros(nrunreq,1);
+0115 <span class="keyword">for</span> k=1:nrunreq,
+0116   freq(k)=const.freq(strmatch(freqs(k),const.name));
+0117 <span class="keyword">end</span>;
+0118 
+0119 <span class="keyword">if</span> size(tcon,1)==1, tcon=tcon(ones(nrunreq,1),:); <span class="keyword">end</span>;
+0120 tscmplx=1;
+0121 <span class="keyword">if</span> ~(any(tcon(:,2)) | any(tcon(:,3))), tscmplx=0;  <span class="keyword">end</span>;
+0122 
+0123 ap=(tcon(:,1)+tcon(:,2))/2;
+0124 am=(tcon(:,1)-tcon(:,2))/2;
+0125 em=(tcon(:,3)+tcon(:,4))*pi/180;
+0126 ep=(tcon(:,3)-tcon(:,4))*pi/180;
+0127 
+0128 
+0129 sm=zeros(nrunreq,8,nrun);
+0130 lm=zeros(nrunreq,8,nrun);
+0131 <span class="keyword">for</span> k=1:nrun,
+0132 
+0133   y=sum(((ap.*exp(i*ep))*ones(1,length(t))).*exp(i*2*pi*freq*t)+<span class="keyword">...</span>
+0134     ((am.*exp(i*em))*ones(1,length(t))).*exp(-i*2*pi*freq*t));
+0135   SY=size(y);
+0136 
+0137   eval([<span class="string">'y=y+'</span> errstr <span class="string">';'</span>]);
+0138 
+0139 
+0140   fprintf(<span class="string">'%d/%d\n'</span>,k,nrun);
+0141 
+0142   [nameu,fu,tidecon,xout]=<a href="t_tide.html" class="code" title="function [nameu,fu,tidecon,xout]=t_tide(xin,varargin);">t_tide</a>(y,<span class="string">'interval'</span>,t(2)-t(1),<span class="string">'output'</span>,<span class="string">'none'</span>,<span class="keyword">...</span>
+0143                                  <span class="string">'rayleigh'</span>,freqs,<span class="string">'error'</span>,[boota <span class="string">'boot'</span>]);
+0144   [nameu2,fu2,tidecon2,xout2]=<a href="t_tide.html" class="code" title="function [nameu,fu,tidecon,xout]=t_tide(xin,varargin);">t_tide</a>(y,<span class="string">'interval'</span>,t(2)-t(1),<span class="string">'output'</span>,<span class="string">'none'</span>,<span class="keyword">...</span>
+0145                                  <span class="string">'rayleigh'</span>,freqs,<span class="string">'error'</span>,<span class="string">'linear'</span>);
+0146 
+0147   I=zeros(nrunreq,1);
+0148   <span class="keyword">for</span> l=1:nrunreq,
+0149     I(l)=strmatch(freqs(l),nameu);
+0150   <span class="keyword">end</span>;
+0151 
+0152   <span class="keyword">if</span> tscmplx,
+0153     sm(:,:,k)=tidecon(I,:);
+0154     lm(:,:,k)=tidecon2(I,:);
+0155   <span class="keyword">else</span>
+0156     sm(:,[1 2 7 8],k)=tidecon(I,:);
+0157     lm(:,[1 2 7 8],k)=tidecon2(I,:);
+0158   <span class="keyword">end</span>;
+0159 <span class="keyword">end</span>;
+0160 <span class="keyword">for</span> k=1:size(sm,1),
+0161   ii=sm(k,7,:)-tcon(k,4) &gt; 180;
+0162   sm(k,7,ii)=sm(k,7,ii)-360;
+0163   ii=sm(k,7,:)-tcon(k,4) &lt; -180;
+0164   sm(k,7,ii)=sm(k,7,ii)+360;
+0165   ii=lm(k,7,:)-tcon(k,4) &gt; 180;
+0166   lm(k,7,ii)=lm(k,7,ii)-360;
+0167   ii=lm(k,7,:)-tcon(k,4) &lt; -180;
+0168   lm(k,7,ii)=lm(k,7,ii)+360;
+0169 <span class="keyword">end</span>;
+0170 
+0171 SM=sm; lbl=<span class="string">'boot'</span>;
+0172 <span class="keyword">if</span> boota==<span class="string">'c'</span>, lbl=<span class="string">'Coloured Boot'</span>; 
+0173 <span class="keyword">else</span>           lbl=<span class="string">'White Boot'</span>; <span class="keyword">end</span>;
+0174 
+0175 <span class="keyword">for</span> e=[0 4],
+0176 
+0177   <span class="keyword">if</span> e==4, SM=lm; lbl=<span class="string">'linear'</span>; <span class="keyword">end</span>;
+0178 
+0179   subplot(2,4,1+e);
+0180 
+0181   hist(squeeze(SM(:,1,:))')
+0182   SS=1.96*std(squeeze(SM(:,1,:))')';
+0183   MM=mean(squeeze(SM(:,1,:))')';
+0184   line(([MM MM]+[SS SS])',[0 nrun/5],<span class="string">'linewidth'</span>,3,<span class="string">'linest'</span>,<span class="string">'--'</span>);
+0185   line(([MM MM]-[SS SS])',[0 nrun/5],<span class="string">'linewidth'</span>,3,<span class="string">'linest'</span>,<span class="string">'--'</span>);
+0186   line((tcon(:,ones(1,nrun))+squeeze(SM(:,2,:)))',[0:nrun-1]/5);
+0187   line((tcon(:,ones(1,nrun))-squeeze(SM(:,2,:)))',[0:nrun-1]/5);
+0188   title([<span class="string">'Umajor ('</span> lbl <span class="string">')'</span>]);
+0189 
+0190   subplot(2,4,2+e);
+0191 
+0192   hist(squeeze(SM(:,3,:))')
+0193   SS=1.96*std(squeeze(SM(:,3,:))')';
+0194   MM=mean(squeeze(SM(:,3,:))')';
+0195   line(([MM MM]+[SS SS])',[0 nrun/5],<span class="string">'linewidth'</span>,3,<span class="string">'linest'</span>,<span class="string">'--'</span>);
+0196   line(([MM MM]-[SS SS])',[0 nrun/5],<span class="string">'linewidth'</span>,3,<span class="string">'linest'</span>,<span class="string">'--'</span>);
+0197   line((tcon(:,2*ones(1,nrun))+squeeze(SM(:,4,:)))',[0:nrun-1]/5);
+0198   line((tcon(:,2*ones(1,nrun))-squeeze(SM(:,4,:)))',[0:nrun-1]/5);
+0199   title([<span class="string">'Uminor ('</span> lbl <span class="string">')'</span>]);
+0200 
+0201   subplot(2,4,3+e);
+0202 
+0203   hist(squeeze(SM(:,5,:))')
+0204   SS=1.96*std(squeeze(SM(:,5,:))')';
+0205   MM=mean(squeeze(SM(:,5,:))')';
+0206   line(([MM MM]+[SS SS])',[0 nrun/5],<span class="string">'linewidth'</span>,3,<span class="string">'linest'</span>,<span class="string">'--'</span>);
+0207   line(([MM MM]-[SS SS])',[0 nrun/5],<span class="string">'linewidth'</span>,3,<span class="string">'linest'</span>,<span class="string">'--'</span>);
+0208   line((tcon(:,3*ones(1,nrun))+squeeze(SM(:,6,:)))',[0:nrun-1]/5);
+0209   line((tcon(:,3*ones(1,nrun))-squeeze(SM(:,6,:)))',[0:nrun-1]/5);
+0210   title([<span class="string">'Inclination ('</span> lbl <span class="string">')'</span>]);
+0211   xlabel(<span class="string">'              --: Actual 95% CI     -: Estimated 95% CI'</span>,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>);
+0212 
+0213   subplot(2,4,4+e);
+0214 
+0215   hist(squeeze(SM(:,7,:))')
+0216   SS=1.96*std(squeeze(SM(:,7,:))')';
+0217   MM=mean(squeeze(SM(:,7,:))')';
+0218   line(([MM MM]+[SS SS])',[0 nrun/5],<span class="string">'linewidth'</span>,3,<span class="string">'linest'</span>,<span class="string">'--'</span>);
+0219   line(([MM MM]-[SS SS])',[0 nrun/5],<span class="string">'linewidth'</span>,3,<span class="string">'linest'</span>,<span class="string">'--'</span>);
+0220   line((tcon(:,4*ones(1,nrun))+squeeze(SM(:,8,:)))',[0:nrun-1]/5);
+0221   line((tcon(:,4*ones(1,nrun))-squeeze(SM(:,8,:)))',[0:nrun-1]/5);
+0222   title([<span class="string">'G-phase ('</span> lbl <span class="string">')'</span>]);
+0223 
+0224 <span class="keyword">end</span>;
+0225 
+0226 <span class="keyword">if</span> nargout==0,
+0227  clear sm lm tcon
+0228 <span class="keyword">end</span>;
+0229 
+0230 
+0231 <span class="comment">%----------------------------------------------------------------------</span>
+0232 <a name="_sub1" href="#_subfunctions" class="code">function A=colrand(SY,slp)</a>
+0233 <span class="comment">% COLRAND generates coloured noise</span>
+0234 <span class="comment">% Version 1.0</span>
+0235 
+0236 lSY=max(SY);
+0237 f=[1 1:floor(lSY/2) -ceil(lSY/2)+1:-1]/(lSY);
+0238 x=randn(SY);
+0239 x2=(abs(f).^slp).*fft(x);
+0240 A=real(ifft(x2));
+0241 A=A/std(A);
+0242 
+0243 <span class="comment">%%plot([1:max(SY)]',[x' A']);</span>
+0244 
+0245 
+0246 
+0247 
+0248</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

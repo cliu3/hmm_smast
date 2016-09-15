@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_ge_screenoverlay</title>
+  <meta name="keywords" content="demo_ge_screenoverlay">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="../index.html">matlab</a> &gt; <a href="index.html">demo</a> &gt; demo_ge_screenoverlay.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/googleearthtoolbox/matlab/demo&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>demo_ge_screenoverlay
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function demo_ge_screenoverlay() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_plot.html" class="code" title="function output = ge_plot(X,Y,varargin)">ge_plot</a>	Reference page in help browser:</li><li><a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_screenoverlay.html" class="code" title="function output = ge_overlay(filename,varargin)">ge_screenoverlay</a>	Reference page in help browser:</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function write_image(filename,transpColor,alphaValue)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function demo_ge_screenoverlay()</a>
+0002 
+0003 folderName = fullfile(pwd,<span class="string">'png'</span>);
+0004 
+0005 promptStr = [<span class="string">'Do you want to create a directory '</span>,char(39),<span class="string">'png'</span>,char(39),<span class="keyword">...</span>
+0006     <span class="string">' in the current directory? Y/N [Y]: '</span>];
+0007 reply = input(promptStr, <span class="string">'s'</span>);
+0008 <span class="keyword">if</span> isempty(reply)
+0009     reply = <span class="string">'Y'</span>;
+0010 <span class="keyword">end</span>
+0011 
+0012 <span class="keyword">if</span> strcmpi(reply,<span class="string">'Y'</span>)
+0013     mkdir(folderName)
+0014 <span class="keyword">else</span>
+0015     disp(<span class="string">'User abort.'</span>)
+0016     <span class="keyword">return</span>
+0017 <span class="keyword">end</span>
+0018 
+0019 nFrames = 20;
+0020 sizeLeft = 0;
+0021 sizeBottom = 0;
+0022 sizeWidth = 0.35;
+0023 sizeHeight = 0.3;
+0024 
+0025 tIndex = datenum(now);
+0026 
+0027 kmlStr = <span class="string">''</span>;
+0028 
+0029 
+0030 figure(<span class="string">'InvertHardCopy'</span>,<span class="string">'off'</span>,<span class="string">'color'</span>,0.8*[1,1,1])
+0031 hAx = subplot(1,1,1);
+0032 set(hAx,<span class="string">'lineWidth'</span>,2,<span class="string">'fontsize'</span>,16)
+0033 box on
+0034 <span class="keyword">for</span> iFrame = 2:nFrames
+0035 
+0036     x = -pi:.1:pi;
+0037     y = sin(x-(iFrame/nFrames));
+0038 
+0039     plot(x,y,<span class="string">'linewidth'</span>,2)
+0040     set(gca,<span class="string">'XLim'</span>,[-4,4],<span class="string">'YLim'</span>,[-1,1])
+0041     <span class="comment">%hold on;</span>
+0042     stampFileName = [folderName,filesep,<span class="string">'sine_t='</span>,num2str(iFrame,<span class="string">'%02d'</span>),<span class="string">'.png'</span>];
+0043     
+0044     <a href="#_sub1" class="code" title="subfunction write_image(filename,transpColor,alphaValue)">write_image</a>(stampFileName,[],0.9);
+0045 
+0046     tStart = datestr(tIndex+iFrame-1,<span class="string">'yyyy-mm-ddTHH:MM:SSZ'</span>);
+0047     tStop  = datestr(tIndex+iFrame,<span class="string">'yyyy-mm-ddTHH:MM:SSZ'</span>);
+0048 
+0049     kmlStr = [kmlStr,<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_plot.html" class="code" title="function output = ge_plot(X,Y,varargin)">ge_plot</a>(x,y,<span class="string">'timeSpanStart'</span>,tStart,<span class="keyword">...</span>
+0050                                  <span class="string">'timeSpanStop'</span>,tStop)];
+0051 
+0052 
+0053     kmlStr = [kmlStr,<a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_screenoverlay.html" class="code" title="function output = ge_overlay(filename,varargin)">ge_screenoverlay</a>(stampFileName,<span class="keyword">...</span>
+0054                                   <span class="string">'sizeLeft'</span>,sizeLeft,<span class="keyword">...</span>
+0055                                   <span class="string">'sizeLeftUnits'</span>,<span class="string">'fraction'</span>,<span class="keyword">...</span>
+0056                                   <span class="string">'sizeBottom'</span>,sizeBottom,<span class="keyword">...</span>
+0057                                   <span class="string">'sizeBottomUnits'</span>,<span class="string">'fraction'</span>,<span class="keyword">...</span>
+0058                                   <span class="string">'sizeWidth'</span>,sizeWidth,<span class="keyword">...</span>
+0059                                   <span class="string">'sizeWidthUnits'</span>,<span class="string">'fraction'</span>,<span class="keyword">...</span>
+0060                                   <span class="string">'sizeHeight'</span>,sizeHeight,<span class="keyword">...</span>
+0061                                   <span class="string">'sizeHeightUnits'</span>,<span class="string">'fraction'</span>,<span class="keyword">...</span>
+0062                                   <span class="string">'timeSpanStart'</span>,tStart,<span class="keyword">...</span>
+0063                                   <span class="string">'timeSpanStop'</span>,tStop)];
+0064 
+0065 <span class="keyword">end</span>
+0066 
+0067 kmlStr = <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(<span class="string">'graph tests'</span>, kmlStr);
+0068 <a href="../../../../../hmm_smast/dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>(<span class="string">'demo_ge_screenoverlay.kml'</span>,kmlStr);
+0069 
+0070 
+0071 <a name="_sub1" href="#_subfunctions" class="code">function write_image(filename,transpColor,alphaValue)</a>
+0072 F = getframe(gcf);
+0073 
+0074 <span class="comment">% [X,Map] = frame2im(F);</span>
+0075 <span class="keyword">if</span> isempty(transpColor)
+0076     IO = zeros(size(F.cdata(:,:,1)));
+0077 <span class="keyword">else</span>
+0078     IO = F.cdata(:,:,1)==transpColor(1)&amp;<span class="keyword">...</span>
+0079          F.cdata(:,:,2)==transpColor(2)&amp;<span class="keyword">...</span>
+0080          F.cdata(:,:,1)==transpColor(3);
+0081 <span class="keyword">end</span>
+0082 
+0083 xAlpha = double(~IO*alphaValue);
+0084 imwrite(F.cdata,filename,<span class="string">'png'</span>,<span class="string">'Alpha'</span>,xAlpha);</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

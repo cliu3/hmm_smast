@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of run_tag</title>
+  <meta name="keywords" content="run_tag">
+  <meta name="description" content="clear all;">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">tbworkdir</a> &gt; run_tag.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/tbworkdir&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>run_tag
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>clear all;</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">clear all;
+close all;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../hmm_smast/datalik/datalikelihood.html" class="code" title="function datalikelihood(tagno,type,iter,recap,z_off_bottom)">datalikelihood</a>	figure</li><li><a href="../../hmm_smast/datalik/likelihood_cliu.html" class="code" title="function likelihood_cliu(fish_no,path_to_tags,tagname)">likelihood_cliu</a>	Construction of likelihood function after (Le Bris et al, 2013 eq (2))</li><li><a href="../../hmm_smast/datalik/tidal_rmse_cliu.html" class="code" title="function tidal_rmse_cliu(fish_no,path_to_tags,tagname)">tidal_rmse_cliu</a>	Perform longer tidal fit to determine low activity days and perform tidal</li><li><a href="../../hmm_smast/dataprocessing/tidebehavextr.html" class="code" title="function tidebehavextr(tagno,tideFL,tideLV,behavFL,behavLV,DBname)">tidebehavextr</a>	TIDEBEHAVEXTR  Extract tidal and behaviour information from a raw data file.</li><li><a href="../../hmm_smast/datastripper/smast_datastrip.html" class="code" title="function smast_datastrip(tagdata,dt)">smast_datastrip</a>	close all; clear all;</li><li><a href="../../hmm_smast/filter/hmmgeolocate.html" class="code" title="function hmmgeolocate(tagno,mode,viewres,Duser,ext,GEN)">hmmgeolocate</a>	HMMGEOLOCATE  Obtain geolocation by filtering preprocessed data</li><li><a href="../../hmm_smast/postprocessing/avimaker.html" class="code" title="function avimaker(tagno,o)">avimaker</a>	AVIMAKER  Create an avi-file in based on a geolocation result.</li><li><a href="../../hmm_smast/postprocessing/mptrack.html" class="code" title="function [mpt] = mptrack(tagno)">mptrack</a>	MPTRACK  Find the Most Probable Track.</li><li><a href="../../hmm_smast/postprocessing/plottrack.html" class="code" title="function [handle] = plottrack(track,linsty,pltyp,opttrack,clean)">plottrack</a>	PLOTTRACK  Plot a track (eg. mpt or sampled track)</li><li><a href="../../hmm_smast/postprocessing/write_ge_track_UD.html" class="code" title="function write_ge_track_UD(tagno)">write_ge_track_UD</a>	write the most probably track to a google earth file</li><li><a href="../../hmm_smast/tidaldatabase/gen_tidaldb_draft.html" class="code" title="function gen_tidaldb(lonmin,lonmax,latmin,latmax,delta)">gen_tidaldb_draft</a>	lonmin=-71;lonmax=-66;latmin=39;latmax=44;delta=.1;</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%clear all;</span>
+0002 <span class="comment">%close all;</span>
+0003 addpath(genpath(<span class="string">'../'</span>));
+0004 <span class="comment">%addpath(genpath('../../preprocess/'));</span>
+0005 <span class="comment">%addpath('/opt/matlab/googleearth');</span>
+0006 
+0007 <span class="keyword">global</span> fvcom_tidaldb <span class="comment">% path to fvcom tidal database</span>
+0008 fvcom_tidaldb = <span class="string">'../../preprocess/gen_tidal_db/fvcomdb_gom3_v2.mat'</span>;
+0009 <span class="keyword">global</span> bottom_temperature  <span class="comment">% path to fvcom bottom temperature</span>
+0010 bottom_temperature   = <span class="string">'../../bottom_temperature/gom3_btemp_davged_2003_2013.nc'</span>;
+0011 
+0012 ptags = [12,22,24,55,56];
+0013 
+0014 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0015 <span class="comment">% tag-specific paremeters  %</span>
+0016 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0017 <span class="keyword">global</span> std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu
+0018 std_temp_offset=2.0; <span class="comment">%higher value is more inclusive</span>
+0019 tag_depth_range = 250; <span class="comment">% in meters</span>
+0020 tag_depth_accu = 0.008; <span class="comment">% fraction of depth renge</span>
+0021 tag_temp_accu = 0.1; <span class="comment">% in degree C</span>
+0022 
+0023 <span class="comment">%ptags = [12,22,24,55,56];</span>
+0024 ptags = 11;
+0025 
+0026 tag_num_range = ptags;
+0027 
+0028 <span class="keyword">global</span> tideLV
+0029 <span class="comment">% tideLV  = [RMSE upper bound, R^2 lower bound, AMPLITUDE lower, AMPLITUDE upper]</span>
+0030 tideLV  = [0.42 0.85 0.2 2.0];
+0031 
+0032 <span class="comment">% main loop over tags</span>
+0033 <span class="keyword">for</span> tag_num=tag_num_range
+0034     clear tag;
+0035     clear mpt;
+0036     
+0037     
+0038     
+0039     recap = <span class="string">'yes'</span>;  <span class="comment">%yes/no, use/do not use the recapture info</span>
+0040     <span class="comment">%if the uncertainty &lt; 0 , this will automatically be disabled</span>
+0041     
+0042     z_off_bottom = 20.0; <span class="comment">%max off-bottom extent in meters</span>
+0043     <span class="comment">%set to -99.0 to use original Petersen likelihood estimator</span>
+0044     
+0045     <span class="comment">%do_parts = 6;</span>
+0046     
+0047     do_parts(1) = 1; <span class="comment">%1 generate a new tidaldb, =0 use tidaldb.mat</span>
+0048     do_parts(2) = 1; <span class="comment">%2 strip</span>
+0049     do_parts(3) = 1; <span class="comment">%3 behavior</span>
+0050     do_parts(4) = 1; <span class="comment">%4 likelihood</span>
+0051     do_parts(5) = 1; <span class="comment">%5 cliu likelihood &amp; tidal constraint</span>
+0052     do_parts(6) = 1; <span class="comment">%6 geolocate</span>
+0053     do_parts(7) = 1; <span class="comment">%7 most probable track</span>
+0054     do_parts(8) = 0; <span class="comment">%8 make a movie</span>
+0055     
+0056     fast_likelihood = 1; <span class="comment">%=1 use fast scheme, =0 use more accurate scheme</span>
+0057     
+0058     tagname = [num2str(tag_num) <span class="string">'_raw'</span>];
+0059     
+0060     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0061     <span class="comment">%%% generate the tidal database                                    %%%</span>
+0062     <span class="comment">%%% only run the command if the raw tidal database (harmonics)     %%%</span>
+0063     <span class="comment">%%% have been changed or you wish to change the lon/lat bounds     %%%</span>
+0064     <span class="comment">%%% or resolution</span>
+0065     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0066     
+0067     <span class="keyword">if</span>(do_parts(1)==1);
+0068         <span class="comment">%  gen_tidaldb(-71,-70,42,43,.02,{'M2','S2','N2','K1','O1'}); %for fixed tags</span>
+0069         <span class="comment">%gen_tidaldb(-71,-66,40,45,.015,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM</span>
+0070         <span class="comment">%gen_tidaldb(-71,-66,40,45,.05,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM</span>
+0071         <span class="comment">%readdb</span>
+0072         <span class="comment">%finddbvars</span>
+0073         <a href="../../hmm_smast/tidaldatabase/gen_tidaldb_draft.html" class="code" title="function gen_tidaldb(lonmin,lonmax,latmin,latmax,delta)">gen_tidaldb_draft</a>(-71,-66,40,45,.01);
+0074         
+0075     <span class="keyword">end</span>;
+0076     
+0077     
+0078     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0079     <span class="comment">%%% Read in the raw data file from an SMAST-format tag             %%%</span>
+0080     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0081     path_to_tags = <span class="string">'~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/'</span> ;
+0082     fprintf(<span class="string">'loading %s\n'</span>,[path_to_tags tagname]);
+0083     <span class="keyword">if</span>(exist([path_to_tags tagname <span class="string">'.mat'</span>]))
+0084         
+0085         load([path_to_tags tagname]);
+0086         
+0087         tagid = [num2str(tag_num) <span class="string">'_'</span> tag.tag_id];
+0088         
+0089         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0090         <span class="comment">%%% Subsample the tag data and shift to hmm time                   %%%</span>
+0091         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0092         <span class="keyword">if</span>(do_parts(2)==1)
+0093             <a href="../../hmm_smast/datastripper/smast_datastrip.html" class="code" title="function smast_datastrip(tagdata,dt)">smast_datastrip</a>(tag)
+0094         <span class="keyword">end</span>;
+0095         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0096         <span class="comment">%%% Extract tidal and behaviour information from rawXXXX.mat       %%%</span>
+0097         <span class="comment">%%% tagdataxxxx.mat is created                                     %%%</span>
+0098         <span class="comment">% tidebehavextr(tagno,tideFL,tideLV,behavFL,behavLV,DBname)</span>
+0099         <span class="comment">%</span>
+0100         <span class="comment">%   inputs:</span>
+0101         <span class="comment">%      tidFL is the length of the fitting interval in hours (def=10)</span>
+0102         <span class="comment">%      tideLV - goodness of fit thresholds for detecting tide</span>
+0103         <span class="comment">%            [RMSE, R^2, AMPLITUDE]:  def = [0.42 0.85 0.6]</span>
+0104         <span class="comment">%              fit is found if criteria are met:</span>
+0105         <span class="comment">%                  rmse_computed &lt; RMSE</span>
+0106         <span class="comment">%                  r^2_computed  &gt; R^2</span>
+0107         <span class="comment">%                  amp_computed  &gt; AMPLITUDE</span>
+0108         <span class="comment">%      behavFL lenght of fitting interval for behaviour - 16</span>
+0109         <span class="comment">%      behavLV - goodness of fit thresholds for detecting behavior</span>
+0110         <span class="comment">%            [RMSE, R^2, AMPLITUDE]:  def = [0.42 0.85 0.6]</span>
+0111         <span class="comment">%      dbname - alternate tidal base: def = tidaldb.mat</span>
+0112         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0113         <span class="keyword">if</span>(do_parts(3)==1)
+0114             <a href="../../hmm_smast/dataprocessing/tidebehavextr.html" class="code" title="function tidebehavextr(tagno,tideFL,tideLV,behavFL,behavLV,DBname)">tidebehavextr</a>(tagid,10,tideLV,16,tideLV);  <span class="comment">%default</span>
+0115         <span class="keyword">end</span>;
+0116         <span class="comment">%tidebehavextr(tagid);</span>
+0117         <span class="comment">% make strict criteria so no tide is found</span>
+0118         <span class="comment">%tidebehavextr(tagid,10,[0.1 0.99 0.2],16,[0.1 0.99 0.2]);</span>
+0119         
+0120         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0121         <span class="comment">%%% Calculate the datalikelihood using the tidal database          %%%</span>
+0122         <span class="comment">%%% datalikelihoodxxxx.mat is created                              %%%</span>
+0123         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0124         <span class="keyword">if</span>(do_parts(4)==1)
+0125             <span class="comment">% manually override a recap='on' if there is no recap [lon/lat]</span>
+0126             <span class="keyword">if</span> (tag.recap_uncertainty_km&lt;0)
+0127                 recap=<span class="string">'no'</span>;
+0128                 fprintf(<span class="string">'============setting recap to NO\n'</span>);
+0129             <span class="keyword">end</span>;
+0130             
+0131             <span class="keyword">if</span>(fast_likelihood)
+0132                 <a href="../../hmm_smast/datalik/datalikelihood.html" class="code" title="function datalikelihood(tagno,type,iter,recap,z_off_bottom)">datalikelihood</a>(tagid,<span class="string">'fast'</span>, <span class="string">'on'</span>,recap,z_off_bottom);
+0133             <span class="keyword">else</span>
+0134                 <a href="../../hmm_smast/datalik/datalikelihood.html" class="code" title="function datalikelihood(tagno,type,iter,recap,z_off_bottom)">datalikelihood</a>(tagid,<span class="string">'full'</span>, <span class="string">'on'</span>,recap,z_off_bottom);
+0135             <span class="keyword">end</span>;
+0136             
+0137         <span class="keyword">end</span>;
+0138         
+0139         <span class="keyword">if</span>(do_parts(5)==1)
+0140             <a href="../../hmm_smast/datalik/likelihood_cliu.html" class="code" title="function likelihood_cliu(fish_no,path_to_tags,tagname)">likelihood_cliu</a>(tag_num,path_to_tags,tagname)
+0141             <a href="../../hmm_smast/datalik/tidal_rmse_cliu.html" class="code" title="function tidal_rmse_cliu(fish_no,path_to_tags,tagname)">tidal_rmse_cliu</a>(tag_num,path_to_tags,tagname)
+0142         <span class="keyword">end</span>
+0143         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0144         <span class="comment">%%% Geolocate the tag                                              %%%</span>
+0145         <span class="comment">%%% resultxxxx.mat is created                                      %%%</span>
+0146         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0147         <span class="keyword">if</span>(do_parts(6)==1)
+0148             <span class="comment">%hmmgeolocate(tagid,2,'on',[],true)</span>
+0149             <span class="comment">%hmmgeolocate(tagid,2,'on',[10. 100.]);</span>
+0150             <a href="../../hmm_smast/filter/hmmgeolocate.html" class="code" title="function hmmgeolocate(tagno,mode,viewres,Duser,ext,GEN)">hmmgeolocate</a>(tagid,2,<span class="string">'on'</span>,[1.,10.]);
+0151         <span class="keyword">end</span>;
+0152         
+0153         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0154         <span class="comment">%%% Find the most probable track of the fish                       %%%</span>
+0155         <span class="comment">%%% mptxxxx.mat is created                                         %%%</span>
+0156         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0157         <span class="keyword">if</span>(do_parts(7)==1)
+0158             mpt=<a href="../../hmm_smast/postprocessing/mptrack.html" class="code" title="function [mpt] = mptrack(tagno)">mptrack</a>(tagid);
+0159             
+0160             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0161             <span class="comment">%%% Plot the most probable track                                   %%%</span>
+0162             <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0163             close all
+0164             <a href="../../hmm_smast/postprocessing/plottrack.html" class="code" title="function [handle] = plottrack(track,linsty,pltyp,opttrack,clean)">plottrack</a>(mpt);
+0165             <span class="comment">%write_ge_track(mpt);</span>
+0166             <a href="../../hmm_smast/postprocessing/write_ge_track_UD.html" class="code" title="function write_ge_track_UD(tagno)">write_ge_track_UD</a>(tagid)
+0167         <span class="keyword">end</span>;
+0168         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0169         <span class="comment">%%% Create an avi file that shows how the probability distribution %%%</span>
+0170         <span class="comment">%%% evolves in time                                                %%%</span>
+0171         <span class="comment">%%% geolocationxxxx.avi is created                                 %%%</span>
+0172         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0173         <span class="keyword">if</span>(do_parts(8)==1)
+0174             <span class="comment">%write_ge_track_UD(tagid)</span>
+0175             pause on;close all;
+0176             <a href="../../hmm_smast/postprocessing/avimaker.html" class="code" title="function avimaker(tagno,o)">avimaker</a>(tagid)
+0177         <span class="keyword">end</span>
+0178     <span class="keyword">else</span>
+0179         error(<span class="string">'tag file does not exist, stopping...'</span>);
+0180     <span class="keyword">end</span>;
+0181 <span class="keyword">end</span>;
+0182 <span class="comment">%return</span>
+0183</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

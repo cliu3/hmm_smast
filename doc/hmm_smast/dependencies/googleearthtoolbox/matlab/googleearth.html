@@ -1,0 +1,297 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of googleearth</title>
+  <meta name="keywords" content="googleearth">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; googleearth.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>googleearth
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function googleearth(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="googleearth.html" class="code" title="function googleearth(varargin)">googleearth</a>	</li><li><a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>	</li><li><a href="indexed2hexcolor.html" class="code" title="function [r,g,b]=indexed2hexcolor(indColor)">indexed2hexcolor</a>	</li><li><a href="uimatlab.html" class="code" title="function uiIsMatLab = uimatlab">uimatlab</a>	</li><li><a href="uioctave.html" class="code" title="function uiIsOctave = uioctave">uioctave</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="googleearth.html" class="code" title="function googleearth(varargin)">googleearth</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function googleearth(varargin)</a>
+0002 
+0003 <span class="keyword">if</span> nargin==0
+0004     <span class="keyword">if</span> <a href="uimatlab.html" class="code" title="function uiIsMatLab = uimatlab">uimatlab</a>
+0005         disp([<span class="string">'% Correct usage is one of:'</span>,char(10),<span class="keyword">...</span>
+0006               <span class="string">'%  &gt;&gt; googleearth -docinstall'</span>,char(10),<span class="keyword">...</span>
+0007               <span class="string">'%  &gt;&gt; googleearth -setbrowser'</span>,char(10),<span class="keyword">...</span>
+0008               <span class="string">'%  &gt;&gt; googleearth -version'</span>,char(10)])
+0009     <span class="keyword">elseif</span> <a href="uioctave.html" class="code" title="function uiIsOctave = uioctave">uioctave</a>
+0010         disp([<span class="string">'% Correct usage is one of:'</span>,char(10),<span class="keyword">...</span>
+0011               <span class="string">'%  &gt;&gt; googleearth('</span>,char(39),<span class="string">'-docinstall'</span>,char(39),<span class="string">')'</span>,char(10),<span class="keyword">...</span>
+0012               <span class="string">'%  &gt;&gt; googleearth('</span>,char(39),<span class="string">'-setbrowser'</span>,char(39),<span class="string">')'</span>,char(10),<span class="keyword">...</span>
+0013               <span class="string">'%  &gt;&gt; googleearth('</span>,char(39),<span class="string">'-version'</span>,char(39),<span class="string">')'</span>])
+0014     <span class="keyword">else</span>
+0015         disp(<span class="string">'Unknown development environment.'</span>)
+0016     <span class="keyword">end</span>
+0017         
+0018     <span class="keyword">return</span>
+0019 <span class="keyword">end</span>
+0020 
+0021 <span class="keyword">switch</span> varargin{1}
+0022     <span class="keyword">case</span> <span class="string">'-docinstall'</span>
+0023         
+0024         <a href="googleearth.html" class="code" title="function googleearth(varargin)">googleearth</a>(<span class="string">'-withdemos'</span>)
+0025         
+0026         <span class="keyword">try</span>
+0027             <a href="googleearth.html" class="code" title="function googleearth(varargin)">googleearth</a> -versionFileForceChange
+0028         <span class="keyword">catch</span>
+0029             warning(<span class="string">'Non-fatal error during version file update.'</span>)
+0030         <span class="keyword">end</span>
+0031         
+0032         <span class="keyword">try</span>
+0033             <span class="keyword">try</span>
+0034 
+0035                 fid=fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'info.xml.template'</span>),<span class="string">'r'</span>);
+0036                 textInfoXML=<span class="string">''</span>;
+0037                 <span class="keyword">while</span> true
+0038                     tline = fgets(fid);
+0039                     <span class="keyword">if</span> ischar(tline)
+0040                         textInfoXML = [textInfoXML,tline];
+0041                     <span class="keyword">else</span>
+0042                         <span class="keyword">break</span>
+0043                     <span class="keyword">end</span>
+0044                 <span class="keyword">end</span>
+0045                 fclose(fid);
+0046 
+0047                 fid=fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'info.xml'</span>),<span class="string">'wt'</span>);
+0048                 fprintf(fid,textInfoXML,<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>);
+0049                 fclose(fid);
+0050 
+0051             <span class="keyword">catch</span>
+0052                 warning(<span class="string">'GoogleEarth:writing_of_info_file'</span>,<span class="keyword">...</span>
+0053                     [<span class="string">'An error occurred during writing '</span>,<span class="keyword">...</span>
+0054                     <span class="string">'of googleearth '</span>,char(39),<span class="keyword">...</span>
+0055                     <span class="string">'info.xml'</span>,char(39),<span class="string">' file'</span>])
+0056             <span class="keyword">end</span>
+0057 
+0058             <span class="comment">% % % % % % % % % % % % info.xml is written</span>
+0059 
+0060             <span class="keyword">try</span>
+0061 
+0062                 fid=fopen(fullfile(prefdir,<span class="string">'matlab.prf'</span>),<span class="string">'r'</span>);
+0063                 C = textscan(fid, <span class="string">'%s'</span>,<span class="string">'delimiter'</span>,<span class="string">'\r'</span>);
+0064                 fclose(fid);
+0065 
+0066                 Colors_M_CommentsStr = <span class="string">'228B22'</span>;
+0067                 Colors_M_StringsStr = <span class="string">'A020F0'</span>;
+0068                 Colors_M_KeywordsStr = <span class="string">'0000FF'</span>;
+0069                 Colors_M_SystemCommandsStr = <span class="string">'B28C00'</span>;
+0070 
+0071                 <span class="keyword">for</span> k=1:numel(C{1})
+0072                     <span class="keyword">try</span>
+0073                         MatlabVarName = strread(C{1}{k},<span class="string">'%[^=]'</span>,1);
+0074                         
+0075                         <span class="keyword">switch</span> MatlabVarName{1}
+0076                             <span class="keyword">case</span> <span class="string">'Colors_M_Comments'</span>
+0077                                 indColor = strread(C{1}{k},<span class="string">'%*[^=]%*[=]%s'</span>,1);
+0078                                 [r,g,b]=<a href="indexed2hexcolor.html" class="code" title="function [r,g,b]=indexed2hexcolor(indColor)">indexed2hexcolor</a>(indColor{1});
+0079                                 Colors_M_CommentsStr =<span class="keyword">...</span>
+0080                                     [dec2hex(r,2),dec2hex(g,2),dec2hex(b,2)];
+0081                             <span class="keyword">case</span> <span class="string">'Colors_M_Strings'</span>
+0082                                 indColor = strread(C{1}{k},<span class="string">'%*[^=]%*[=]%s'</span>,1);
+0083                                 [r,g,b]=<a href="indexed2hexcolor.html" class="code" title="function [r,g,b]=indexed2hexcolor(indColor)">indexed2hexcolor</a>(indColor{1});
+0084                                 Colors_M_StringsStr =<span class="keyword">...</span>
+0085                                     [dec2hex(r,2),dec2hex(g,2),dec2hex(b,2)];
+0086                             <span class="keyword">case</span> <span class="string">'Colors_M_Keywords'</span>
+0087                                 indColor = strread(C{1}{k},<span class="string">'%*[^=]%*[=]%s'</span>,1);
+0088                                 [r,g,b]=<a href="indexed2hexcolor.html" class="code" title="function [r,g,b]=indexed2hexcolor(indColor)">indexed2hexcolor</a>(indColor{1});
+0089                                 Colors_M_KeywordsStr =<span class="keyword">...</span>
+0090                                     [dec2hex(r,2),dec2hex(g,2),dec2hex(b,2)];
+0091                             <span class="keyword">case</span> <span class="string">'Colors_M_SystemCommands'</span>
+0092                                 indColor = strread(C{1}{k},<span class="string">'%*[^=]%*[=]%s'</span>,1);
+0093                                 [r,g,b]=<a href="indexed2hexcolor.html" class="code" title="function [r,g,b]=indexed2hexcolor(indColor)">indexed2hexcolor</a>(indColor{1});
+0094                                 Colors_M_SystemCommandsStr =<span class="keyword">...</span>
+0095                                     [dec2hex(r,2),dec2hex(g,2),dec2hex(b,2)];
+0096                         <span class="keyword">end</span>
+0097                     <span class="keyword">catch</span>
+0098                         warning(<span class="string">'Error while parsing matlab preferences file.'</span>)
+0099                     <span class="keyword">end</span>
+0100                 <span class="keyword">end</span>
+0101 
+0102                 disp(<span class="string">'Adopting user-customized styles for documentation files...'</span>)
+0103                 
+0104                 fid=fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'html'</span>,<span class="string">'styles'</span>,<span class="keyword">...</span>
+0105                     <span class="string">'ge_styles.css.template'</span>),<span class="string">'r'</span>);
+0106                 textStylesCSS=<span class="string">''</span>;
+0107                 <span class="keyword">while</span> true
+0108                     tline = fgets(fid);
+0109                     <span class="keyword">if</span> ischar(tline)
+0110                         textStylesCSS = [textStylesCSS,tline];
+0111                     <span class="keyword">else</span>
+0112                         <span class="keyword">break</span>
+0113                     <span class="keyword">end</span>
+0114                 <span class="keyword">end</span>
+0115                 fclose(fid);
+0116 
+0117                 fid=fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'html'</span>,<span class="string">'styles'</span>,<span class="keyword">...</span>
+0118                     <span class="string">'ge_styles.css'</span>),<span class="string">'wt'</span>);
+0119                 fprintf(fid,textStylesCSS,<span class="keyword">...</span>
+0120                     Colors_M_CommentsStr,<span class="keyword">...</span>
+0121                     Colors_M_StringsStr,<span class="keyword">...</span>
+0122                     Colors_M_KeywordsStr,<span class="keyword">...</span>
+0123                     Colors_M_SystemCommandsStr);
+0124                 fclose(fid);
+0125                 
+0126                 disp([char(8),<span class="string">'Done.'</span>])                
+0127 
+0128             <span class="keyword">catch</span>
+0129                 warning(<span class="string">'googleearth:writing_of_styles_file'</span>,<span class="keyword">...</span>
+0130                     [<span class="string">'An error occurred during writing '</span>,<span class="keyword">...</span>
+0131                     <span class="string">'of googleearth '</span>,char(39),<span class="keyword">...</span>
+0132                     <span class="string">'ge_styles.css'</span>,char(39),<span class="string">' file...Proceeding.'</span>])
+0133 
+0134             <span class="keyword">end</span>
+0135             
+0136             <span class="keyword">if</span> <a href="uimatlab.html" class="code" title="function uiIsMatLab = uimatlab">uimatlab</a>
+0137                 msg1 = [char(10),<span class="string">'Click on the MATLAB '</span>,<span class="keyword">...</span>
+0138                     <span class="string">'Start button-&gt;Desktop Tools-&gt;View Source Files...'</span>,<span class="keyword">...</span>
+0139                     char(10),<span class="string">'...and click Refresh Start Button.'</span>];
+0140                 msg2 = [<span class="string">'Click on the MATLAB '</span>,<span class="keyword">...</span>
+0141                     <span class="string">'Start button-&gt;Desktop Tools-&gt;View Start Button Configuration Files...'</span>,<span class="keyword">...</span>
+0142                     char(10),<span class="string">'...and click Refresh Start Button.'</span>];
+0143                 <span class="keyword">try</span>
+0144                     versionNumber = strread(versionStr,<span class="string">'%3f'</span>,1);
+0145                 <span class="keyword">catch</span>
+0146                     versionNumber = 7.2;
+0147                 <span class="keyword">end</span>
+0148                 <span class="keyword">if</span> versionNumber&lt;=7.2
+0149                     disp(msg1)
+0150                 <span class="keyword">else</span>
+0151                     disp(msg2)                
+0152                 <span class="keyword">end</span>
+0153             <span class="keyword">end</span>
+0154         <span class="keyword">catch</span>
+0155         <span class="keyword">end</span>
+0156     <span class="keyword">case</span> <span class="string">'-withdemos'</span>
+0157         disp(<span class="string">'Adding ''demo'' folder to the path...'</span>)
+0158         addpath(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'demo'</span>))
+0159         disp([char(8),<span class="string">'Done.'</span>])
+0160         
+0161     <span class="keyword">case</span> <span class="string">'-setbrowser'</span>
+0162         
+0163         fid = fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'browsercall.txt'</span>),<span class="string">'r'</span>);
+0164         callStr = fgetl(fid);
+0165         fclose(fid);
+0166 
+0167         <span class="keyword">if</span> isempty(callStr) 
+0168             disp([<span class="string">'No browser call has been set yet.'</span>])
+0169         <span class="keyword">else</span>
+0170             disp([<span class="string">'The browser call is currently set to: '</span>,char(10),callStr])
+0171         <span class="keyword">end</span>
+0172 
+0173         loop=true;
+0174         <span class="keyword">while</span> loop 
+0175             strQ1 = [<span class="string">'Would you like to change the browser launch call?'</span>,char(10),<span class="keyword">...</span>
+0176                 <span class="string">'yes : [y]  '</span>,char(10),<span class="keyword">...</span>
+0177                 <span class="string">'no  : [n] or [Enter]'</span>,char(10),<span class="string">'&gt;&gt; '</span>];
+0178             strA1 = input(strQ1, <span class="string">'s'</span>);
+0179             <span class="keyword">if</span> isempty(strA1)|strcmp(strA1,<span class="string">'n'</span>)
+0180                 strA1 = <span class="string">'n'</span>;
+0181                 loop=false;
+0182             <span class="keyword">elseif</span> strcmp(strA1,<span class="string">'y'</span>)
+0183                 loop=false;
+0184             <span class="keyword">else</span>
+0185                 loop=true;
+0186                 disp(repmat(char(8),[1,numel(strQ1)+2+numel(strA1)]))
+0187             <span class="keyword">end</span>
+0188 
+0189         <span class="keyword">end</span>
+0190 
+0191         <span class="keyword">if</span> strcmp(strA1,<span class="string">'y'</span>)
+0192 
+0193             strQ2 = [<span class="string">'Type the call to launch your browser'</span>,char(10),<span class="keyword">...</span>
+0194                      <span class="string">'&gt;&gt; '</span>];
+0195             strA2 = input(strQ2, <span class="string">'s'</span>);
+0196             fid = fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'browsercall.txt'</span>),<span class="string">'wt'</span>);
+0197             fprintf(fid,<span class="string">'%s'</span>,strA2);
+0198             fclose(fid);
+0199 
+0200             disp(<span class="string">'Browser launch call has been reset.'</span>)
+0201         <span class="keyword">else</span>
+0202             disp(<span class="string">'Browser launch call has not been reset.'</span>)
+0203         <span class="keyword">end</span>
+0204         
+0205     <span class="keyword">case</span> <span class="string">'-version'</span>
+0206         fid=fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'version-info.txt'</span>),<span class="string">'rt'</span>);
+0207         s=fgetl(fid);
+0208         s=fgetl(fid);
+0209         s=fgetl(fid);
+0210         C=textscan(s,<span class="string">'This the GoogleEarth Toolbox for MATLAB Revision $LastChangedRevision: %n'</span>);
+0211         v=C{1}; 
+0212         fclose(fid);
+0213         disp([char(10),<span class="string">'GoogleEarth Toolbox for MATLAB (revision '</span>,<span class="keyword">...</span>
+0214             num2str(v),<span class="string">').'</span>,char(10)])
+0215         
+0216     <span class="keyword">case</span> <span class="string">'-versionFileForceChange'</span>
+0217         
+0218         <span class="comment">% this part is called whenever you run googleearth -docinstall, so</span>
+0219         <span class="comment">% that the 'version-info.txt' file changes, which in turn triggers</span>
+0220         <span class="comment">% the version number in that file to be updated by the SVN system.</span>
+0221 
+0222         <span class="comment">% disp('Updating version number...')</span>
+0223         fid=fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'version-info.txt'</span>),<span class="string">'r'</span>);
+0224         
+0225         versionStr=<span class="string">''</span>;
+0226         <span class="keyword">for</span> k=1:4
+0227             versionStr=[versionStr,fgetl(fid),char(10)];
+0228         <span class="keyword">end</span>
+0229         fclose(fid);
+0230 
+0231         lowerChars = <span class="string">'abcdefghijklmnopqrstuvwxyz'</span>;
+0232         upperChars = upper(lowerChars);
+0233         allChars = [lowerChars,upperChars];
+0234         nChars = numel(allChars);
+0235         allChars = allChars(round((nChars-1)*rand(1,100*50)+1));
+0236         allChars(50:50:end)=char(10);
+0237         randomCharsStr = allChars;
+0238         
+0239         
+0240         fid=fopen(fullfile(<a href="googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'version-info.txt'</span>),<span class="string">'w'</span>);
+0241         fprintf(fid,<span class="string">'%s%s'</span>,versionStr,randomCharsStr);
+0242         fclose(fid);
+0243         
+0244         <span class="comment">% disp([char(8),'Done.'])</span>
+0245        
+0246     <span class="keyword">otherwise</span>
+0247         disp(<span class="string">'Unrecognized option.'</span>)
+0248         <span class="keyword">return</span>
+0249 
+0250 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

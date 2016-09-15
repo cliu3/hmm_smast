@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of viewdistr</title>
+  <meta name="keywords" content="viewdistr">
+  <meta name="description" content="VIEWDISTR  Plot a probability distribution in time.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">postprocessing</a> &gt; viewdistr.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/postprocessing&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>viewdistr
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>VIEWDISTR  Plot a probability distribution in time.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function viewdistr(distr,fps,range,mode,no,typ,land) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">VIEWDISTR  Plot a probability distribution in time.
+   VIEWDISTR(DISTR,FPS,RANGE,MODE,NO,TYPE,LAND)
+
+   - DISTR an array of size ROWxCOLxDAYS found as a subvar
+   in a result structure output from the hmmgeolocate function.
+
+     Optional arguments
+
+   - FPS number of frames per second. 
+   default is max.
+   - RANGE defines the range of DAYS to be plotted. 
+   default is plotting of all days.
+   - MODE play animation 'backward' or 'forward' 
+   default is 'forward'.
+   - NO number of times to show the animation.
+   default is 1.
+   - TYPE if 'fancy' or 'fancylock' the LAND var needs to be specified.
+   default is 'plain'.
+   - LAND a matrix containing land indicators.
+   default is empty. (required when using &quot;fancy&quot; or &quot;fancylock&quot;)
+
+   DEPENDENCIES - the function needs access to the following files
+
+     cmap.mat
+    (cmapfancy.mat)
+
+  EXAMPLES
+   VIEWDISTR(result.smooth_plot,[],[],'backward')
+   this plots the entire distribution in a forward sweep.
+
+   VIEWDISTR(result.phi_plot,10,50:3:200,'backward',2)
+   this plots the distribution twice at 10 frames per second  
+   in a backwards sweep starting at day 200 end jumping 3 at a 
+   time until reaching day 50.
+
+   Date: 14/12 - 2007, ver. 0.56
+   HMM geolocation toolbox, DTU Informatics and DTU Aqua</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../hmm_smast/filter/hmmgeolocate1.html" class="code" title="function hmmgeolocate(tagno,mode,viewres,Duser,ext)">hmmgeolocate1</a>	HMMGEOLOCATE  Obtain geolocation by filtering preprocessed data</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function viewdistr(distr,fps,range,mode,no,typ,land)</a>
+0002 <span class="comment">%VIEWDISTR  Plot a probability distribution in time.</span>
+0003 <span class="comment">%   VIEWDISTR(DISTR,FPS,RANGE,MODE,NO,TYPE,LAND)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   - DISTR an array of size ROWxCOLxDAYS found as a subvar</span>
+0006 <span class="comment">%   in a result structure output from the hmmgeolocate function.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%     Optional arguments</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   - FPS number of frames per second.</span>
+0011 <span class="comment">%   default is max.</span>
+0012 <span class="comment">%   - RANGE defines the range of DAYS to be plotted.</span>
+0013 <span class="comment">%   default is plotting of all days.</span>
+0014 <span class="comment">%   - MODE play animation 'backward' or 'forward'</span>
+0015 <span class="comment">%   default is 'forward'.</span>
+0016 <span class="comment">%   - NO number of times to show the animation.</span>
+0017 <span class="comment">%   default is 1.</span>
+0018 <span class="comment">%   - TYPE if 'fancy' or 'fancylock' the LAND var needs to be specified.</span>
+0019 <span class="comment">%   default is 'plain'.</span>
+0020 <span class="comment">%   - LAND a matrix containing land indicators.</span>
+0021 <span class="comment">%   default is empty. (required when using &quot;fancy&quot; or &quot;fancylock&quot;)</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   DEPENDENCIES - the function needs access to the following files</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%     cmap.mat</span>
+0026 <span class="comment">%    (cmapfancy.mat)</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  EXAMPLES</span>
+0029 <span class="comment">%   VIEWDISTR(result.smooth_plot,[],[],'backward')</span>
+0030 <span class="comment">%   this plots the entire distribution in a forward sweep.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   VIEWDISTR(result.phi_plot,10,50:3:200,'backward',2)</span>
+0033 <span class="comment">%   this plots the distribution twice at 10 frames per second</span>
+0034 <span class="comment">%   in a backwards sweep starting at day 200 end jumping 3 at a</span>
+0035 <span class="comment">%   time until reaching day 50.</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%   Date: 14/12 - 2007, ver. 0.56</span>
+0038 <span class="comment">%   HMM geolocation toolbox, DTU Informatics and DTU Aqua</span>
+0039 
+0040 <span class="keyword">if</span> nargin &lt; 7 || isempty(land)
+0041     land = [];
+0042     <span class="keyword">if</span> nargin == 6 &amp;&amp; (strcmp(typ,<span class="string">'fancy'</span>) || strcmp(typ,<span class="string">'fancylock'</span>))
+0043        disp(<span class="string">'It is recommended to input a land array eg. db.land or result.land when using &quot;fancy&quot; or &quot;fancylock&quot;.'</span>) 
+0044     <span class="keyword">end</span>
+0045 <span class="keyword">end</span>
+0046 <span class="keyword">if</span> nargin &lt; 6 || isempty(typ)
+0047     typ = <span class="string">'plain'</span>;
+0048 <span class="keyword">end</span>
+0049 <span class="keyword">if</span> nargin &lt; 5 || isempty(no) || no &lt; 1, 
+0050     no = 1;
+0051 <span class="keyword">end</span>
+0052 <span class="keyword">if</span> nargin &lt; 4 || isempty(mode), 
+0053     mode = <span class="string">'forward'</span>;
+0054 <span class="keyword">end</span>
+0055 <span class="keyword">if</span> nargin &lt; 3 || isempty(range),
+0056     range = 1:size(distr,3);
+0057 <span class="keyword">end</span>
+0058 <span class="keyword">if</span> nargin &lt; 2 || isempty(fps), 
+0059     fps = 0;
+0060 <span class="keyword">end</span>
+0061 <span class="keyword">if</span> strcmp(typ,<span class="string">'fancy'</span>) || strcmp(typ,<span class="string">'fancylock'</span>), 
+0062     load cmapfancy
+0063     cax(1) = 0; cax(2) = max(distr(:));
+0064 <span class="keyword">else</span> 
+0065     load cmap, 
+0066 <span class="keyword">end</span>
+0067 
+0068 <span class="comment">% sweep direction</span>
+0069 <span class="keyword">if</span> strcmp(mode,<span class="string">'backward'</span>)
+0070     range = range(length(range):-1:1);
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">% fps</span>
+0074 <span class="keyword">if</span> fps &lt;= 0, 
+0075     pause(<span class="string">'off'</span>);
+0076 <span class="keyword">else</span>
+0077     pause(<span class="string">'on'</span>);
+0078 <span class="keyword">end</span>
+0079 
+0080 delay = 1/(fps*1.1+eps);
+0081 
+0082 <span class="keyword">switch</span> typ
+0083     <span class="keyword">case</span> <span class="string">'fancy'</span>
+0084         <span class="keyword">for</span> j = 1:no
+0085             <span class="keyword">for</span> i = range
+0086                 post = distr(:,:,i);
+0087                 post(land) = 0.5*max(post(:));
+0088                 imagesc(post); 
+0089                 <span class="keyword">if</span> length(range) &gt; 1, title(sprintf(<span class="string">'viewdistr, day %i'</span>,i)), <span class="keyword">end</span>
+0090                 colormap(cmapfancy), drawnow, 
+0091                 pause(delay)
+0092             <span class="keyword">end</span>
+0093         <span class="keyword">end</span>
+0094     <span class="keyword">case</span> <span class="string">'fancylock'</span>
+0095         <span class="keyword">for</span> j = 1:no
+0096             <span class="keyword">for</span> i = range
+0097                 post = distr(:,:,i);
+0098                 maxp = max(post(:));
+0099                 <span class="keyword">if</span> maxp &gt; cax(2)/32, 
+0100                     post(land) = .5*cax(2);
+0101                     imagesc(post); 
+0102                     caxis(cax);
+0103                 <span class="keyword">else</span>
+0104                     post(land) = .5*cax(2)/32;
+0105                     imagesc(post);
+0106                     caxis([0 cax(2)/32]), 
+0107                 <span class="keyword">end</span>
+0108                 colorbar
+0109                 <span class="keyword">if</span> length(range) &gt; 1, title(sprintf(<span class="string">'viewdistr, day %i'</span>,i)), <span class="keyword">end</span>
+0110                 colormap(cmapfancy), drawnow, 
+0111                 pause(delay)
+0112             <span class="keyword">end</span>
+0113         <span class="keyword">end</span>
+0114     <span class="keyword">case</span> <span class="string">'log'</span>
+0115         <span class="keyword">for</span> j = 1:no
+0116             <span class="keyword">for</span> i = range
+0117                 post = log(distr(:,:,i));
+0118                 imagesc(post); 
+0119                 <span class="keyword">if</span> length(range) &gt; 1, title(sprintf(<span class="string">'viewdistr, day %i'</span>,i)), <span class="keyword">end</span>
+0120                 drawnow, 
+0121                 pause(delay)
+0122             <span class="keyword">end</span>
+0123         <span class="keyword">end</span>
+0124     <span class="keyword">case</span> <span class="string">'plain'</span>
+0125         <span class="keyword">for</span> j = 1:no
+0126             <span class="keyword">for</span> i = range
+0127                 post = distr(:,:,i);
+0128                 imagesc(post); 
+0129                 <span class="keyword">if</span> length(range) &gt; 1, title(sprintf(<span class="string">'viewdistr, day %i'</span>,i)), <span class="keyword">end</span>
+0130                 colormap(cmap), drawnow, 
+0131                 pause(delay)
+0132             <span class="keyword">end</span>
+0133         <span class="keyword">end</span>
+0134 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pixtomap</title>
+  <meta name="keywords" content="pixtomap">
+  <meta name="description" content="PIXTOMAP Uses a mapmatrix to convert from indices to lat/long.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">backfun</a> &gt; pixtomap.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/backfun&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>pixtomap
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PIXTOMAP Uses a mapmatrix to convert from indices to lat/long.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [lat long] = pixtomap(M,px,py) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PIXTOMAP Uses a mapmatrix to convert from indices to lat/long.
+
+   This function is called by samptrack.m and mptrack.m
+
+   This function should not be called manually by the user.
+
+   Date: 24/7 - 2007, ver. 0.5
+   HMM geolocation toolbox, IMM and DIFRES</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../hmm_smast/postprocessing/mptrack.html" class="code" title="function [mpt] = mptrack(tagno)">mptrack</a>	MPTRACK  Find the Most Probable Track.</li><li><a href="../../hmm_smast/postprocessing/samptrack.html" class="code" title="function [samptracks] = samptrack(result,LIK,no)">samptrack</a>	SAMPTRACK  Sample random tracks from a geolocation result.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [lat long] = pixtomap(M,px,py)</a>
+0002 <span class="comment">%PIXTOMAP Uses a mapmatrix to convert from indices to lat/long.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   This function is called by samptrack.m and mptrack.m</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   This function should not be called manually by the user.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Date: 24/7 - 2007, ver. 0.5</span>
+0009 <span class="comment">%   HMM geolocation toolbox, IMM and DIFRES</span>
+0010 
+0011 lgt = length(px);
+0012 latlong =[ones(lgt,1) py ones(lgt,1) px]*M;
+0013 lat  = latlong(:,1);
+0014 long = latlong(:,2);</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

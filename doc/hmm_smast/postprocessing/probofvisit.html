@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of probofvisit</title>
+  <meta name="keywords" content="probofvisit">
+  <meta name="description" content="PROBOFVISIT  Estimate the probability that the fish visited some area.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">postprocessing</a> &gt; probofvisit.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/postprocessing&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>probofvisit
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PROBOFVISIT  Estimate the probability that the fish visited some area.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function p = probofvisit(tagno,area,dr,plotflag) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PROBOFVISIT  Estimate the probability that the fish visited some area.
+   [p] = PROBOFVISIT(TAGNO,AREA,DAYRANGE)
+
+   - TAGNO indentifier as string for the tag.
+   - AREA specified by the four corners in the rectangle.
+   It is possible to use multiple rectangles to define area (see ex.).
+
+      Optional arguments
+
+   - DAYRANGE Specify the range of day to base the calculation on.
+   default is all days.
+   - PLOTFLAG Set to 1 for a plot of the area.
+
+   the function assumes the following files are available
+
+     resultTAGNO.mat
+     samptrack.m
+
+  EXAMPLE   
+   p = PROBOFVISIT('2255',[1 2 53.5 54.5; 1 3 54.5 55], 12:46);
+
+   Date: 7/7 - 2008, ver. 0.53
+   HMM geolocation toolbox, IMM and DIFRES</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="samptrack.html" class="code" title="function [samptracks] = samptrack(result,LIK,no)">samptrack</a>	SAMPTRACK  Sample random tracks from a geolocation result.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function p = probofvisit(tagno,area,dr,plotflag)</a>
+0002 <span class="comment">%PROBOFVISIT  Estimate the probability that the fish visited some area.</span>
+0003 <span class="comment">%   [p] = PROBOFVISIT(TAGNO,AREA,DAYRANGE)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   - TAGNO indentifier as string for the tag.</span>
+0006 <span class="comment">%   - AREA specified by the four corners in the rectangle.</span>
+0007 <span class="comment">%   It is possible to use multiple rectangles to define area (see ex.).</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%      Optional arguments</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   - DAYRANGE Specify the range of day to base the calculation on.</span>
+0012 <span class="comment">%   default is all days.</span>
+0013 <span class="comment">%   - PLOTFLAG Set to 1 for a plot of the area.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   the function assumes the following files are available</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%     resultTAGNO.mat</span>
+0018 <span class="comment">%     samptrack.m</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  EXAMPLE</span>
+0021 <span class="comment">%   p = PROBOFVISIT('2255',[1 2 53.5 54.5; 1 3 54.5 55], 12:46);</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Date: 7/7 - 2008, ver. 0.53</span>
+0024 <span class="comment">%   HMM geolocation toolbox, IMM and DIFRES</span>
+0025 
+0026 filename = [<span class="string">'result'</span> tagno <span class="string">'.mat'</span>];
+0027 disp(sprintf(<span class="string">'\n\nLoading %s...'</span>,filename))
+0028 load(filename)
+0029 <span class="keyword">if</span> nargin &lt; 3, dr = 1:size(result.phi,3); <span class="keyword">end</span>
+0030 <span class="keyword">if</span> nargin &lt; 4, plotflag = 0; <span class="keyword">end</span>
+0031 disp(sprintf(<span class="string">'\n=== Calculating the probability of tag #%s ==='</span>,tagno))
+0032 disp(sprintf(<span class="string">'having visited the area:'</span>))
+0033 <span class="keyword">for</span> k = 1:size(area,1)
+0034     disp(sprintf(<span class="string">'%3.1f - %3.1f long, %3.1f - %3.1f lat'</span>,area(k,1), area(k,2), area(k,3), area(k,4)))
+0035 <span class="keyword">end</span>
+0036 disp(sprintf(<span class="string">'\nWithin the time from\n %s to %s...\n'</span>,datestr(result.time(dr(1))), datestr(result.time(dr(end)))))
+0037 filename = [<span class="string">'datalikelihood'</span> tagno <span class="string">'.mat'</span>];
+0038 disp(sprintf(<span class="string">'Loading %s...\n'</span>,filename))
+0039 load(filename)
+0040 <span class="keyword">if</span> exist(<span class="string">'L'</span>,<span class="string">'var'</span>), LIK = L; clear L; <span class="keyword">end</span>
+0041 
+0042 n = 1000;
+0043 disp(<span class="string">'Estimating probability'</span>)
+0044 tr = <a href="samptrack.html" class="code" title="function [samptracks] = samptrack(result,LIK,no)">samptrack</a>(result,LIK,n);
+0045 tr.long = tr.long(dr,:);
+0046 tr.lat  = tr.lat(dr,:);
+0047 
+0048 longind = zeros(size(tr.long));
+0049 latind = longind;
+0050 <span class="keyword">for</span> k = 1:size(area,1)
+0051     longind = longind + (tr.long &gt; area(k,1) &amp; tr.long &lt; area(k,2));
+0052     latind  = latind  + (tr.lat &gt; area(k,3)  &amp; tr.lat &lt; area(k,4));
+0053 <span class="keyword">end</span>
+0054 longind = longind &gt; 0;
+0055 latind  = latind &gt; 0;
+0056 
+0057 visits = sum(sum(longind.*latind,1) &gt; 0);
+0058 p = visits/n;
+0059 
+0060 <span class="keyword">if</span> plotflag == 1,
+0061     proj = <span class="string">'Gall-Peters'</span>; <span class="comment">%Rectangular</span>
+0062     lonrange = [-10 8];
+0063     latrange = [48 60];
+0064     <span class="keyword">if</span> ~exist(<span class="string">'m_proj.m'</span>,<span class="string">'file'</span>), 
+0065         surf(result.maplong,result.maplat,result.land-1); cmap = [1 1 1;0. 0.7 0.];
+0066         colormap(cmap), 
+0067         shading flat, hold on
+0068         axis tight, view(2), shading flat
+0069         hold on
+0070         <span class="keyword">for</span> k = 1:size(area,1)
+0071             plot([area(k,1) area(k,2) area(k,2) area(k,1) area(k,1)],[area(k,3) area(k,3) area(k,4) area(k,4) area(k,3)],<span class="string">'color'</span>,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,2)
+0072         <span class="keyword">end</span>
+0073         xlabel(<span class="string">'Longitude'</span>), ylabel(<span class="string">'Latitude'</span>)
+0074         title(sprintf(<span class="string">'\nTime span\n %s to %s'</span>,datestr(result.time(dr(1))), datestr(result.time(dr(end)))))
+0075         hold off
+0076     <span class="keyword">else</span>
+0077         m_proj(proj,<span class="string">'lon'</span>,lonrange,<span class="string">'lat'</span>,latrange);
+0078         m_gshhs_l(<span class="string">'patch'</span>,[.5 .5 .5]); 
+0079         m_grid(<span class="string">'box'</span>,<span class="string">'fancy'</span>,<span class="string">'tickdir'</span>,<span class="string">'in'</span>,<span class="string">'linewidth'</span>,10,<span class="string">'linestyle'</span>,<span class="string">'none'</span>);
+0080         hold on
+0081         <span class="keyword">for</span> k = 1:size(area,1)
+0082             m_plot([area(k,1) area(k,2) area(k,2) area(k,1) area(k,1)],[area(k,3) area(k,3) area(k,4) area(k,4) area(k,3)],<span class="string">'color'</span>,<span class="string">'k'</span>)
+0083         <span class="keyword">end</span>
+0084         xlabel(<span class="string">'Longitude'</span>), ylabel(<span class="string">'Latitude'</span>)
+0085         title(sprintf(<span class="string">'\nTime span\n %s to %s'</span>,datestr(result.time(dr(1))), datestr(result.time(dr(end)))))
+0086         hold off
+0087     <span class="keyword">end</span>
+0088 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

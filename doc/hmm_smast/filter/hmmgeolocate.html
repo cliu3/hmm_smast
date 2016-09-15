@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of hmmgeolocate</title>
+  <meta name="keywords" content="hmmgeolocate">
+  <meta name="description" content="HMMGEOLOCATE  Obtain geolocation by filtering preprocessed data">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">filter</a> &gt; hmmgeolocate.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/filter&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>hmmgeolocate
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>HMMGEOLOCATE  Obtain geolocation by filtering preprocessed data</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function hmmgeolocate(tagno,mode,viewres,Duser,ext,GEN) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">HMMGEOLOCATE  Obtain geolocation by filtering preprocessed data 
+   HMMGEOLOCATE(TAGNO,MODE,VIEWRES,DUSER,EXT)
+
+   - TAGNO indentifier as string for the tag to geolocate.
+
+     Optional arguments
+
+   - MODE number of behaviour modes to use (1 or 2).
+   default is 2.
+   - VIEWRES plots the marginal distributions consecutively
+   in an animation when the geolocation has finished 
+   successfully (by using the viewdistr function).
+   default is 'on'.
+   - DUSER user defined diffusivity vector e.g DUSER = [10 100].
+   if omitted the diffusivity is estimated with maximum likelihood.
+   (- EXT self estimate behaviour - IS NOT OPERATIONAL YET!)
+
+   DEPENDENCIES - the function needs access to the following files
+
+     tagdataTAGNO.mat
+     datalikelihoodTAGNO.mat
+     tidaldb.mat
+     cmap.mat
+
+   and creates as output the file resultTAGNO.mat in the current folder.
+
+  EXAMPLES
+   HMMGEOLOCATE('2255',2,'on')
+   HMMGEOLOCATE('1432',[],'on',[10 100])
+
+   Date: 22/10 - 2008, ver. 0.55
+   HMM geolocation toolbox, DTU Informatics and DTU Aqua</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="hmmgeolocate1.html" class="code" title="function hmmgeolocate(tagno,mode,viewres,Duser,ext)">hmmgeolocate1</a>	HMMGEOLOCATE  Obtain geolocation by filtering preprocessed data</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../hmm_smast/tbworkdir/run_tag.html" class="code" title="">run_tag</a>	clear all;</li><li><a href="../../hmm_smast/test/run_tag.html" class="code" title="">run_tag</a>	clear all;</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function hmmgeolocate(tagno,mode,viewres,Duser,ext,GEN)</a>
+0002 <span class="comment">%HMMGEOLOCATE  Obtain geolocation by filtering preprocessed data</span>
+0003 <span class="comment">%   HMMGEOLOCATE(TAGNO,MODE,VIEWRES,DUSER,EXT)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   - TAGNO indentifier as string for the tag to geolocate.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%     Optional arguments</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   - MODE number of behaviour modes to use (1 or 2).</span>
+0010 <span class="comment">%   default is 2.</span>
+0011 <span class="comment">%   - VIEWRES plots the marginal distributions consecutively</span>
+0012 <span class="comment">%   in an animation when the geolocation has finished</span>
+0013 <span class="comment">%   successfully (by using the viewdistr function).</span>
+0014 <span class="comment">%   default is 'on'.</span>
+0015 <span class="comment">%   - DUSER user defined diffusivity vector e.g DUSER = [10 100].</span>
+0016 <span class="comment">%   if omitted the diffusivity is estimated with maximum likelihood.</span>
+0017 <span class="comment">%   (- EXT self estimate behaviour - IS NOT OPERATIONAL YET!)</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   DEPENDENCIES - the function needs access to the following files</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%     tagdataTAGNO.mat</span>
+0022 <span class="comment">%     datalikelihoodTAGNO.mat</span>
+0023 <span class="comment">%     tidaldb.mat</span>
+0024 <span class="comment">%     cmap.mat</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   and creates as output the file resultTAGNO.mat in the current folder.</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  EXAMPLES</span>
+0029 <span class="comment">%   HMMGEOLOCATE('2255',2,'on')</span>
+0030 <span class="comment">%   HMMGEOLOCATE('1432',[],'on',[10 100])</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   Date: 22/10 - 2008, ver. 0.55</span>
+0033 <span class="comment">%   HMM geolocation toolbox, DTU Informatics and DTU Aqua</span>
+0034 
+0035 <span class="keyword">if</span> nargin &lt; 2 | isempty(mode),  mode = 2; <span class="keyword">end</span>
+0036 
+0037 <span class="keyword">if</span> nargin &lt; 3 | isempty(viewres),  viewres = <span class="string">'on'</span>; <span class="keyword">end</span>
+0038 
+0039 <span class="keyword">if</span> nargin &lt; 5 | isempty(ext), ext = false; <span class="keyword">end</span>
+0040 
+0041 
+0042 <span class="keyword">if</span> ext
+0043     <span class="keyword">if</span> nargin &lt; 4 | isempty(Duser)
+0044         <span class="keyword">if</span> mode == 1
+0045             Duser.Duser = [60 60];
+0046         <span class="keyword">else</span>
+0047             Duser.Duser = [10  100];
+0048         <span class="keyword">end</span>
+0049         Duser.mp = 0.5; <span class="comment">% Start guess for p in (1-p)*mode1 + p*mode2, behaviour switching</span>
+0050         Duser.estimate = 1;
+0051     <span class="keyword">else</span>
+0052         Duser.estimate = 0;
+0053         <span class="comment">% It is assumed that no mode probability (mp) is defined</span>
+0054         <span class="keyword">if</span> length(Duser.Duser) == 1
+0055             disp(sprintf(<span class="string">'Using user defined diffusivity, one mode:\nD = %8.4f'</span>,Duser.Duser))
+0056             D = Duser.Duser;
+0057             Duser.Duser = [D D];
+0058         <span class="keyword">elseif</span> length(Duser) == 2
+0059             disp(sprintf(<span class="string">'Using user defined diffusivity, two modes:\nD = [%8.4f, %8.4f]'</span>,Duser.Duser(1),Duser.Duser(2)))
+0060         <span class="keyword">end</span>
+0061     <span class="keyword">end</span>
+0062     <span class="keyword">if</span> nargin &lt; 6 | isempty(GEN), GEN = false; <span class="keyword">end</span>
+0063     <span class="comment">%hmmgeolocate_mode(tagno,mode,viewres,Duser,GEN)</span>
+0064     <a href="hmmgeolocate1.html" class="code" title="function hmmgeolocate(tagno,mode,viewres,Duser,ext)">hmmgeolocate1</a>(tagno,mode,viewres)
+0065 <span class="keyword">else</span>
+0066     <span class="comment">% No behaviour switching and no generator use (28/11-08)</span>
+0067     <span class="keyword">if</span> nargin &lt; 4 | isempty(Duser)
+0068         <span class="keyword">if</span> mode == 1
+0069             Duser = [60 60];
+0070         <span class="keyword">else</span>
+0071             Duser = [10  100];
+0072         <span class="keyword">end</span>
+0073     <span class="keyword">else</span>
+0074         <span class="keyword">if</span> length(Duser) == 1
+0075             disp(sprintf(<span class="string">'Using user defined diffusivity, one mode:\nD = %8.4f'</span>,Duser))
+0076             Duser = [Duser Duser];
+0077         <span class="keyword">elseif</span> length(Duser) == 2
+0078             disp(sprintf(<span class="string">'Using user defined diffusivity, two modes:\nD = [%8.4f, %8.4f]'</span>,Duser(1),Duser(2)))
+0079         <span class="keyword">end</span>
+0080     <span class="keyword">end</span>
+0081     <span class="comment">% run hmmgeolocate with the defined parameters</span>
+0082     <a href="hmmgeolocate1.html" class="code" title="function hmmgeolocate(tagno,mode,viewres,Duser,ext)">hmmgeolocate1</a>(tagno,mode,viewres,Duser)
+0083 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of finddbvars</title>
+  <meta name="keywords" content="finddbvars">
+  <meta name="description" content="FINDDBVARS Reads the rawtidaldb and calculates database variances.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">hmm_smast</a> &gt; <a href="index.html">tidaldatabase</a> &gt; finddbvars.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for hmm_smast/tidaldatabase&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>finddbvars
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>FINDDBVARS Reads the rawtidaldb and calculates database variances.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function finddbvars </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FINDDBVARS Reads the rawtidaldb and calculates database variances.
+   FINDDBVARS() 
+
+   DEPENDENCIES - the function needs access to the following files
+
+     rawtidaldb.mat
+
+   See the reference manual for further information on this function.
+
+   Date: 31/7 - 2007, ver. 0.5
+   HMM geolocation toolbox, IMM and DIFRES</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function finddbvars</a>
+0002 <span class="comment">%FINDDBVARS Reads the rawtidaldb and calculates database variances.</span>
+0003 <span class="comment">%   FINDDBVARS()</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   DEPENDENCIES - the function needs access to the following files</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%     rawtidaldb.mat</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   See the reference manual for further information on this function.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Date: 31/7 - 2007, ver. 0.5</span>
+0012 <span class="comment">%   HMM geolocation toolbox, IMM and DIFRES</span>
+0013 
+0014 disp(sprintf(<span class="string">'\n\n=== Commencing calculation of database variances ==='</span>))
+0015 load rawtidaldb
+0016 
+0017 [row,col]=size(db.depth);
+0018 
+0019 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0020 <span class="comment">%% Calculate bathymetry roughness (variance) %%</span>
+0021 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0022 Z=repmat(NaN,row+2,col+2);
+0023 Z(2:end-1,2:end-1) = db.depth;
+0024 
+0025 db.bathro = zeros(row,col);
+0026 disp(<span class="string">'Computing the bathymetry variance ...'</span>)
+0027 <span class="keyword">for</span> x=2:col+1
+0028     <span class="keyword">for</span> y=2:row+1
+0029         dybder=[Z(y-1,x-1) Z(y+1,x+1) Z(y-1,x) Z(y+1,x) <span class="keyword">...</span>
+0030                 Z(y-1,x+1) Z(y+1,x-1) Z(y,x-1) Z(y,x+1)];
+0031         <span class="comment">% variance in a uniform distribution</span>
+0032         maxdyb = max(dybder)-min(dybder);
+0033         db.bathro(y-1,x-1) = 1/12*maxdyb^2; 
+0034     <span class="keyword">end</span>
+0035 <span class="keyword">end</span>
+0036 db.bathro(db.land) = 0;
+0037 
+0038 
+0039 
+0040 
+0041 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0042 <span class="comment">%% Calculate tidal roughness (variance)      %%</span>
+0043 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0044 <span class="comment">%% Create time vector %%</span>
+0045 startdate = datenum([2001 1 1 00 00 00]);
+0046 t= 0:1/144:3;
+0047 
+0048 <span class="comment">%% Store f and G from nodal.exe (fortran program)</span>
+0049 <span class="comment">% values of f and G that set t=0 at 1/1-01 00:01</span>
+0050 <span class="comment">% GWC - these f/G depend on what constituents are being used, hard</span>
+0051 <span class="comment">%   coding these is not ideal</span>
+0052 <span class="comment">%f = [1.0103 1.0000 1.0103 0.9385 0.9719 0.9829 1.0207];</span>
+0053 <span class="comment">%G = [211.263 0.500 341.026 184.538 213.322 2.136 62.527]*pi/180;</span>
+0054 [is2001] = find(db.year_shift==2001);
+0055 G = db.phase_shift(is2001,:);
+0056 f = zeros(length(db.freq),1);
+0057     
+0058 <span class="comment">%% Tidal predictions %%</span>
+0059 lng=0; plt=0;
+0060 pred = zeros(length(t),row,col);
+0061 disp(<span class="string">'Predicting the tide at all positions...'</span>)
+0062 <span class="keyword">for</span> plat=1:row
+0063     <span class="keyword">for</span> plong=1:col
+0064         <span class="keyword">if</span> ~db.land(plat,plong)
+0065             <span class="keyword">for</span> mode=1:length(db.freq)
+0066                 temp(mode,:)  = f(mode)*db.amp(plat+plt,plong+lng,mode) * <span class="keyword">...</span>
+0067                                 cos( db.freq(mode)*t + G(mode) - db.phase(plat+plt,plong+lng,mode));
+0068             <span class="keyword">end</span>
+0069             pred(:,plat,plong) = db.depth(plat+plt,plong+lng) - sum(temp,1);
+0070         <span class="keyword">end</span>
+0071     <span class="keyword">end</span>
+0072 <span class="keyword">end</span>
+0073 
+0074 db.tidalro = zeros(row,col);
+0075 <span class="comment">%% Computing tidal variance %%</span>
+0076 lng=82; 
+0077 plt=68;
+0078 delta = [-1 -1 -1 0  0  1 1 1;
+0079          -1  0  1 -1 1 -1 0 1];
+0080 disp(<span class="string">'Computing the tidal variance...'</span>)
+0081 <span class="keyword">for</span> x=2:col-1
+0082     <span class="keyword">for</span> y=2:row-1
+0083         vars=[];
+0084         <span class="keyword">for</span> k=1:8
+0085             xx=x+delta(2,k);
+0086             yy=y+delta(1,k);
+0087             <span class="keyword">if</span> ~db.land(y,x) &amp; ~db.land(y+delta(1,k),x+delta(2,k))
+0088                 vars = [vars var(pred(:,y,x) - pred(:,yy,xx))];
+0089                 <span class="comment">% variance in a uniform distribution</span>
+0090                 db.tidalro(y,x) = max(vars);
+0091             <span class="keyword">end</span>
+0092         <span class="keyword">end</span>
+0093     <span class="keyword">end</span>
+0094 <span class="keyword">end</span>
+0095 db.tidalro(db.land) = 0;
+0096 
+0097 
+0098 db2=db;
+0099 <span class="comment">%% Store in mat file %%</span>
+0100 save tidaldb db
+0101 
+0102 disp(sprintf(<span class="string">'\nDONE! \n\nNow run --&gt; datastrip \n\nto extract the raw tag data!\n'</span>))</pre></div>
+<hr><address>Generated on Thu 15-Sep-2016 12:42:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
