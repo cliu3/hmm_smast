@@ -10,7 +10,7 @@ global bottom_temperature  % path to fvcom bottom temperature
 bottom_temperature   = 'data/gom3_btemp_davged_MayJun_2010.nc';
 
 %ptags = [7, 8];
-ptags = 8;
+ptags = 7;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % tag-specific paremeters  %
@@ -43,7 +43,7 @@ for tag_num=tag_num_range
     
     %do_parts = 6;
     
-    do_parts(1) = 0; %1 generate a new tidaldb, =0 use tidaldb.mat
+    do_parts(1) = 1; %1 generate a new tidaldb, =0 use tidaldb.mat
     do_parts(2) = 1; %2 strip
     do_parts(3) = 1; %3 behavior
     do_parts(4) = 1; %4 likelihood
