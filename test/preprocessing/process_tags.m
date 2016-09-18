@@ -38,10 +38,15 @@ for i=tagset
   tag.length    = numeric(i,10); 
   tag.sex       = char(txt(i+1,11));
   tag.maturity  = numeric(i,12);
-  tag.release_dnum = (numeric(i,8) + datenum(1900,1,0,0,0,0));
   tag.recapture_lon = numeric(i,19); 
   tag.recapture_lat = numeric(i,18); 
-  tag.recapture_dnum = (numeric(i,15) + datenum(1900,1,0,0,0,0));
+  if ispc
+      tag.release_dnum = datenum(txt(i+1,8), 'mm/dd/yyyy');
+      tag.recapture_dnum = datenum(txt(i+1,15), 'mm/dd/yyyy');
+  else
+      tag.release_dnum = (numeric(i,8) + datenum(1900,1,0,0,0,0) - 1);
+      tag.recapture_dnum = (numeric(i,15) + datenum(1900,1,0,0,0,0) - 1);
+  end
   tag.recap_uncertainty_km = numeric(i,21); 
 
 
