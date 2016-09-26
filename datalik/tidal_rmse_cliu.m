@@ -57,7 +57,7 @@ fprintf('reconstructing FVCOM tidal signal ... \n');
 %find FVCOM harmonic constants at grid points within radius from tag location
 
 [xt,yt]=my_project(tag.release_lon,tag.release_lat,'forward');
-[xr,yr]=my_project(tag.recapture_lon,tag.recapture_lat,'forward');
+%[xr,yr]=my_project(tag.recapture_lon,tag.recapture_lat,'forward');
 if (search_rad>0)
     node_idx=find( sqrt((xt-fvcom.x).^2 + (yt-fvcom.y).^2)<=search_rad );
 else
@@ -240,10 +240,11 @@ filename = ['datalikelihood' tagno '.mat'];
 fprintf('Interpolating likelihood onto regular grid ... \n');
 disp(sprintf('Loading %s...\n',filename))
 load(filename)
-[fvcom_lon,fvcom_lat]=my_project(fvcom.x,fvcom.y,'inverse');
+%[fvcom_lon,fvcom_lat]=my_project(fvcom.x,fvcom.y,'inverse');
 
 for i=1:ndays
-    F = TriScatteredInterp(fvcom_lon,fvcom_lat, ObsLh(i,:)');
+    F = TriScatteredInterp(fvcom.lon,fvcom.lat, ObsLh(i,:)');
+    %F = TriScatteredInterp(fvcom_lon,fvcom_lat, ObsLh(i,:)');
     TempLh=F(db.long,db.lat);
     TempLh(db.land)=0;
     TempLh(isnan(TempLh))=0;
