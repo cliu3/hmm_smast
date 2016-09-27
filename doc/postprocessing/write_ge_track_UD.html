@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of write_ge_track_UD</title>
+  <meta name="keywords" content="write_ge_track_UD">
+  <meta name="description" content="write the most probably track to a google earth file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">postprocessing</a> &gt; write_ge_track_UD.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for postprocessing&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>write_ge_track_UD
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>write the most probably track to a google earth file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function write_ge_track_UD(tagno) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> write the most probably track to a google earth file</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../dependencies/googleearthtoolbox/matlab/ge_colorbar.html" class="code" title="function [output] = ge_colorbar(x,y,data,varargin)">ge_colorbar</a>	Reference page in help browser:</li><li><a href="../dependencies/googleearthtoolbox/matlab/ge_imagesc.html" class="code" title="function [kmlStr] = ge_imagesc(x,y,data,varargin)">ge_imagesc</a>	Reference page in help browser:</li><li><a href="../dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>	Reference page in help browser:</li><li><a href="../dependencies/googleearthtoolbox/matlab/ge_plot.html" class="code" title="function output = ge_plot(X,Y,varargin)">ge_plot</a>	Reference page in help browser:</li><li><a href="../dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>	Reference page in help browser:</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tbworkdir/run_tag.html" class="code" title="">run_tag</a>	clear all;</li><li><a href="../test/run_tag.html" class="code" title="">run_tag</a>	clear all;</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% write the most probably track to a google earth file</span>
+0002 <a name="_sub0" href="#_subfunctions" class="code">function write_ge_track_UD(tagno)</a>
+0003 
+0004 <span class="comment">%WRITE_GE_TRACK : dump a track (lon,lat,time) to a google earth file</span>
+0005 <span class="comment">%   HANDLE = WRITE_GE_TRACK(TRACK)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   - TRACK a struct containing an output from eg. samptrack.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%     Optional arguments</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%  EXAMPLE</span>
+0012 <span class="comment">%   WRITE_GE_TRACK(mpt)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   Date: 3/16/12</span>
+0015 <span class="comment">%   G. Cowles</span>
+0016 <span class="comment">%   Date: 11/13/14</span>
+0017 <span class="comment">%   C. Liu</span>
+0018 
+0019 
+0020 <span class="comment">% load files</span>
+0021 filename = sprintf(<span class="string">'mpt%s'</span>,tagno);
+0022 load(filename);
+0023 filename = sprintf(<span class="string">'result%s'</span>,tagno);
+0024 load(filename);
+0025 load tidaldb
+0026 
+0027 <span class="comment">% transfer data</span>
+0028 time = mpt.time;
+0029 drels = time(1);
+0030 drcap = time(end);
+0031 lon = mpt.long; 
+0032 lat = mpt.lat; 
+0033 catch_long=mpt.catch_long;
+0034 catch_lat=mpt.catch_lat;
+0035 kmlFileName = [mpt.tagno <span class="string">'.kml'</span>];
+0036 
+0037 rls_iconStr = <span class="string">'http://maps.google.com/mapfiles/kml/pal3/icon38.png'</span>;
+0038 rcp_iconStr = <span class="string">'http://maps.google.com/mapfiles/kml/pal5/icon13.png'</span>;
+0039 rcprp_iconStr = <span class="string">'http://maps.google.com/mapfiles/kml/pal5/icon14.png'</span>;
+0040 dot_iconStr = <span class="string">'http://maps.google.com/mapfiles/kml/pal4/icon49.png'</span>;
+0041 
+0042 dstr = datestr( time(1), <span class="string">'yyyy-mm-ddTHH:MM:SSZ'</span>);
+0043 dstr2 = datestr( time(end), <span class="string">'yyyy-mm-ddTHH:MM:SSZ'</span>);
+0044 <span class="comment">% dump release/recap/icons</span>
+0045 kmlstr  = <span class="string">''</span>;
+0046 kmlstr = [kmlstr,<a href="../dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>(lon(1),lat(1),0., <span class="keyword">...</span>
+0047                      <span class="string">'iconURL'</span>,rls_iconStr,<span class="keyword">...</span>
+0048                      <span class="string">'msgToScreen'</span>,true,<span class="keyword">...</span>
+0049                      <span class="string">'pointDataCell'</span>,{<span class="string">'Lon'</span>,num2str(lon(1),<span class="string">'%5.2f'</span>);<span class="keyword">...</span><span class="comment"> </span>
+0050                                       <span class="string">'Lat'</span>,num2str(lat(1),<span class="string">'%5.2f'</span>);<span class="keyword">...</span>
+0051                                       <span class="string">'Release Date'</span>,datestr(drels);,<span class="keyword">...</span>
+0052                                       <span class="string">'Recap Date'</span>  ,datestr(drcap);,<span class="keyword">...</span>
+0053                                       <span class="string">'Days at Liberty'</span>,int2str(ceil(drcap-drels))},<span class="keyword">...</span>
+0054                      <span class="string">'timeSpanStart'</span>, char(dstr), <span class="keyword">...</span>
+0055                      <span class="string">'timeSpanStop'</span>,  char(dstr2 ), <span class="keyword">...</span>
+0056                      <span class="string">'name'</span>,[mpt.tagno])];
+0057 
+0058 kmlstr = [kmlstr,<a href="../dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>(lon(end),lat(end),0., <span class="keyword">...</span>
+0059                      <span class="string">'iconURL'</span>,rcp_iconStr,<span class="keyword">...</span>
+0060                      <span class="string">'msgToScreen'</span>,true,<span class="keyword">...</span>
+0061                      <span class="string">'pointDataCell'</span>,{<span class="string">'Lon'</span>,num2str(lon(end),<span class="string">'%5.2f'</span>);<span class="keyword">...</span><span class="comment"> </span>
+0062                                       <span class="string">'Lat'</span>,num2str(lat(end),<span class="string">'%5.2f'</span>);<span class="keyword">...</span>
+0063                                       <span class="string">'Release Date'</span>,datestr(drels);,<span class="keyword">...</span>
+0064                                       <span class="string">'Recap Date'</span>  ,datestr(drcap);,<span class="keyword">...</span>
+0065                                       <span class="string">'Days at Liberty'</span>,int2str(ceil(drcap-drels))},<span class="keyword">...</span>
+0066                      <span class="string">'timeSpanStart'</span>, char(dstr), <span class="keyword">...</span>
+0067                      <span class="string">'timeSpanStop'</span>,  char(dstr2 ), <span class="keyword">...</span>
+0068                      <span class="string">'name'</span>,[mpt.tagno])];
+0069 
+0070 kmlstr = [kmlstr,<a href="../dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>(catch_long,catch_lat,0., <span class="keyword">...</span>
+0071                      <span class="string">'iconURL'</span>,rcprp_iconStr,<span class="keyword">...</span>
+0072                      <span class="string">'msgToScreen'</span>,true,<span class="keyword">...</span>
+0073                      <span class="string">'pointDataCell'</span>,{<span class="string">'Lon'</span>,num2str(catch_long,<span class="string">'%5.2f'</span>);<span class="keyword">...</span><span class="comment"> </span>
+0074                                       <span class="string">'Lat'</span>,num2str(catch_lat,<span class="string">'%5.2f'</span>);<span class="keyword">...</span>
+0075                                       <span class="string">'Release Date'</span>,datestr(drels);,<span class="keyword">...</span>
+0076                                       <span class="string">'Recap Date'</span>  ,datestr(drcap);,<span class="keyword">...</span>
+0077                                       <span class="string">'Days at Liberty'</span>,int2str(ceil(drcap-drels))},<span class="keyword">...</span>
+0078                      <span class="string">'timeSpanStart'</span>, char(dstr), <span class="keyword">...</span>
+0079                      <span class="string">'timeSpanStop'</span>,  char(dstr2 ), <span class="keyword">...</span>
+0080                      <span class="string">'name'</span>,[mpt.tagno])];
+0081                  
+0082 kmlstr  =  [kmlstr, <a href="../dependencies/googleearthtoolbox/matlab/ge_plot.html" class="code" title="function output = ge_plot(X,Y,varargin)">ge_plot</a>(lon,lat,<span class="keyword">...</span>
+0083                      <span class="string">'altitude'</span>,100,<span class="keyword">...</span>
+0084                      <span class="string">'forceAsLine'</span>,false,<span class="keyword">...</span>
+0085                      <span class="string">'tessellate'</span>,true,<span class="keyword">...</span>
+0086                      <span class="string">'lineWidth'</span>,2,<span class="keyword">...</span>
+0087                      <span class="string">'timeSpanStart'</span>, char(dstr), <span class="keyword">...</span>
+0088                      <span class="string">'timeSpanStop'</span>,  char(dstr2 ), <span class="keyword">...</span>
+0089                      <span class="string">'altitudeMode'</span>,<span class="string">'clampToGround'</span>)]; 
+0090 
+0091 <span class="keyword">for</span> i=1:numel(time)-1
+0092   dstr = datestr( time(i), <span class="string">'yyyy-mm-ddTHH:MM:SSZ'</span>)
+0093   dstr2 = datestr( time(i+1), <span class="string">'yyyy-mm-ddTHH:MM:SSZ'</span>)
+0094   kmlstr = [kmlstr,<a href="../dependencies/googleearthtoolbox/matlab/ge_point.html" class="code" title="function [output] = ge_point(X,Y,Z,varargin)">ge_point</a>(lon(i),lat(i),0., <span class="keyword">...</span>
+0095                        <span class="string">'iconURL'</span>,dot_iconStr,<span class="keyword">...</span>
+0096                        <span class="string">'msgToScreen'</span>,true,<span class="keyword">...</span>
+0097                        <span class="string">'timeSpanStart'</span>, char(dstr), <span class="keyword">...</span>
+0098                        <span class="string">'timeSpanStop'</span>, char(dstr2))]; 
+0099 <span class="keyword">end</span>;
+0100 
+0101 
+0102 <span class="comment">% plot UD</span>
+0103 load cmapfancy
+0104 
+0105 data = result.UD;
+0106 
+0107 x = db.long(1,:);
+0108 y = flipud(db.lat(:,1));
+0109 cLimLow = min(min(data));
+0110 cLimHigh = max(max(data));
+0111 altitude = 0;
+0112 alphaMatrix = ones(size(data))*0.75;
+0113 
+0114 
+0115 
+0116 output = <a href="../dependencies/googleearthtoolbox/matlab/ge_imagesc.html" class="code" title="function [kmlStr] = ge_imagesc(x,y,data,varargin)">ge_imagesc</a>(x,y,data,<span class="keyword">...</span>
+0117                     <span class="string">'imgURL'</span>,[<span class="string">'UD_'</span> mpt.tagno <span class="string">'.png'</span>],<span class="keyword">...</span>
+0118                    <span class="string">'cLimLow'</span>,cLimLow,<span class="keyword">...</span>
+0119                   <span class="string">'cLimHigh'</span>,cLimHigh,<span class="keyword">...</span>
+0120                   <span class="string">'altitude'</span>,altitude,<span class="keyword">...</span>
+0121               <span class="string">'altitudeMode'</span>,<span class="string">'absolute'</span>,<span class="keyword">...</span>
+0122                <span class="string">'alphaMatrix'</span>,alphaMatrix,<span class="keyword">...</span>
+0123                <span class="string">'colorMap'</span>,cmapfancy);
+0124 
+0125 output2 = <a href="../dependencies/googleearthtoolbox/matlab/ge_colorbar.html" class="code" title="function [output] = ge_colorbar(x,y,data,varargin)">ge_colorbar</a>(x(end),y(1),data,<span class="keyword">...</span>
+0126                           <span class="string">'numClasses'</span>,20,<span class="keyword">...</span>
+0127                              <span class="string">'cLimLow'</span>,cLimLow,<span class="keyword">...</span>
+0128                             <span class="string">'cLimHigh'</span>,cLimHigh,<span class="keyword">...</span>
+0129                        <span class="string">'cBarFormatStr'</span>,<span class="string">'%+07.4f'</span>,<span class="keyword">...</span>
+0130                             <span class="string">'colorMap'</span>,cmapfancy);
+0131 
+0132 kmlstr = [output2 output kmlstr];
+0133 
+0134 
+0135 kmlTargetDir = [<span class="string">''</span>];<span class="comment">%..',filesep,'kml',filesep];</span>
+0136 <a href="../dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>([kmlTargetDir,kmlFileName],[kmlstr],<span class="string">'name'</span>,kmlFileName);
+0137 
+0138 <span class="comment">%endf = ge_folder('endpoints', endstr);</span>
+0139 <span class="comment">%trackf = ge_folder('track', kmlstr);</span>
+0140 <span class="comment">%ge_output(kmlFileName,[endf]);</span>
+0141</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

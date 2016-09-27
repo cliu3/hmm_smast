@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_ge_imagesc_old</title>
+  <meta name="keywords" content="demo_ge_imagesc_old">
+  <meta name="description" content="Demo ge_imagesc_old">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="../index.html">matlab</a> &gt; <a href="index.html">demo</a> &gt; demo_ge_imagesc_old.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab/demo&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>demo_ge_imagesc_old
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Demo ge_imagesc_old</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function demo_ge_imagesc_old() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Demo ge_imagesc_old</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../dependencies/googleearthtoolbox/matlab/ge_colorbar.html" class="code" title="function [output] = ge_colorbar(x,y,data,varargin)">ge_colorbar</a>	Reference page in help browser:</li><li><a href="../../../../dependencies/googleearthtoolbox/matlab/ge_imagesc_old.html" class="code" title="function [kmlStr] = ge_imagesc_old(x,y,data,varargin)">ge_imagesc_old</a>	Reference page in help browser:</li><li><a href="../../../../dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>	Reference page in help browser:</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function demo_ge_imagesc_old()</a>
+0002 <span class="comment">% Demo ge_imagesc_old</span>
+0003 
+0004 data = rand(20,10);
+0005 x = linspace(3.5,5.5,size(data,2));
+0006 y = linspace(51,52.5,size(data,1));
+0007 cLimLow = 0.5;
+0008 cLimHigh = 1;
+0009 
+0010 kmlTargetDir = [<span class="string">''</span>];<span class="comment">%..',filesep,'kml',filesep];</span>
+0011 kmlFileName = <span class="string">'demo_ge_imagesc_old.kml'</span>;
+0012 
+0013 Ix = 1+round(rand(10,1)*(numel(data)-1));
+0014 data(Ix)=NaN;
+0015 
+0016 output = <a href="../../../../dependencies/googleearthtoolbox/matlab/ge_imagesc_old.html" class="code" title="function [kmlStr] = ge_imagesc_old(x,y,data,varargin)">ge_imagesc_old</a>(x,y,data,<span class="keyword">...</span>
+0017                  <span class="string">'polyAlpha'</span>,<span class="string">'80'</span>,<span class="keyword">...</span>
+0018                  <span class="string">'lineColor'</span>,<span class="string">'00000000'</span>,<span class="keyword">...</span>
+0019                  <span class="string">'lineWidth'</span>,0.1,<span class="keyword">...</span>
+0020                    <span class="string">'cLimLow'</span>,cLimLow,<span class="keyword">...</span>
+0021                   <span class="string">'cLimHigh'</span>,cLimHigh,<span class="keyword">...</span>
+0022              <span class="string">'dataFormatStr'</span>,<span class="string">'%+010.6f'</span>,<span class="keyword">...</span>
+0023                   <span class="string">'altitude'</span>,1e5,<span class="keyword">...</span>
+0024               <span class="string">'altitudeMode'</span>,<span class="string">'relativeToGround'</span>,<span class="keyword">...</span>
+0025                    <span class="string">'extrude'</span>,0);
+0026 
+0027 output2 = <a href="../../../../dependencies/googleearthtoolbox/matlab/ge_colorbar.html" class="code" title="function [output] = ge_colorbar(x,y,data,varargin)">ge_colorbar</a>(x(end),y(1),data,<span class="keyword">...</span>
+0028                           <span class="string">'numClasses'</span>,20,<span class="keyword">...</span>
+0029                              <span class="string">'cLimLow'</span>,cLimLow,<span class="keyword">...</span>
+0030                             <span class="string">'cLimHigh'</span>,cLimHigh,<span class="keyword">...</span>
+0031                        <span class="string">'cBarFormatStr'</span>,<span class="string">'%+07.4f'</span>);
+0032 
+0033 <a href="../../../../dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>([kmlTargetDir,kmlFileName],[output2 output],<span class="keyword">...</span>
+0034                                                <span class="string">'name'</span>,kmlFileName);
+0035                                            
+0036</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of open_print_doc</title>
+  <meta name="keywords" content="open_print_doc">
+  <meta name="description" content="This file is used by 'html/print_doc_index.html' to open up a pdf file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; open_print_doc.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>open_print_doc
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This file is used by 'html/print_doc_index.html' to open up a pdf file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function open_print_doc() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">This file is used by 'html/print_doc_index.html' to open up a pdf file.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function open_print_doc()</a>
+0002 <span class="comment">%This file is used by 'html/print_doc_index.html' to open up a pdf file.</span>
+0003 p=mfilename(<span class="string">'fullpath'</span>);
+0004 [ppath,name,ext,vrsn]=fileparts(p);
+0005 docURL = [char(39),ppath,filesep,<span class="string">'doc'</span>,filesep,<span class="string">'Google Earth Toolbox tutorial.pdf'</span>,char(39)];
+0006 
+0007 <span class="keyword">if</span> ispc
+0008     eval([<span class="string">'winopen('</span>,docURL,<span class="string">')'</span>])
+0009 <span class="keyword">else</span>
+0010     disp([<span class="string">'Focus will be returned to MATLAB after closing'</span>,<span class="keyword">...</span>
+0011         char(10),<span class="string">'the external application.'</span>])
+0012     eval([<span class="string">'[s,cdir]=system('</span>,docURL,<span class="string">');'</span>])
+0013 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

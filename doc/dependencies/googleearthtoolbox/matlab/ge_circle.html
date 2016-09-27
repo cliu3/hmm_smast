@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ge_circle</title>
+  <meta name="keywords" content="ge_circle">
+  <meta name="description" content="Reference page in help browser:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; ge_circle.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ge_circle
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Reference page in help browser:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function output=ge_circle(X,Y,radius,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Reference page in help browser: 
+ 
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_circle.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>	</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../dependencies/googleearthtoolbox/matlab/demo/demo_ge_circle.html" class="code" title="function demo_ge_circle">demo_ge_circle</a>	</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [output] = convert2degree(in)</a></li><li><a href="#_sub2" class="code">function [x, y] = vectorsplit( angle, magnitude )</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function output=ge_circle(X,Y,radius,varargin)</a>
+0002 <span class="comment">% Reference page in help browser:</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_circle.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation</span>
+0005 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</span>
+0006 <span class="comment">%</span>
+0007 
+0008 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0009 
+0010          id = <span class="string">'circle'</span>;
+0011       idTag = <span class="string">'id'</span>;
+0012        name = <span class="string">'ge_circle'</span>;
+0013 description = <span class="string">''</span>;
+0014     timeStamp = <span class="string">' '</span>;
+0015 timeSpanStart = <span class="string">' '</span>;
+0016  timeSpanStop = <span class="string">' '</span>;
+0017  visibility = 1;
+0018   lineColor = <span class="string">'ffffffff'</span>;
+0019   polyColor = <span class="string">'ffffffff'</span>;
+0020   lineWidth = 1.0;
+0021 msgToScreen = 0;
+0022     snippet = <span class="string">' '</span>;
+0023    altitude = 1.0;
+0024    divisions = 8;
+0025  altitudeMode = <span class="string">'clampToGround'</span>;
+0026    region = <span class="string">' '</span>;
+0027 
+0028 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/value pairs.</span>
+0029 
+0030 <span class="keyword">if</span> msgToScreen
+0031    disp([<span class="string">'Running '</span> mfilename <span class="string">'...'</span>]) 
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="keyword">if</span>( isempty( Y ) || isempty( X ) || isempty( radius ) )
+0035     error(<span class="string">'empty coordinates passed to ge_circle(...).'</span>);
+0036 <span class="keyword">end</span>
+0037 
+0038 
+0039 <span class="keyword">if</span> ~(isequal(altitudeMode,<span class="string">'clampToGround'</span>)||<span class="keyword">...</span>
+0040    isequal(altitudeMode,<span class="string">'relativeToGround'</span>)||<span class="keyword">...</span>
+0041    isequal(altitudeMode,<span class="string">'absolute'</span>))
+0042 
+0043     error([<span class="string">'Variable '</span>,39,<span class="string">'altitudeMode'</span>,39, <span class="string">' should be one of '</span> ,39,<span class="string">'clampToGround'</span>,39,<span class="string">', '</span>,10,39,<span class="string">'relativeToGround'</span>,39,<span class="string">', or '</span>,39,<span class="string">'absolute'</span>,39,<span class="string">'.'</span> ])
+0044     
+0045 <span class="keyword">end</span> 
+0046 
+0047 <span class="keyword">if</span> region == <span class="string">' '</span>
+0048     region_chars = <span class="string">''</span>;
+0049 <span class="keyword">else</span>
+0050     region_chars = [ region, 10 ];
+0051 <span class="keyword">end</span>
+0052 
+0053 id_chars = [ idTag <span class="string">'=&quot;'</span> id <span class="string">'&quot;'</span> ];
+0054 poly_id_chars = [ idTag <span class="string">'=&quot;poly_'</span> id <span class="string">'&quot;'</span> ];
+0055 name_chars = [ <span class="string">'&lt;name&gt;'</span>,10,name,10,<span class="string">'&lt;/name&gt;'</span>,10 ];
+0056 description_chars = [ <span class="string">'&lt;description&gt;'</span>,10,<span class="string">'&lt;![CDATA['</span> description <span class="string">']]&gt;'</span>,10,<span class="string">'&lt;/description&gt;'</span>,10 ];
+0057 visibility_chars = [ <span class="string">'&lt;visibility&gt;'</span>,10,int2str(visibility) <span class="string">'&lt;/visibility&gt;'</span>,10 ];
+0058 lineColor_chars = [ <span class="string">'&lt;color&gt;'</span>,10,lineColor([1,2,7,8,5,6,3,4]),10,<span class="string">'&lt;/color&gt;'</span>,10 ];
+0059 polyColor_chars = [ <span class="string">'&lt;color&gt;'</span>,10,polyColor([1,2,7,8,5,6,3,4]),10,<span class="string">'&lt;/color&gt;'</span>,10 ];
+0060 lineWidth_chars= [ <span class="string">'&lt;width&gt;'</span>,10,num2str(lineWidth, <span class="string">'%.2f'</span>),10,<span class="string">'&lt;/width&gt;'</span>,10 ];
+0061 altitudeMode_chars = [ <span class="string">'&lt;altitudeMode&gt;'</span>,10,altitudeMode,10,<span class="string">'&lt;/altitudeMode&gt;'</span>,10 ];
+0062 <span class="keyword">if</span> snippet == <span class="string">' '</span>
+0063     snippet_chars = <span class="string">''</span>;
+0064 <span class="keyword">else</span>
+0065     snippet_chars = [ <span class="string">'&lt;Snippet&gt;'</span> snippet <span class="string">'&lt;/Snippet&gt;'</span>,10 ];    
+0066 <span class="keyword">end</span>
+0067    
+0068 
+0069 <span class="keyword">if</span> timeStamp == <span class="string">' '</span>
+0070     timeStamp_chars = <span class="string">''</span>;
+0071 <span class="keyword">else</span>
+0072     timeStamp_chars = [ <span class="string">'&lt;TimeStamp&gt;&lt;when&gt;'</span> timeStamp <span class="string">'&lt;/when&gt;&lt;/TimeStamp&gt;'</span>,10 ];
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="keyword">if</span> timeSpanStart == <span class="string">' '</span>
+0076     timeSpan_chars = <span class="string">''</span>;
+0077 <span class="keyword">else</span>
+0078     <span class="keyword">if</span> timeSpanStop == <span class="string">' '</span> 
+0079         timeSpan_chars = [ <span class="string">'&lt;TimeSpan&gt;&lt;begin&gt;'</span> timeSpanStart <span class="string">'&lt;/begin&gt;&lt;/TimeSpan&gt;'</span>,10 ];
+0080     <span class="keyword">else</span>
+0081         timeSpan_chars = [ <span class="string">'&lt;TimeSpan&gt;&lt;begin&gt;'</span> timeSpanStart <span class="string">'&lt;/begin&gt;&lt;end&gt;'</span> timeSpanStop <span class="string">'&lt;/end&gt;&lt;/TimeSpan&gt;'</span>,10 ];    
+0082     <span class="keyword">end</span>
+0083         
+0084 <span class="keyword">end</span>
+0085 
+0086 
+0087 radius = km2deg(radius/1000);
+0088 <span class="comment">%radius = convert2degree(radius);</span>
+0089 divisions = 2 .^ divisions;
+0090 angle_division = 360.0 / divisions;
+0091 
+0092 
+0093 header=[<span class="string">'&lt;Placemark '</span>,id_chars,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0094     name_chars,10,<span class="keyword">...</span>
+0095     timeStamp_chars,<span class="keyword">...</span>
+0096     timeSpan_chars,<span class="keyword">...</span>
+0097     visibility_chars,10,<span class="keyword">...</span>
+0098     snippet_chars,<span class="keyword">...</span>
+0099     description_chars,10,<span class="keyword">...</span>
+0100     region_chars, <span class="keyword">...</span>
+0101     <span class="string">'&lt;Style&gt;'</span>,10,<span class="keyword">...</span>
+0102         <span class="string">'&lt;LineStyle&gt;'</span>,10,<span class="keyword">...</span>
+0103             lineColor_chars,10,<span class="keyword">...</span>
+0104             lineWidth_chars,10,<span class="keyword">...</span>
+0105         <span class="string">'&lt;/LineStyle&gt;'</span>,10,<span class="keyword">...</span>
+0106         <span class="string">'&lt;PolyStyle&gt;'</span>,10,<span class="keyword">...</span>
+0107             polyColor_chars,10,<span class="keyword">...</span>
+0108         <span class="string">'&lt;/PolyStyle&gt;'</span>,10,<span class="keyword">...</span>
+0109     <span class="string">'&lt;/Style&gt;'</span>,10,<span class="keyword">...</span>
+0110   <span class="string">'&lt;Polygon '</span>,poly_id_chars,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0111    name_chars,10,<span class="keyword">...</span>
+0112     altitudeMode_chars, <span class="keyword">...</span>
+0113     <span class="string">'&lt;outerBoundaryIs&gt;'</span>,10,<span class="keyword">...</span>
+0114       <span class="string">'&lt;LinearRing&gt;'</span>,10,<span class="keyword">...</span>
+0115        altitudeMode_chars,<span class="keyword">...</span>
+0116         <span class="string">'&lt;coordinates&gt;'</span>,10,];
+0117         
+0118         coordinates = <span class="string">''</span>;
+0119         <span class="keyword">for</span> i = divisions:-1:0
+0120           angle = angle_division * i;
+0121             [xS, yS] = <a href="#_sub2" class="code" title="subfunction [x, y] = vectorsplit( angle, magnitude )">vectorsplit</a>( angle, radius );
+0122       [a,b] = track1(Y,X,angle,radius,[],[],2);
+0123       ringlat(i+1)=a(2);ringlon(i+1)=b(2);
+0124             <span class="comment">%coordinates = [coordinates, sprintf('%.6f,%.6f,%.6f ', X+xS, Y+yS, altitude)];</span>
+0125           coordinates = [coordinates, sprintf(<span class="string">'%.6f,%.6f,%.6f '</span>, b(2), a(2), altitude)];
+0126         <span class="keyword">end</span>
+0127         
+0128 footer=[<span class="string">'&lt;/coordinates&gt;'</span>,10,<span class="keyword">...</span>
+0129       <span class="string">'&lt;/LinearRing&gt;'</span>,10,<span class="keyword">...</span>
+0130     <span class="string">'&lt;/outerBoundaryIs&gt;'</span>,10,<span class="keyword">...</span>
+0131   <span class="string">'&lt;/Polygon&gt;'</span>,10,<span class="keyword">...</span>
+0132 <span class="string">'&lt;/Placemark&gt;'</span>,10];
+0133 
+0134 output = [ header, coordinates, footer ];
+0135 <span class="keyword">if</span> msgToScreen
+0136    disp([<span class="string">'Running '</span> mfilename <span class="string">'...Done'</span>]) 
+0137 <span class="keyword">end</span>
+0138 
+0139 <a name="_sub1" href="#_subfunctions" class="code">function [output] = convert2degree(in)</a>
+0140 <span class="comment">%% convert2degree</span>
+0141 <span class="comment">% helper function that converts to decimal degree coordinates</span>
+0142     output = 180 * in / (6378137.0  * pi);
+0143     
+0144     
+0145 <a name="_sub2" href="#_subfunctions" class="code">function [x, y] = vectorsplit( angle, magnitude )</a>
+0146 <span class="comment">% Splits the vector at angle &amp; magnitude</span>
+0147 
+0148     alpharad = <a href="deg2rad.html" class="code" title="function [angle_rad]=deg2rad(angle_deg)">deg2rad</a>( angle ); <span class="comment">%[rad]</span>
+0149 
+0150     x = sin( alpharad ) * magnitude;           
+0151     y = cos( alpharad ) * magnitude;           
+0152            
+0153</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

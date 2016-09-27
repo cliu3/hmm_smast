@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of makekern2</title>
+  <meta name="keywords" content="makekern2">
+  <meta name="description" content="MAKEKERN2">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">backfun</a> &gt; makekern2.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for backfun&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>makekern2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MAKEKERN2</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [kern kern3] = makekern2(par) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MAKEKERN2
+ [kern kern3] = makekern2(par)
+ Inputs: par
+ par must have the field covmat which should be a 2 by 2 covariance matrix</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../datalik/datalikelihood_smast.html" class="code" title="function datalikelihood(tagno,type,iter,recap,z_off_bottom)">datalikelihood_smast</a>	tagno = 'ttide001'</li><li><a href="../filter/hmmfilter.html" class="code" title="function [phi,normaliser,pred,isDtoosmall] = hmmfilter(s,db,td,LIK)">hmmfilter</a>	HMMFILTER Perform the forward sweep of the filtering.</li><li><a href="../filter/smoothing.html" class="code" title="function [smooth] = smoothing(s,phi,db,td,pred)">smoothing</a>	SMOOTHING Perform the backward sweep of the filtering.</li><li><a href="../postprocessing/mptrack.html" class="code" title="function [mpt] = mptrack(tagno)">mptrack</a>	MPTRACK  Find the Most Probable Track.</li><li><a href="../postprocessing/proboftrack.html" class="code" title="function tr=proboftrack(tr,result,LIK)">proboftrack</a>	PROBOFTRACK  Calculate the probability of a track given the observations.</li><li><a href="../postprocessing/samptrack.html" class="code" title="function [samptracks] = samptrack(result,LIK,no)">samptrack</a>	SAMPTRACK  Sample random tracks from a geolocation result.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [kern kern3] = makekern2(par)</a>
+0002 <span class="comment">% MAKEKERN2</span>
+0003 <span class="comment">% [kern kern3] = makekern2(par)</span>
+0004 <span class="comment">% Inputs: par</span>
+0005 <span class="comment">% par must have the field covmat which should be a 2 by 2 covariance matrix</span>
+0006 <span class="keyword">if</span> ~isfield(par,<span class="string">'u'</span>), par.u = [0 0]; <span class="keyword">end</span>
+0007 
+0008 
+0009 <span class="comment">% Setup initial kernel (kernel base) for x direction</span>
+0010 ux = abs(par.u(1));
+0011 kbl_x = ceil(ux)*2+1;
+0012 kb_x = zeros(1,kbl_x);
+0013 inp = [1-ux+floor(ux) ux-floor(ux)];
+0014 <span class="keyword">if</span> inp(2) == 0
+0015     kb_x(kbl_x) = 1;
+0016 <span class="keyword">else</span>
+0017     kb_x(kbl_x-1:kbl_x) = inp;
+0018 <span class="keyword">end</span>
+0019 <span class="keyword">if</span> sign(par.u(1)) == -1, kb_x = fliplr(kb_x); <span class="keyword">end</span>
+0020 kb_var_x = sum(kb_x.*((-(kbl_x-1)/2:(kbl_x-1)/2) - par.u(1)).^2);
+0021 rv(1) = par.covmat(1,1) - kb_var_x; <span class="comment">% Remaining variance</span>
+0022 <span class="comment">%rv(1) = 0.25 - kb_var_x; % Remaining variance</span>
+0023 <span class="comment">%%%%% if rv(1) &lt; 0, error('Diffusion is too small compared to advection in x-dir! (makekern2)'), end</span>
+0024 <span class="comment">% % mk = [0.25*rv(1) 1-0.5*rv(1) 0.25*rv(1)];</span>
+0025 <span class="comment">% % kb_x = convn(convn(kb_x,mk),mk);</span>
+0026 <span class="comment">% % kb_var_x = sum(kb_x.*((-(kbl_x+3)/2:(kbl_x+3)/2) - par.u(1)).^2);</span>
+0027 
+0028 <span class="comment">% Setup initial kernel (kernel base) for y direction</span>
+0029 uy = abs(par.u(2));
+0030 kbl_y = ceil(uy)*2+1;
+0031 kb_y = zeros(1,kbl_y);
+0032 inp = [1-uy+floor(uy) uy-floor(uy)];
+0033 <span class="keyword">if</span> inp(2) == 0
+0034     kb_y(kbl_y) = 1;
+0035 <span class="keyword">else</span>
+0036     kb_y(kbl_y-1:kbl_y) = inp;
+0037 <span class="keyword">end</span>
+0038 <span class="keyword">if</span> sign(par.u(2)) == -1, kb_y = fliplr(kb_y); <span class="keyword">end</span>
+0039 kb_var_y = sum(kb_y.*((-(kbl_y-1)/2:(kbl_y-1)/2) - par.u(2)).^2);
+0040 rv(2) = par.covmat(2,2) - kb_var_y; <span class="comment">% Remaining variance</span>
+0041 <span class="comment">%rv(2) = 0.25 - kb_var_y; % Remaining variance</span>
+0042 <span class="comment">%%%%% if rv(2) &lt; 0, error('Diffusion is too small compared to advection in y-dir! (makekern2)'), end</span>
+0043 <span class="comment">% Make sure all schemes have 0.25 variance to begin with since som values</span>
+0044 <span class="comment">% for advection forces the scheme to a minimum variance of 0.25 (when u =</span>
+0045 <span class="comment">% 0.5 or 1.5 or 2.5 or....)</span>
+0046 <span class="comment">% % mk = [0.25*rv(2) 1-0.5*rv(2) 0.25*rv(2)];</span>
+0047 <span class="comment">% % kb_y = convn(convn(kb_y,mk),mk);</span>
+0048 <span class="comment">% % kb_var_y = sum(kb_y.*((-(kbl_y+3)/2:(kbl_y+3)/2) - par.u(2)).^2);</span>
+0049 
+0050 N = [1 1];
+0051 kb{1} = kb_x;
+0052 kb{2} = kb_y;
+0053 <span class="keyword">for</span> j = 1:2 <span class="comment">% Cycle the two directions</span>
+0054     <span class="comment">%disp('============')</span>
+0055     <span class="keyword">if</span> rv(j)&lt;0
+0056         D = 0.5*par.covmat(j,j);
+0057         <span class="comment">%D = 0.5*(par.covmat(j,j)-0.25); % The 0.25 is to cope with numerical diffusion from advection (see above)</span>
+0058     <span class="keyword">else</span>
+0059     D = 0.5*rv(j); <span class="comment">% The 0.25 is to cope with numerical diffusion from advection (see above)</span>
+0060     <span class="keyword">end</span>
+0061     n = floor(D/0.5);
+0062     mink = 1;
+0063     endk = 1;
+0064     <span class="keyword">while</span> (endk &gt; 0.0001 | mink &lt; 0 | (D/n)&gt; 0.4) <span class="comment">% max probability in end point of 1D kernel</span>
+0065         <span class="keyword">if</span> n == 100
+0066             warning(<span class="string">'Kernel is large! (n&gt;100)'</span>)
+0067         <span class="keyword">end</span>
+0068         <span class="keyword">if</span> n == 200
+0069             error(<span class="string">'Kernel too large! (n&gt;200)'</span>)
+0070         <span class="keyword">end</span>
+0071         n = n+1;
+0072         kern2 = [D/n 1-2*D/n D/n];
+0073         kern3 = kb{j};
+0074         <span class="keyword">for</span> i=1:n
+0075             kern3 = conv(kern3,kern2);
+0076         <span class="keyword">end</span>
+0077         endk = max([kern3(1) kern3(end)]);
+0078         mink = min(kern3);
+0079         <span class="comment">%D/n</span>
+0080         <span class="comment">%kern3</span>
+0081     <span class="keyword">end</span>
+0082     <span class="comment">% Convolve to take care of advection (increase kernel size)</span>
+0083 <span class="comment">%     n = n+ua;</span>
+0084 <span class="comment">%     kern2 = [D/n 1-2*D/n D/n];</span>
+0085 <span class="comment">%     kern3 = 1;</span>
+0086 <span class="comment">%     for uadd = 1:n</span>
+0087 <span class="comment">%         kern3 = conv(kern3,kern2);</span>
+0088 <span class="comment">%     end</span>
+0089     <span class="comment">% put a limit on kernel size</span>
+0090     <span class="keyword">if</span> length(kern3) &gt; 100
+0091         inds = kern3 &lt; 1e-7;
+0092         <span class="keyword">if</span> sum(inds) &gt; 0,
+0093             l = sum(inds(1:n));
+0094             r = sum(inds(n+2:end));
+0095             lr = min([l r]);
+0096             kern3 = kern3([lr+1:length(kern3)-lr]);
+0097         <span class="keyword">end</span>
+0098     <span class="keyword">end</span>
+0099     <span class="comment">% Store kernel</span>
+0100     K{j} = kern3;
+0101     N(j) = n;
+0102 <span class="comment">%     mink</span>
+0103 <span class="comment">%     endk</span>
+0104 <span class="comment">%     D/n</span>
+0105 <span class="comment">% kern3</span>
+0106 <span class="keyword">end</span>
+0107 <span class="comment">% N</span>
+0108 <span class="comment">% K{1}</span>
+0109 <span class="comment">% K{2}</span>
+0110 <span class="comment">% % % The largest 1D-kernel determines the size of the 2D-kernel</span>
+0111 <span class="comment">% % % These calsulations are to make the kernel square in size</span>
+0112 <span class="comment">% % [L I] = max([length(K{1}) length(K{2})]);</span>
+0113 <span class="comment">% % if I == 2,</span>
+0114 <span class="comment">% %     Is = 1;</span>
+0115 <span class="comment">% % elseif I == 1,</span>
+0116 <span class="comment">% %     Is = 2;</span>
+0117 <span class="comment">% % end</span>
+0118 <span class="comment">% %</span>
+0119 <span class="comment">% % n = N(I);</span>
+0120 <span class="comment">% % D = 0.5*rv(Is);</span>
+0121 <span class="comment">% % kern2 = [D/n 1-2*D/n D/n];</span>
+0122 <span class="comment">% % kern3 = 1;</span>
+0123 <span class="comment">% % for i=1:n</span>
+0124 <span class="comment">% %     kern3 = conv(kern3,kern2);</span>
+0125 <span class="comment">% % end</span>
+0126 <span class="comment">% %</span>
+0127 <span class="comment">% % K{Is} = kern3;</span>
+0128 <span class="comment">% K{1}</span>
+0129 <span class="comment">% K{2}</span>
+0130 kern = K{2}'*K{1};
+0131 
+0132 <span class="keyword">if</span> sum(kern(:)) &lt; 0.99, warning(<span class="string">'kernel does not sum to one, it sums to %f (makekern2)'</span>,sum(kern(:))),<span class="keyword">end</span>
+0133 <span class="keyword">if</span> min(kern(:)) &lt; 0, warning(<span class="string">'kernel has elements that are below zero!'</span>); <span class="keyword">end</span>
+0134 <span class="comment">%KS = size(kern);</span>
+0135 <span class="comment">%if KS(1)~=KS(2), error('kernel is not square! (makekern2)'), end</span>
+0136 
+0137 
+0138 
+0139</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

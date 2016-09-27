@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ge_windbarb</title>
+  <meta name="keywords" content="ge_windbarb">
+  <meta name="description" content="% Reference page in help browser:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; ge_windbarb.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ge_windbarb
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Reference page in help browser:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function kmlStr = ge_windbarb(X,Y,Z,U,V,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> % Reference page in help browser: 
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_windbarb.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>	Reference page in help browser:</li><li><a href="ge_quiver3.html" class="code" title="function tag_str = ge_quiver3(XM,YM,ZM,UM,VM,WM,varargin)">ge_quiver3</a>	Reference page in help browser:</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../dependencies/googleearthtoolbox/matlab/demo/%demo_ge_windbarb.html" class="code" title="function demo_ge_windbarb()">%demo_ge_windbarb</a>	</li><li><a href="../../../dependencies/googleearthtoolbox/matlab/demo/demo_ge_makekmz.html" class="code" title="function demo_ge_makekmz()">demo_ge_makekmz</a>	specify directory to store collada models:</li><li><a href="../../../dependencies/googleearthtoolbox/matlab/demo/demo_ge_windbarb2.html" class="code" title="function demo_ge_windbarb2()">demo_ge_windbarb2</a>	</li><li><a href="../../../dependencies/googleearthtoolbox/matlab/doc/ex006_test.html" class="code" title="">ex006_test</a>	</li><li><a href="../../../dependencies/googleearthtoolbox/matlab/tests/pre_ge_windbarb.html" class="code" title="">pre_ge_windbarb</a>	</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function barbFileStr = retrieve_barb(U,V,Y)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function kmlStr = ge_windbarb(X,Y,Z,U,V,varargin)</a>
+0002 <span class="comment">% % Reference page in help browser:</span>
+0003 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_windbarb.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation</span>
+0004 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</span>
+0005 <span class="comment">%</span>
+0006 
+0007 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0008 
+0009      timeStamp = <span class="string">' '</span>;
+0010  timeSpanStart = <span class="string">' '</span>;
+0011   timeSpanStop = <span class="string">' '</span>;
+0012    msgToScreen = false;
+0013   altitudeMode = <span class="string">'relativeToGround'</span>;
+0014         region = <span class="string">' '</span>;
+0015           name = <span class="string">'windbarb'</span>;
+0016         
+0017   p=mfilename(<span class="string">'fullpath'</span>);
+0018 [toolboxroot,fname,ext,vsn] = fileparts(p);
+0019     clear fname ext vsn
+0020     
+0021 rLink = <span class="string">''</span>;
+0022 
+0023 arrowScale = 1e5;
+0024 
+0025 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/Value pairs.</span>
+0026 
+0027 <span class="keyword">if</span> msgToScreen
+0028     disp([<span class="string">'Running: '</span>,mfilename,<span class="string">'...'</span>])
+0029 <span class="keyword">end</span>
+0030 
+0031 <span class="keyword">if</span> numel(X)==0
+0032     error([<span class="string">'Empty X-coordinates passed to '</span>,mfilename]);
+0033 <span class="keyword">end</span>
+0034 <span class="keyword">if</span> numel(Y)==0
+0035     error([<span class="string">'Empty Y-coordinates passed to '</span>,mfilename]);
+0036 <span class="keyword">end</span>
+0037 <span class="keyword">if</span> numel(Z)==0
+0038     error([<span class="string">'Empty Y-coordinates passed to '</span>,mfilename]);
+0039 <span class="keyword">elseif</span> numel(Z)==1
+0040     Z=ones(size(X))*Z;
+0041 <span class="keyword">end</span>
+0042 
+0043 
+0044 <span class="keyword">if</span> numel(U)==0
+0045     error([<span class="string">'Empty U-data passed to '</span>,mfilename]);
+0046 <span class="keyword">end</span>
+0047 <span class="keyword">if</span> numel(V)==0
+0048     error([<span class="string">'Empty V-data passed to '</span>,mfilename]);
+0049 <span class="keyword">end</span>
+0050 <span class="keyword">if</span> ~isequal(numel(X),numel(Y),numel(U),numel(V))
+0051     error([<span class="string">'Number of elements in input variables X,Y,U, and V must be the same ('</span>,mfilename,<span class="string">').'</span>])
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="keyword">if</span> ~(isequal(altitudeMode,<span class="string">'clampToGround'</span>)||<span class="keyword">...</span>
+0055    isequal(altitudeMode,<span class="string">'relativeToGround'</span>)||<span class="keyword">...</span>
+0056    isequal(altitudeMode,<span class="string">'absolute'</span>))
+0057 
+0058     error([<span class="string">'Variable '</span>,39,<span class="string">'altitudeMode'</span>,39, <span class="string">' should be one of '</span> ,39,<span class="string">'clampToGround'</span>,39,<span class="string">', '</span>,10,39,<span class="string">'relativeToGround'</span>,39,<span class="string">', or '</span>,39,<span class="string">'absolute'</span>,39,<span class="string">'.'</span> ])
+0059 <span class="keyword">end</span>   
+0060 
+0061 <span class="keyword">if</span> strcmp(rLink,<span class="string">''</span>)
+0062 <span class="keyword">elseif</span> ~ismember(rLink(end),<span class="string">'\/'</span>)
+0063     error([<span class="string">'Parameter '</span>,39,<span class="string">'rLink'</span>,39,<span class="string">' should end in a folder separator'</span>,char(10),<span class="string">'character. See &lt;a href=&quot;matlab:doc filesep&quot;&gt;doc filesep&lt;/a&gt;.'</span>])
+0064 <span class="keyword">end</span>
+0065     
+0066 
+0067 guestimation=525;
+0068 kmlStr=repmat(<span class="string">'%'</span>,[1,guestimation*numel(X)]);
+0069 n=0;
+0070     
+0071 <span class="keyword">for</span> k=1:numel(X)
+0072     
+0073     <span class="keyword">if</span> all(~isnan([X(k),Y(k),U(k),V(k)]))
+0074 
+0075         daeModelStr = [rLink,<a href="#_sub1" class="code" title="subfunction barbFileStr = retrieve_barb(U,V,Y)">retrieve_barb</a>(U(k),V(k),Y(k))];
+0076 
+0077         TMP = <a href="ge_quiver3.html" class="code" title="function tag_str = ge_quiver3(XM,YM,ZM,UM,VM,WM,varargin)">ge_quiver3</a>(X(k),Y(k),Z(k),U(k)*-1.0,V(k)*-1.0,0,<span class="keyword">...</span>
+0078                                   <span class="string">'modelLinkStr'</span>,daeModelStr,<span class="keyword">...</span>
+0079                                   <span class="string">'altitudeMode'</span>,altitudeMode,<span class="keyword">...</span>
+0080                                     <span class="string">'arrowScale'</span>,arrowScale,<span class="keyword">...</span>
+0081                                      <span class="string">'region'</span>, region,<span class="keyword">...</span>
+0082                                  <span class="string">'name'</span>,[<span class="string">'barb=&amp;#0039;'</span>,daeModelStr,<span class="string">'&amp;#0039;'</span>,],<span class="keyword">...</span>
+0083                               <span class="string">'fixedArrowLength'</span>,1,<span class="keyword">...</span>
+0084                                  <span class="string">'timeSpanStart'</span>,timeSpanStart,<span class="keyword">...</span>
+0085                                   <span class="string">'timeSpanStop'</span>,timeSpanStop,<span class="keyword">...</span>
+0086                                      <span class="string">'timeStamp'</span>,timeStamp);
+0087         kmlStr(n+1:n+length(TMP))=TMP;
+0088         n = n+length(TMP);
+0089     <span class="keyword">end</span>
+0090 <span class="keyword">end</span>
+0091 kmlStr(n+1:end)=<span class="string">''</span>;
+0092 
+0093 kmlStr = <a href="ge_folder.html" class="code" title="function foutput = ge_folder(foldername,output,varargin)">ge_folder</a>(name,kmlStr);
+0094 
+0095 <span class="keyword">if</span> msgToScreen
+0096    disp([<span class="string">'Running '</span> mfilename <span class="string">'...Done'</span>]) 
+0097 <span class="keyword">end</span>
+0098 
+0099 
+0100 
+0101 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0102 <span class="comment">%%%%%             LOCAL FUNCTION STARTS HERE               %%%%%%%%</span>
+0103 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0104 
+0105 <a name="_sub1" href="#_subfunctions" class="code">function barbFileStr = retrieve_barb(U,V,Y)</a>
+0106 
+0107 Vk = V/0.51;
+0108 Uk = U/0.51;
+0109 speedKnots = sqrt(Uk.^2+Vk.^2);
+0110 
+0111 <span class="keyword">if</span> Y&lt;0
+0112     startIx=20;
+0113 <span class="keyword">else</span>
+0114     startIx=0;
+0115 <span class="keyword">end</span>
+0116 
+0117 daeCell = {<span class="string">'001nhemi00000025kts.dae'</span>;<span class="keyword">...</span>
+0118             <span class="string">'002nhemi00250075kts.dae'</span>;<span class="keyword">...</span>
+0119             <span class="string">'003nhemi00750125kts.dae'</span>;<span class="keyword">...</span>
+0120             <span class="string">'004nhemi01250175kts.dae'</span>;<span class="keyword">...</span>
+0121             <span class="string">'005nhemi01750225kts.dae'</span>;<span class="keyword">...</span>
+0122             <span class="string">'006nhemi02250275kts.dae'</span>;<span class="keyword">...</span>
+0123             <span class="string">'007nhemi02750325kts.dae'</span>;<span class="keyword">...</span>
+0124             <span class="string">'008nhemi03250375kts.dae'</span>;<span class="keyword">...</span>
+0125             <span class="string">'009nhemi03750425kts.dae'</span>;<span class="keyword">...</span>
+0126             <span class="string">'010nhemi04250475kts.dae'</span>;<span class="keyword">...</span>
+0127             <span class="string">'011nhemi04750525kts.dae'</span>;<span class="keyword">...</span>
+0128             <span class="string">'012nhemi05250575kts.dae'</span>;<span class="keyword">...</span>
+0129             <span class="string">'013nhemi05750625kts.dae'</span>;<span class="keyword">...</span>
+0130             <span class="string">'014nhemi06250675kts.dae'</span>;<span class="keyword">...</span>
+0131             <span class="string">'015nhemi06750725kts.dae'</span>;<span class="keyword">...</span>
+0132             <span class="string">'016nhemi07250775kts.dae'</span>;<span class="keyword">...</span>
+0133             <span class="string">'017nhemi07750825kts.dae'</span>;<span class="keyword">...</span>
+0134             <span class="string">'018nhemi08250875kts.dae'</span>;<span class="keyword">...</span>
+0135             <span class="string">'019nhemi08750925kts.dae'</span>;<span class="keyword">...</span>
+0136             <span class="string">'020nhemi09250975kts.dae'</span>;<span class="keyword">...</span>
+0137             <span class="string">'021shemi00000025kts.dae'</span>;<span class="keyword">...</span>
+0138             <span class="string">'022shemi00250075kts.dae'</span>;<span class="keyword">...</span>
+0139             <span class="string">'023shemi00750125kts.dae'</span>;<span class="keyword">...</span>
+0140             <span class="string">'024shemi01250175kts.dae'</span>;<span class="keyword">...</span>
+0141             <span class="string">'025shemi01750225kts.dae'</span>;<span class="keyword">...</span>
+0142             <span class="string">'026shemi02250275kts.dae'</span>;<span class="keyword">...</span>
+0143             <span class="string">'027shemi02750325kts.dae'</span>;<span class="keyword">...</span>
+0144             <span class="string">'028shemi03250375kts.dae'</span>;<span class="keyword">...</span>
+0145             <span class="string">'029shemi03750425kts.dae'</span>;<span class="keyword">...</span>
+0146             <span class="string">'030shemi04250475kts.dae'</span>;<span class="keyword">...</span>
+0147             <span class="string">'031shemi04750525kts.dae'</span>;<span class="keyword">...</span>
+0148             <span class="string">'032shemi05250575kts.dae'</span>;<span class="keyword">...</span>
+0149             <span class="string">'033shemi05750625kts.dae'</span>;<span class="keyword">...</span>
+0150             <span class="string">'034shemi06250675kts.dae'</span>;<span class="keyword">...</span>
+0151             <span class="string">'035shemi06750725kts.dae'</span>;<span class="keyword">...</span>
+0152             <span class="string">'036shemi07250775kts.dae'</span>;<span class="keyword">...</span>
+0153             <span class="string">'037shemi07750825kts.dae'</span>;<span class="keyword">...</span>
+0154             <span class="string">'038shemi08250875kts.dae'</span>;<span class="keyword">...</span>
+0155             <span class="string">'039shemi08750925kts.dae'</span>;<span class="keyword">...</span>
+0156             <span class="string">'040shemi09250975kts.dae'</span>};
+0157 
+0158 windSpeedBounds = [0,5,10:5:97.5];
+0159 d = windSpeedBounds-speedKnots;
+0160 f = find(min(abs(d))==abs(d));
+0161 barbFileStr = daeCell{startIx+f};
+0162</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

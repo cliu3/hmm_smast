@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wrap_ttide_harmonics</title>
+  <meta name="keywords" content="wrap_ttide_harmonics">
+  <meta name="description" content="given elevation and time step, calculate harmonics for the folloing comps">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">test</a> &gt; <a href="index.html">preprocessing</a> &gt; wrap_ttide_harmonics.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for test/preprocessing&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>wrap_ttide_harmonics
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>given elevation and time step, calculate harmonics for the folloing comps</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [amp,phase] = wrap_ttide_harmonics(eta,dt_minutes,start_time) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> given elevation and time step, calculate harmonics for the folloing comps</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../dependencies/t_tide/t_tide.html" class="code" title="function [nameu,fu,tidecon,xout]=t_tide(xin,varargin);">t_tide</a>	T_TIDE Harmonic analysis of a time series</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="check_tag.html" class="code" title="function [] = check_harmonics(tag);">check_tag</a>	Check harmonics from a fixed bottom tag and compare with FVCOM database at the same location</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% given elevation and time step, calculate harmonics for the folloing comps</span>
+0002 <a name="_sub0" href="#_subfunctions" class="code">function [amp,phase] = wrap_ttide_harmonics(eta,dt_minutes,start_time)</a>
+0003 
+0004 <span class="comment">%[NAME,FREQ,TIDECON,XOUT] = t_tide_quiet(eta,'interval',dt_minutes/60.,'start time',start_time,'output','none');</span>
+0005 [NAME,FREQ,TIDECON,XOUT] = <a href="../../dependencies/t_tide/t_tide.html" class="code" title="function [nameu,fu,tidecon,xout]=t_tide(xin,varargin);">t_tide</a>(eta,<span class="string">'interval'</span>,dt_minutes/60.,<span class="string">'start time'</span>,start_time,<span class="string">'output'</span>,<span class="string">'none'</span>);
+0006 M2 = 0;
+0007 N2 = 0;
+0008 S2 = 0;
+0009 O1 = 0;
+0010 K1 = 0;
+0011 K2 = 0;
+0012 P1 = 0;
+0013 Q1 = 0;
+0014 
+0015 dims = size(NAME);
+0016 <span class="keyword">for</span> i=1:dims(1)
+0017   <span class="keyword">if</span>(sum(NAME(i,:) == <span class="string">'M2  '</span>)==4); M2 = i; <span class="keyword">end</span>;
+0018   <span class="keyword">if</span>(sum(NAME(i,:) == <span class="string">'N2  '</span>)==4); N2 = i; <span class="keyword">end</span>;
+0019   <span class="keyword">if</span>(sum(NAME(i,:) == <span class="string">'S2  '</span>)==4); S2 = i; <span class="keyword">end</span>;
+0020   <span class="keyword">if</span>(sum(NAME(i,:) == <span class="string">'O1  '</span>)==4); O1 = i; <span class="keyword">end</span>;
+0021   <span class="keyword">if</span>(sum(NAME(i,:) == <span class="string">'K1  '</span>)==4); K1 = i; <span class="keyword">end</span>;
+0022   <span class="keyword">if</span>(sum(NAME(i,:) == <span class="string">'K2  '</span>)==4); K2 = i; <span class="keyword">end</span>;
+0023   <span class="keyword">if</span>(sum(NAME(i,:) == <span class="string">'P1  '</span>)==4); P1 = i; <span class="keyword">end</span>;
+0024   <span class="keyword">if</span>(sum(NAME(i,:) == <span class="string">'Q1  '</span>)==4); Q1 = i; <span class="keyword">end</span>;
+0025 <span class="keyword">end</span>;
+0026 
+0027 comps = [M2,N2,S2,O1,K1,K2,P1,Q1]; 
+0028 <span class="keyword">for</span> j=1:length(comps)
+0029   i = comps(j);
+0030   <span class="keyword">if</span>(i ~= 0)
+0031 <span class="comment">%    fprintf('%s %f %f \n',NAME(i,:),TIDECON(i,1),TIDECON(i,3));</span>
+0032     amp(j) = TIDECON(i,1);
+0033     phase(j) = TIDECON(i,3);
+0034   <span class="keyword">else</span>
+0035     amp(j) = 0.0;
+0036     phase(j) = 0.0;
+0037   <span class="keyword">end</span>;
+0038 <span class="keyword">end</span>;
+0039 
+0040 
+0041</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

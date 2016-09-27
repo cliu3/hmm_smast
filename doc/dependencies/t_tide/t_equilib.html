@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of t_equilib</title>
+  <meta name="keywords" content="t_equilib">
+  <meta name="description" content="T_EQUILIB Equilibrium amplitude of the tidal potential">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="index.html">t_tide</a> &gt; t_equilib.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/t_tide&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>t_equilib
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>T_EQUILIB Equilibrium amplitude of the tidal potential</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [name,freq,amp]=t_equilib(lat); </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> T_EQUILIB Equilibrium amplitude of the tidal potential
+ [NAME,FREQ,AMPLITUDE]=T_EQUILIB(LAT) returns vectors with the 
+ NAME of tidal constituents, their FREQ (in cph), and their 
+ equilibrium AMPLITUDE in the tidal potential as a function of 
+ LATitude (degrees). If LAT is a vector, then AMPLITUDE is a 
+ matrix in which each column corresponds to a specific latitude.
+
+ If no output arguments are specified, the equilibrium spectrum
+ is plotted.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [name,freq,amp]=t_equilib(lat);</a>
+0002 <span class="comment">% T_EQUILIB Equilibrium amplitude of the tidal potential</span>
+0003 <span class="comment">% [NAME,FREQ,AMPLITUDE]=T_EQUILIB(LAT) returns vectors with the</span>
+0004 <span class="comment">% NAME of tidal constituents, their FREQ (in cph), and their</span>
+0005 <span class="comment">% equilibrium AMPLITUDE in the tidal potential as a function of</span>
+0006 <span class="comment">% LATitude (degrees). If LAT is a vector, then AMPLITUDE is a</span>
+0007 <span class="comment">% matrix in which each column corresponds to a specific latitude.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% If no output arguments are specified, the equilibrium spectrum</span>
+0010 <span class="comment">% is plotted.</span>
+0011 
+0012 <span class="comment">% R. Pawlowicz 9/11/99</span>
+0013 <span class="comment">% Version 1.0</span>
+0014 
+0015 
+0016 const=t_get18consts;
+0017 
+0018 g=9.81;            <span class="comment">% m/s^2;</span>
+0019 erad=6365;         <span class="comment">% km</span>
+0020 earthmoond=3.84e5; <span class="comment">% km</span>
+0021 Mmoon=7.38e22;     <span class="comment">% kg</span>
+0022 Mearth=5.977e24;   <span class="comment">% kg</span>
+0023 Gravconst=6.658e-11;  <span class="comment">% m^3/kg/s^2</span>
+0024 
+0025 <span class="comment">% There appears to be a typo in Godin's text, and this</span>
+0026 <span class="comment">% should likely be checked against Doodson's original.</span>
+0027 <span class="comment">% This is what I *think* it should be.</span>
+0028 G=3/4*Mmoon*(erad*1e3)^3/(earthmoond*1e3)^2/Mearth;
+0029 
+0030 <span class="comment">% The 4/3 is to correct for the 3/4 in G</span>
+0031 gfac=Gravconst*Mearth/(erad*1e3)^2*(4/3);
+0032 
+0033 jk=finite(const.doodsonamp);
+0034 
+0035 
+0036 freq=const.freq(jk);
+0037 name=const.name(jk,:);
+0038     
+0039 slat=sin(lat(:)'*pi/180);
+0040 clat=cos(lat(:)'*pi/180);
+0041 
+0042 G1=zeros(6,length(clat));
+0043 
+0044 <span class="comment">% Latitude dependence of amplitude for various species -</span>
+0045 <span class="comment">% + for A, -for B (from Godin, 1972).</span>
+0046 
+0047 G1(3+0,:)=    0.5*G*(1-3*slat.^2);
+0048 G1(3-1,:)=      2*G*slat.*clat;
+0049 G1(3+1,:)= .72618*G*clat.*(1-5*slat.^2);
+0050 G1(3-2,:)=2.59808*G*slat.*clat.^2;
+0051 G1(3+2,:)=        G*clat.^2;
+0052 G1(3+3,:)=        G*clat.^3;
+0053 
+0054     
+0055 amp=abs(const.doodsonamp(jk,ones(1,length(clat)))/gfac.*G1(const.doodsonspecies(jk)+3,:));
+0056  
+0057  
+0058 <span class="keyword">if</span> nargout==0,
+0059 
+0060  cols=[1 0 0;
+0061        0 1 0;
+0062        0 0 1;
+0063        .5 0 0;
+0064        0 .5 0;
+0065        0 0 .5];
+0066        
+0067  set(gcf,<span class="string">'defaultaxescolororder'</span>,cols(const.doodsonspecies(jk)+3,:));
+0068  semilogy(24*[freq,freq]',[repmat(min(amp),length(amp),1) amp]');
+0069  
+0070  cnam=cellstr(name);
+0071  <span class="keyword">for</span> k=1:length(cnam),
+0072    cnam{k}=deblank(cnam{k});
+0073    ff=min([find(abs(cnam{k}(2:end))&gt;=abs(<span class="string">'0'</span>) &amp; abs(cnam{k}(2:end))&lt;=abs(<span class="string">'9'</span>))+1,length(cnam{k})+1]);
+0074    cnam{k}=[ cnam{k}(1:ff-1) <span class="string">'_{'</span> cnam{k}(ff:end) <span class="string">'}'</span>];
+0075  <span class="keyword">end</span>;
+0076  text(freq*24,amp,cnam,<span class="string">'vertical'</span>,<span class="string">'bottom'</span>,<span class="string">'horiz'</span>,<span class="string">'center'</span>,<span class="string">'fontangle'</span>,<span class="string">'italic'</span>,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>,<span class="keyword">...</span>
+0077        <span class="string">'clip'</span>,<span class="string">'on'</span>,<span class="string">'fontsize'</span>,9);
+0078  xlabel(<span class="string">'Frequency (cpd)'</span>);
+0079  ylabel(<span class="string">'Potential (m)'</span>);
+0080  set(gca,<span class="string">'tickdir'</span>,<span class="string">'out'</span>,<span class="string">'ylim'</span>,[min(amp) max(amp)*2]);
+0081  
+0082 <span class="keyword">end</span>;
+0083 
+0084 
+0085 
+0086 
+0087 
+0088 
+0089</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

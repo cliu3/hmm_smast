@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pplotlik</title>
+  <meta name="keywords" content="pplotlik">
+  <meta name="description" content="function pplotlik(LIK,result,typ,day,lonrange,latrange)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">postprocessing</a> &gt; pplotlik.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for postprocessing&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>pplotlik
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function pplotlik(LIK,result,typ,day,lonrange,latrange)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">function pplotlik(LIK,result,typ,day,lonrange,latrange)
+PPLOTLIK  Plot a data likelihood to be used in a paper.
+   PPLOTLIK(LIK,RESULT,TYP,DAY,LONRANGE,LATRANGE)
+
+   - LIK data likelihood to be plotted.
+   - RESULT a result struct created with hmmgeoloc.
+   - TYP resolution of the coast line. Options:
+   'c'=crude, 'l'=low, 'i'=intermediate, 'h'=high, 'f'=full
+   - DAY the day number to be plotted.
+
+     Optional arguments
+
+   - LONRANGE longitude range of plot area.
+   - LATRANGE latitude range of plot area.
+
+   The function requires the M_Map package including the 
+   high resolution coast line.
+   See http://www.eos.ubc.ca/~rich/map.html
+
+  EXAMPLE   
+   PPLOTLIK(LIK,result,'h',100,[-10 8],[48 60]);
+
+   Date: 12/12 - 2007, ver. 0.51
+   HMM geolocation toolbox, IMM and DIFRES</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../backfun/makeplotstandard.html" class="code" title="function p=makeplotstandard(phitest)">makeplotstandard</a>	MAKEPLOTSTANDARD Convert the input distribution to a 2D cdf.</li><li><a href="../backfun/normalise.html" class="code" title="function [pdf,normConst]=normalise(pdf)">normalise</a>	NORMALISE Normalises a distribution to sum to 1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%function pplotlik(LIK,result,typ,day,lonrange,latrange)</span>
+0002 <span class="comment">%PPLOTLIK  Plot a data likelihood to be used in a paper.</span>
+0003 <span class="comment">%   PPLOTLIK(LIK,RESULT,TYP,DAY,LONRANGE,LATRANGE)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   - LIK data likelihood to be plotted.</span>
+0006 <span class="comment">%   - RESULT a result struct created with hmmgeoloc.</span>
+0007 <span class="comment">%   - TYP resolution of the coast line. Options:</span>
+0008 <span class="comment">%   'c'=crude, 'l'=low, 'i'=intermediate, 'h'=high, 'f'=full</span>
+0009 <span class="comment">%   - DAY the day number to be plotted.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%     Optional arguments</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   - LONRANGE longitude range of plot area.</span>
+0014 <span class="comment">%   - LATRANGE latitude range of plot area.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   The function requires the M_Map package including the</span>
+0017 <span class="comment">%   high resolution coast line.</span>
+0018 <span class="comment">%   See http://www.eos.ubc.ca/~rich/map.html</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  EXAMPLE</span>
+0021 <span class="comment">%   PPLOTLIK(LIK,result,'h',100,[-10 8],[48 60]);</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Date: 12/12 - 2007, ver. 0.51</span>
+0024 <span class="comment">%   HMM geolocation toolbox, IMM and DIFRES</span>
+0025 
+0026 <span class="keyword">if</span> nargin &lt; 6
+0027     lonrange = [-10 8];
+0028     latrange = [48 60];
+0029     disp(<span class="string">'Using default long and latitude ranges in pplotlik.'</span>)
+0030 <span class="keyword">end</span>
+0031 
+0032 load distrpaperplot
+0033 proj = <span class="string">'Gall-Peters'</span>; <span class="comment">%Rectangular</span>
+0034 <span class="comment">%close all</span>
+0035 m_proj(proj,<span class="string">'lon'</span>,lonrange,<span class="string">'lat'</span>,latrange);
+0036 <span class="keyword">switch</span> typ
+0037     <span class="keyword">case</span> <span class="string">'c'</span>, m_gshhs_c(<span class="string">'patch'</span>,[.5 .5 .5]);
+0038     <span class="keyword">case</span> <span class="string">'l'</span>, m_gshhs_l(<span class="string">'patch'</span>,[.5 .5 .5]);
+0039     <span class="keyword">case</span> <span class="string">'i'</span>, m_gshhs_i(<span class="string">'patch'</span>,[.5 .5 .5]);
+0040     <span class="keyword">case</span> <span class="string">'h'</span>, m_gshhs_h(<span class="string">'patch'</span>,[.5 .5 .5]);
+0041     <span class="keyword">case</span> <span class="string">'f'</span>, m_gshhs_f(<span class="string">'patch'</span>,[.5 .5 .5]);
+0042 <span class="keyword">end</span>
+0043 
+0044 m_grid(<span class="string">'box'</span>,<span class="string">'fancy'</span>,<span class="string">'tickdir'</span>,<span class="string">'in'</span>,<span class="string">'linestyle'</span>,<span class="string">'none'</span>);
+0045 hold on
+0046 names = fieldnames(LIK);
+0047 names = names(~strcmp(names,<span class="string">'type'</span>));
+0048 numnames = length(names);
+0049 [row col days] = size(result.smooth);
+0050 <span class="comment">% Combine all data likelihood to one array in Ltotal %</span>
+0051 Ltotal = ones(row,col,days-1);
+0052 <span class="keyword">for</span> j = 1:numnames
+0053     Ltotal = Ltotal .* LIK.(names{j});
+0054 <span class="keyword">end</span>
+0055 distr = Ltotal(:,:,day);
+0056 distr = <a href="../backfun/makeplotstandard.html" class="code" title="function p=makeplotstandard(phitest)">makeplotstandard</a>(<a href="../backfun/normalise.html" class="code" title="function [pdf,normConst]=normalise(pdf)">normalise</a>(distr));
+0057 [y,i] = max(distr(:));
+0058 lon = result.maplong(:); lon = lon(i);
+0059 lat = result.maplat(:); lat = lat(i);
+0060 m_contourf(result.maplong,result.maplat,distr,[0.05 0.5])
+0061 load distrpaperplot, colormap(distrpaperplot)
+0062 <span class="keyword">switch</span> typ
+0063     <span class="keyword">case</span> <span class="string">'c'</span>, m_gshhs_c(<span class="string">'patch'</span>,[.5 .5 .5]);
+0064     <span class="keyword">case</span> <span class="string">'l'</span>, m_gshhs_l(<span class="string">'patch'</span>,[.5 .5 .5]);
+0065     <span class="keyword">case</span> <span class="string">'i'</span>, m_gshhs_i(<span class="string">'patch'</span>,[.5 .5 .5]);
+0066     <span class="keyword">case</span> <span class="string">'h'</span>, m_gshhs_h(<span class="string">'patch'</span>,[.5 .5 .5]);
+0067     <span class="keyword">case</span> <span class="string">'f'</span>, m_gshhs_f(<span class="string">'patch'</span>,[.5 .5 .5]);
+0068 <span class="keyword">end</span>
+0069 xlabel(<span class="string">'Longitude'</span>), ylabel(<span class="string">'Latitude'</span>)
+0070 hold off</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

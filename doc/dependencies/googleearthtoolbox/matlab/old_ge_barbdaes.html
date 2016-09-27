@@ -1,0 +1,651 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of old_ge_barbdaes</title>
+  <meta name="keywords" content="old_ge_barbdaes">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; old_ge_barbdaes.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>old_ge_barbdaes
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function old_ge_barbdaes(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [xCoordsOfBarbs, yCoordsOfBarbs] = ge_windbarb_poly(MX, MY, MU, MV, varargin)</a></li><li><a href="#_sub2" class="code">function [xp,yp,knots] = ge_barb_i(X,Y,U,V,s01,hemi)</a></li><li><a href="#_sub3" class="code">function K = speed2knots(WS)</a></li><li><a href="#_sub4" class="code">function a = calc_dir(U,V)</a></li><li><a href="#_sub5" class="code">function [xv,yv] = move_down_stalk(d,xv,yv,s01,hemi)</a></li><li><a href="#_sub6" class="code">function [xv,yv] = open_windbarb(d,xv,yv,s01,hemi)</a></li><li><a href="#_sub7" class="code">function [xv,yv,a_flag] = add_flag(d,xv,yv,s01,hemi,a_flag)</a></li><li><a href="#_sub8" class="code">function [xv,yv] = add_whole_pennant(d,xv,yv,s01,hemi,a_flag)</a></li><li><a href="#_sub9" class="code">function [xv,yv] = add_half_pennant(d,xv,yv,s01,hemi,a_flag)</a></li><li><a href="#_sub10" class="code">function [xv,yv] = close_windbarb(d,xv,yv,s01,hemi)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function old_ge_barbdaes(varargin)</a>
+0002 
+0003 
+0004 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0005 
+0006 
+0007 Default_barbColor = <span class="string">'FFFFFF'</span>;
+0008 Default_barbAlpha = <span class="string">'80'</span>;
+0009         barbColor = Default_barbColor;
+0010         barbAlpha = Default_barbAlpha;
+0011       msgToScreen = 0;
+0012            daeDir = [<span class="string">'daes'</span>,filesep];
+0013     
+0014 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/value pairs.</span>
+0015 
+0016 
+0017 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0018 <span class="comment">%% start of integrity checks</span>
+0019 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0020 <span class="keyword">if</span> length(barbColor)==8
+0021     barbColor = Default_barbColor;
+0022     barbAlpha = Default_barbAlpha;    
+0023     warning([<span class="string">'Windbarb transparency should be set separately using'</span>,10,<span class="keyword">...</span>
+0024               <span class="string">'the '</span>,39,<span class="string">'barbAlpha'</span>,39,<span class="string">' parameter. Wind barb color and transparency'</span>,10,<span class="keyword">...</span>
+0025               <span class="string">'have been reset to their default values.'</span>,10])
+0026 <span class="keyword">end</span>
+0027 
+0028 <span class="keyword">if</span> length(barbColor)~=6
+0029     barbColor = Default_barbColor;
+0030     warning([<span class="string">'Use a character array of length 6 to specify barb color'</span>,10,<span class="keyword">...</span>
+0031              <span class="string">'using hexidecimal notation for red, green, and blue intensities.'</span>,10,<span class="keyword">...</span>
+0032              <span class="string">'Wind barb color has been reset to its default value.'</span>,10])
+0033 <span class="keyword">end</span>
+0034 barbColorRGB = num2str([hex2dec(barbColor(1:2)),<span class="keyword">...</span>
+0035                         hex2dec(barbColor(3:4)),<span class="keyword">...</span>
+0036                         hex2dec(barbColor(5:6))]/255,<span class="string">'% 5.3f% 5.3f% 5.3f'</span>);    
+0037 
+0038 
+0039 barbAlphaFrac = num2str(hex2dec(barbAlpha(1:2))/255,<span class="string">'% 5.3f'</span>);
+0040 
+0041 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0042 <span class="comment">%% end of integrity checks</span>
+0043 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0044 
+0045 <span class="keyword">if</span> msgToScreen
+0046     disp([<span class="string">'Generating wind barb Collada models...'</span>,10])
+0047 <span class="keyword">end</span>
+0048 V=([0,2.5,7.5,12.5:5:105]+1e-8)*0.51;
+0049 <span class="keyword">for</span> h=[1,2]
+0050 <span class="keyword">for</span> k=1:length(V)-2
+0051         
+0052         
+0053         <span class="keyword">if</span> h==1
+0054             hemiStr=<span class="string">'North'</span>;
+0055         <span class="keyword">elseif</span> h==2
+0056             hemiStr=<span class="string">'South'</span>;
+0057         <span class="keyword">end</span>
+0058         [xcoords, ycoords] = <a href="#_sub1" class="code" title="subfunction [xCoordsOfBarbs, yCoordsOfBarbs] = ge_windbarb_poly(MX, MY, MU, MV, varargin)">ge_windbarb_poly</a>(0,0,0,-V(k),<span class="string">'barbScale'</span>,100,<span class="string">'hemisphere'</span>,hemiStr);
+0059         
+0060 <span class="comment">%         figure(1)</span>
+0061 <span class="comment">%         patch(mod(k-1,5)+xcoords(1:end-1),6-floor((k-1)/5)*2+ycoords(1:end-1),'k')</span>
+0062 <span class="comment">%         axis image</span>
+0063 <span class="comment">%         set(gca,'ydir','normal','ylim',[-0.5,7.5],'xlim',[-0.5,4.5])</span>
+0064 <span class="comment">%         axis off</span>
+0065 <span class="comment">%         print('arrows','-dbmp')</span>
+0066         
+0067 
+0068         Ix = find(~isnan(xcoords.*ycoords));
+0069         xcoords = xcoords(Ix);
+0070         ycoords = ycoords(Ix);
+0071         
+0072         <span class="keyword">if</span> strcmp(hemiStr,<span class="string">'North'</span>)
+0073             locStr = [<span class="string">'1 '</span>,num2str(length(xcoords)-2),<span class="string">' 2 2 '</span>,num2str(length(xcoords)-2),<span class="string">' 3'</span>];
+0074         <span class="keyword">elseif</span> strcmp(hemiStr,<span class="string">'South'</span>)
+0075             locStr = [<span class="string">'1 2 '</span>,num2str(length(xcoords)-2),<span class="string">' '</span>,num2str(length(xcoords)-2),<span class="string">' 2 3'</span>];
+0076         <span class="keyword">end</span>
+0077         
+0078         <span class="keyword">if</span> k==1
+0079             L=0;
+0080             locStr = <span class="string">'0 2 1 0 3 2'</span>;
+0081         <span class="keyword">elseif</span> k==2
+0082             StartNode = 5;
+0083             L = (length(xcoords)-5)/4;
+0084         <span class="keyword">elseif</span> k&gt;2&amp;&amp;k&lt;11
+0085             <span class="keyword">if</span> abs(round(k/2)-(k/2))&lt;1e-8 <span class="comment">%iseven</span>
+0086                 StartNode = 4;
+0087                 L = (length(xcoords)-5)/4;
+0088             <span class="keyword">else</span>
+0089                 StartNode = 4;
+0090                 L = (length(xcoords)-5-1)/4;
+0091             <span class="keyword">end</span>
+0092         <span class="keyword">elseif</span> k&gt;=11&amp;&amp;k&lt;21
+0093             StartNode = 4;
+0094             <span class="keyword">if</span> strcmp(hemiStr,<span class="string">'North'</span>)
+0095                 locStr = [locStr,<span class="string">' '</span>,num2str(StartNode-1),<span class="keyword">...</span>
+0096                              <span class="string">' '</span>,num2str(StartNode+2-1),<span class="keyword">...</span>
+0097                              <span class="string">' '</span>,num2str(StartNode+1-1)];
+0098             <span class="keyword">elseif</span> strcmp(hemiStr,<span class="string">'South'</span>)                         
+0099                 locStr = [locStr,<span class="string">' '</span>,num2str(StartNode+2-1),<span class="keyword">...</span>
+0100                              <span class="string">' '</span>,num2str(StartNode-1),<span class="keyword">...</span>
+0101                              <span class="string">' '</span>,num2str(StartNode+1-1)];
+0102             <span class="keyword">else</span>
+0103             <span class="keyword">end</span>
+0104             StartNode = 7;
+0105             L = (length(xcoords)-8)/4;
+0106         <span class="keyword">end</span>
+0107         
+0108         <span class="keyword">for</span> r=1:L
+0109             <span class="keyword">if</span> strcmp(hemiStr,<span class="string">'North'</span>)
+0110             locStr = [locStr,<span class="string">' '</span>,num2str(StartNode-1),<span class="keyword">...</span>
+0111                              <span class="string">' '</span>,num2str(StartNode+2-1),<span class="keyword">...</span>
+0112                              <span class="string">' '</span>,num2str(StartNode+1-1),<span class="keyword">...</span>
+0113                              <span class="string">' '</span>,num2str(StartNode+2-1),<span class="keyword">...</span>
+0114                              <span class="string">' '</span>,num2str(StartNode-1),<span class="keyword">...</span>
+0115                              <span class="string">' '</span>,num2str(StartNode+3-1)];
+0116             <span class="keyword">elseif</span> strcmp(hemiStr,<span class="string">'South'</span>)
+0117             locStr = [locStr,<span class="string">' '</span>,num2str(StartNode+3-1),<span class="keyword">...</span>
+0118                              <span class="string">' '</span>,num2str(StartNode+0-1),<span class="keyword">...</span>
+0119                              <span class="string">' '</span>,num2str(StartNode+2-1),<span class="keyword">...</span>
+0120                              <span class="string">' '</span>,num2str(StartNode+2-1),<span class="keyword">...</span>
+0121                              <span class="string">' '</span>,num2str(StartNode+0-1),<span class="keyword">...</span>
+0122                              <span class="string">' '</span>,num2str(StartNode+1-1)];
+0123             <span class="keyword">else</span>
+0124             <span class="keyword">end</span>
+0125             StartNode = StartNode + 4;
+0126         <span class="keyword">end</span>
+0127             
+0128         clear L StartNode
+0129         
+0130         M = rot90(fliplr([xcoords,ycoords,zeros(size(xcoords))]));
+0131         
+0132         XYZpointsArrayStr=<span class="string">''</span>;
+0133         <span class="keyword">for</span> m=1:numel(M)
+0134             XYZpointsArrayStr = [XYZpointsArrayStr,<span class="string">' '</span>,num2str(M(m),<span class="string">'%f'</span>)];
+0135         <span class="keyword">end</span>
+0136         
+0137         N = rot90(fliplr([zeros(size(Ix,1),2),ones(size(Ix,1),1)]));
+0138         NormalsArrayStr=<span class="string">''</span>;
+0139         <span class="keyword">for</span> u=1:numel(N)
+0140             NormalsArrayStr = [NormalsArrayStr,<span class="string">' '</span>,num2str(N(u),<span class="string">'%d'</span>)];
+0141         <span class="keyword">end</span>
+0142         
+0143         filename = [daeDir,num2str(((h-1)*(length(V)-2))+k,<span class="string">'%03d'</span>),lower(hemiStr(1)),<span class="string">'hemi'</span>,num2str(round(V(k)/0.051),<span class="string">'%04d'</span>),num2str(round(V(k+1)/0.051),<span class="string">'%04d'</span>),<span class="string">'kts.dae'</span>];
+0144 
+0145 <span class="keyword">if</span> exist(daeDir,<span class="string">'dir'</span>)==0
+0146     s = strrep(daeDir,<span class="string">'\'</span>,<span class="string">'\\'</span>);
+0147     UserFeedback = input([<span class="string">'Target directory: '</span>,39,s,39,<span class="string">' does not exist.'</span>,10,<span class="string">'Do you want to create it? [Y]/N:  '</span>],<span class="string">'s'</span>);
+0148     clear s
+0149     <span class="keyword">if</span> strcmp(upper(UserFeedback),<span class="string">'Y'</span>)||strcmp(UserFeedback,<span class="string">''</span>)
+0150         mkdir(daeDir)
+0151         disp(<span class="string">'Creating target directory...'</span>)
+0152         pause(1.0)
+0153         disp([<span class="string">'Creating target directory...Done'</span>,10])
+0154         pause(0.5)
+0155     <span class="keyword">else</span>
+0156         disp(<span class="string">'Aborting...'</span>)
+0157         pause(1.0)
+0158         disp([<span class="string">'Aborting...Done'</span>,10])
+0159         pause(0.5)
+0160         <span class="keyword">return</span>
+0161     <span class="keyword">end</span>
+0162 <span class="keyword">end</span>    
+0163     
+0164 fid=fopen(filename,<span class="string">'wt'</span>);
+0165 
+0166 xmlStr =[<span class="string">'&lt;?xml version='</span>,34,<span class="string">'1.0'</span>,34,<span class="string">' encoding='</span>,34,<span class="string">'utf-8'</span>,34,<span class="string">'?&gt;'</span>,10,<span class="keyword">...</span>
+0167 <span class="string">'&lt;COLLADA version='</span>,34,<span class="string">'1.4.0'</span>,34,<span class="string">' xmlns='</span>,34,<span class="string">'http://www.collada.org/2005/11/COLLADASchema'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0168 <span class="string">'&lt;asset&gt;'</span>,10,<span class="keyword">...</span>
+0169     <span class="string">'    &lt;contributor&gt;'</span>,10,<span class="keyword">...</span>
+0170     <span class="string">'        &lt;author&gt;MATLAB Collada exporter, Illusoft Collada 1.4.0 plugin for Blender - http://colladablender.illusoft.com&lt;/author&gt;'</span>,10,<span class="keyword">...</span>
+0171     <span class="string">'        &lt;authoring_tool&gt;MATLAB Collada exporter, Blender v:242 - Illusoft Collada Exporter v:0.2.65&lt;/authoring_tool&gt;'</span>,10,<span class="keyword">...</span>
+0172     <span class="string">'        &lt;comments&gt;&lt;/comments&gt;'</span>,10,<span class="keyword">...</span>
+0173     <span class="string">'        &lt;copyright&gt;&lt;/copyright&gt;'</span>,10,<span class="keyword">...</span>
+0174     <span class="string">'        &lt;source_data&gt;untitled.blend&lt;/source_data&gt;'</span>,10,<span class="keyword">...</span>
+0175     <span class="string">'    &lt;/contributor&gt;'</span>,10,<span class="keyword">...</span>
+0176     <span class="string">'    &lt;created&gt;'</span>,datestr(now),<span class="string">'&lt;/created&gt;'</span>,10,<span class="keyword">...</span>
+0177     <span class="string">'    &lt;modified&gt;'</span>,datestr(now),<span class="string">'&lt;/modified&gt;'</span>,10,<span class="keyword">...</span>
+0178     <span class="string">'    &lt;unit meter='</span>,34,<span class="string">'0.01'</span>,34,<span class="string">' name='</span>,34,<span class="string">'centimeter'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0179     <span class="string">'    &lt;up_axis&gt;Z_UP&lt;/up_axis&gt;'</span>,10,<span class="keyword">...</span>
+0180     <span class="string">'&lt;/asset&gt;'</span>,10,<span class="keyword">...</span>
+0181     <span class="string">'&lt;library_effects&gt;'</span>,10,<span class="keyword">...</span>
+0182     <span class="string">'    &lt;effect id='</span>,34,<span class="string">'Material_001-fx'</span>,34,<span class="string">' name='</span>,34,<span class="string">'Material_001-fx'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0183     <span class="string">'        &lt;profile_COMMON&gt;'</span>,10,<span class="keyword">...</span>
+0184     <span class="string">'            &lt;technique sid='</span>,34,<span class="string">''</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0185     <span class="string">'                &lt;phong&gt;'</span>,10,<span class="keyword">...</span>
+0186     <span class="string">'                    &lt;emission&gt;'</span>,10,<span class="keyword">...</span>
+0187     <span class="string">'                        &lt;color&gt;0.0 0.0 0.0 1.0&lt;/color&gt;'</span>,10,<span class="keyword">...</span>
+0188     <span class="string">'                    &lt;/emission&gt;'</span>,10,<span class="keyword">...</span>
+0189     <span class="string">'                    &lt;ambient&gt;'</span>,10,<span class="keyword">...</span>
+0190     <span class="string">'                        &lt;color&gt;0.48814 0.02131 0.02131 1.0&lt;/color&gt;'</span>,10,<span class="keyword">...</span>
+0191     <span class="string">'                    &lt;/ambient&gt;'</span>,10,<span class="keyword">...</span>
+0192     <span class="string">'                    &lt;diffuse&gt;'</span>,10,<span class="keyword">...</span>
+0193     <span class="string">'                        &lt;color&gt;'</span>,barbColorRGB,<span class="string">' 1.0&lt;/color&gt;'</span>,10,<span class="keyword">...</span>
+0194     <span class="string">'                    &lt;/diffuse&gt;'</span>,10,<span class="keyword">...</span>
+0195     <span class="string">'                    &lt;specular&gt;'</span>,10,<span class="keyword">...</span>
+0196     <span class="string">'                        &lt;color&gt;0.5 0.5 0.5 1.0&lt;/color&gt;'</span>,10,<span class="keyword">...</span>
+0197     <span class="string">'                    &lt;/specular&gt;'</span>,10,<span class="keyword">...</span>
+0198     <span class="string">'                    &lt;shininess&gt;'</span>,10,<span class="keyword">...</span>
+0199     <span class="string">'                        &lt;float&gt;12.5&lt;/float&gt;'</span>,10,<span class="keyword">...</span>
+0200     <span class="string">'                    &lt;/shininess&gt;'</span>,10,<span class="keyword">...</span>
+0201     <span class="string">'                    &lt;reflective&gt;'</span>,10,<span class="keyword">...</span>
+0202     <span class="string">'                        &lt;color&gt;1.0 1.0 1.0 1.0&lt;/color&gt;'</span>,10,<span class="keyword">...</span>
+0203     <span class="string">'                    &lt;/reflective&gt;'</span>,10,<span class="keyword">...</span>
+0204     <span class="string">'                    &lt;reflectivity&gt;'</span>,10,<span class="keyword">...</span>
+0205     <span class="string">'                        &lt;float&gt;0.8&lt;/float&gt;'</span>,10,<span class="keyword">...</span>
+0206     <span class="string">'                    &lt;/reflectivity&gt;'</span>,10,<span class="keyword">...</span>
+0207     <span class="string">'                    &lt;transparent&gt;'</span>,10,<span class="keyword">...</span>
+0208     <span class="string">'                        &lt;color&gt;1 1 1 1&lt;/color&gt;'</span>,10,<span class="keyword">...</span>
+0209     <span class="string">'                    &lt;/transparent&gt;'</span>,10,<span class="keyword">...</span>
+0210     <span class="string">'                    &lt;transparency&gt;'</span>,10,<span class="keyword">...</span>
+0211     <span class="string">'                        &lt;float&gt;'</span>,barbAlphaFrac,<span class="string">'&lt;/float&gt;'</span>,10,<span class="keyword">...</span>
+0212     <span class="string">'                    &lt;/transparency&gt;'</span>,10,<span class="keyword">...</span>
+0213     <span class="string">'                &lt;/phong&gt;'</span>,10,<span class="keyword">...</span>
+0214     <span class="string">'            &lt;/technique&gt;'</span>,10,<span class="keyword">...</span>
+0215     <span class="string">'        &lt;/profile_COMMON&gt;'</span>,10,<span class="keyword">...</span>
+0216     <span class="string">'    &lt;/effect&gt;'</span>,10,<span class="keyword">...</span>
+0217     <span class="string">'&lt;/library_effects&gt;'</span>,10,<span class="keyword">...</span>
+0218     <span class="string">'&lt;library_geometries&gt;'</span>,10,<span class="keyword">...</span>
+0219     <span class="string">'&lt;geometry id='</span>,34,<span class="string">'Plane-Geometry'</span>,34,<span class="string">' name='</span>,34,<span class="string">'Plane-Geometry'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0220     <span class="string">'   &lt;mesh&gt;'</span>,10,<span class="keyword">...</span>
+0221     <span class="string">'       &lt;source id='</span>,34,<span class="string">'Plane-Geometry-Position'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0222     <span class="string">'           &lt;float_array count='</span>,34,num2str(numel(M)),34,<span class="string">' id='</span>,34,<span class="string">'Plane-Geometry-Position-array'</span>,34,<span class="string">'&gt;'</span>,XYZpointsArrayStr,<span class="string">' &lt;/float_array&gt;'</span>,10,<span class="keyword">...</span>
+0223     <span class="string">'           &lt;technique_common&gt;'</span>,10,<span class="keyword">...</span>
+0224     <span class="string">'               &lt;accessor count='</span>,34,num2str(numel(M)/3),34,<span class="string">' source='</span>,34,<span class="string">'#Plane-Geometry-Position-array'</span>,34,<span class="string">' stride='</span>,34,<span class="string">'3'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0225     <span class="string">'                  &lt;param name='</span>,34,<span class="string">'X'</span>,34,<span class="string">' type='</span>,34,<span class="string">'float'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0226     <span class="string">'                  &lt;param name='</span>,34,<span class="string">'Y'</span>,34,<span class="string">' type='</span>,34,<span class="string">'float'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0227     <span class="string">'                  &lt;param name='</span>,34,<span class="string">'Z'</span>,34,<span class="string">' type='</span>,34,<span class="string">'float'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0228     <span class="string">'               &lt;/accessor&gt;'</span>,10,<span class="keyword">...</span>
+0229     <span class="string">'            &lt;/technique_common&gt;'</span>,10,<span class="keyword">...</span>
+0230     <span class="string">'       &lt;/source&gt;'</span>,10,<span class="keyword">...</span>
+0231     <span class="string">'       &lt;source id='</span>,34,<span class="string">'Plane-Geometry-Normals'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0232     <span class="string">'           &lt;float_array count='</span>,34,num2str(numel(M)),34,<span class="string">' id='</span>,34,<span class="string">'Plane-Geometry-Normals-array'</span>,34,<span class="string">'&gt;'</span>,NormalsArrayStr,<span class="string">'&lt;/float_array&gt;'</span>,10,<span class="keyword">...</span>
+0233     <span class="string">'            &lt;technique_common&gt;'</span>,10,<span class="keyword">...</span>
+0234     <span class="string">'               &lt;accessor count='</span>,34,num2str(numel(M)/3),34,<span class="string">' source='</span>,34,<span class="string">'#Plane-Geometry-Normals-array'</span>,34,<span class="string">' stride='</span>,34,<span class="string">'3'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0235     <span class="string">'                  &lt;param name='</span>,34,<span class="string">'X'</span>,34,<span class="string">' type='</span>,34,<span class="string">'float'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0236     <span class="string">'                  &lt;param name='</span>,34,<span class="string">'Y'</span>,34,<span class="string">' type='</span>,34,<span class="string">'float'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0237     <span class="string">'                  &lt;param name='</span>,34,<span class="string">'Z'</span>,34,<span class="string">' type='</span>,34,<span class="string">'float'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0238     <span class="string">'               &lt;/accessor&gt;'</span>,10,<span class="keyword">...</span>
+0239     <span class="string">'           &lt;/technique_common&gt;'</span>,10,<span class="keyword">...</span>
+0240     <span class="string">'       &lt;/source&gt;'</span>,10,<span class="keyword">...</span>
+0241     <span class="string">'       &lt;vertices id='</span>,34,<span class="string">'Plane-Geometry-Vertex'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0242     <span class="string">'           &lt;input semantic='</span>,34,<span class="string">'POSITION'</span>,34,<span class="string">' source='</span>,34,<span class="string">'#Plane-Geometry-Position'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0243     <span class="string">'           &lt;input semantic='</span>,34,<span class="string">'NORMAL'</span>,34,<span class="string">' source='</span>,34,<span class="string">'#Plane-Geometry-Normals'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0244     <span class="string">'       &lt;/vertices&gt;'</span>,10,<span class="keyword">...</span>
+0245     <span class="string">'       &lt;triangles count='</span>,34,num2str(length(str2double(locStr))/3),34,<span class="string">' material='</span>,34,<span class="string">'Material_001'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0246     <span class="string">'           &lt;input offset='</span>,34,<span class="string">'0'</span>,34,<span class="string">' semantic='</span>,34,<span class="string">'VERTEX'</span>,34,<span class="string">' source='</span>,34,<span class="string">'#Plane-Geometry-Vertex'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0247     <span class="string">'           &lt;p&gt;'</span>,locStr,<span class="string">'&lt;/p&gt;'</span>,10,<span class="keyword">...</span>
+0248     <span class="string">'       &lt;/triangles&gt;'</span>,10,<span class="keyword">...</span>
+0249     <span class="string">'    &lt;/mesh&gt;'</span>,10,<span class="keyword">...</span>
+0250     <span class="string">'&lt;/geometry&gt;'</span>,10,<span class="keyword">...</span>
+0251     <span class="string">'&lt;/library_geometries&gt;'</span>,10,<span class="keyword">...</span>
+0252     <span class="string">'&lt;library_materials&gt;'</span>,10,<span class="keyword">...</span>
+0253     <span class="string">'    &lt;material id='</span>,34,<span class="string">'Material_001'</span>,34,<span class="string">' name='</span>,34,<span class="string">'Material_001'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0254     <span class="string">'       &lt;instance_effect url='</span>,34,<span class="string">'#Material_001-fx'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0255     <span class="string">'    &lt;/material&gt;'</span>,10,<span class="keyword">...</span>
+0256     <span class="string">'&lt;/library_materials&gt;'</span>,10,<span class="keyword">...</span>
+0257     <span class="string">'&lt;library_visual_scenes&gt;'</span>,10,<span class="keyword">...</span>
+0258     <span class="string">'   &lt;visual_scene id='</span>,34,<span class="string">'Scene'</span>,34,<span class="string">' name='</span>,34,<span class="string">'Scene'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0259     <span class="string">'      &lt;node id='</span>,34,<span class="string">'Plane'</span>,34,<span class="string">' name='</span>,34,<span class="string">'Plane'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0260     <span class="string">'         &lt;instance_geometry url='</span>,34,<span class="string">'#Plane-Geometry'</span>,34,<span class="string">'&gt;'</span>,10,<span class="keyword">...</span>
+0261     <span class="string">'            &lt;bind_material&gt;'</span>,10,<span class="keyword">...</span>
+0262     <span class="string">'               &lt;technique_common&gt;'</span>,10,<span class="keyword">...</span>
+0263     <span class="string">'                  &lt;instance_material symbol='</span>,34,<span class="string">'Material_001'</span>,34,<span class="string">' target='</span>,34,<span class="string">'#Material_001'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0264     <span class="string">'               &lt;/technique_common&gt;'</span>,10,<span class="keyword">...</span>
+0265     <span class="string">'            &lt;/bind_material&gt;'</span>,10,<span class="keyword">...</span>
+0266     <span class="string">'         &lt;/instance_geometry&gt;'</span>,10,<span class="keyword">...</span>
+0267     <span class="string">'      &lt;/node&gt;'</span>,10,<span class="keyword">...</span>
+0268     <span class="string">'   &lt;/visual_scene&gt;'</span>,10,<span class="keyword">...</span>
+0269     <span class="string">'&lt;/library_visual_scenes&gt;'</span>,10,<span class="keyword">...</span>
+0270     <span class="string">'&lt;scene&gt;'</span>,10,<span class="keyword">...</span>
+0271     <span class="string">'   &lt;instance_visual_scene url='</span>,34,<span class="string">'#Scene'</span>,34,<span class="string">'/&gt;'</span>,10,<span class="keyword">...</span>
+0272     <span class="string">'&lt;/scene&gt;'</span>,10,<span class="keyword">...</span>
+0273     <span class="string">'&lt;/COLLADA&gt;'</span>];
+0274 
+0275 
+0276 fprintf(fid,<span class="string">'%s'</span>,xmlStr);
+0277 fclose(fid);
+0278 
+0279 
+0280 <span class="keyword">end</span>
+0281 <span class="keyword">end</span>
+0282 
+0283 <span class="keyword">if</span> msgToScreen
+0284    disp([<span class="string">'Generating wind barb Collada models...Done'</span>,10])
+0285 <span class="keyword">end</span>
+0286 
+0287 
+0288 
+0289 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0290 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0291 <span class="comment">%%%%                     LOCAL FUNCTIONS                      %%%%</span>
+0292 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0293 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0294 
+0295 
+0296 <a name="_sub1" href="#_subfunctions" class="code">function [xCoordsOfBarbs, yCoordsOfBarbs] = ge_windbarb_poly(MX, MY, MU, MV, varargin)</a>
+0297 <span class="comment">%% ge_windbarb( X, Y, U, V, s01, hemi)</span>
+0298 <span class="comment">% (MU and MV must be in m/s)</span>
+0299 <span class="comment">% MX, MY, MX, MY should be the same constructs as used by the quiver</span>
+0300 <span class="comment">% function.</span>
+0301 <span class="comment">% AuthorizedOptions = {'barbScale',...</span>
+0302 <span class="comment">%                      'hemisphere'};</span>
+0303 
+0304 AuthorizedOptions = {<span class="string">'barbScale'</span>,<span class="keyword">...</span>
+0305                      <span class="string">'hemisphere'</span>};
+0306 
+0307     barbScale = 1;
+0308    hemisphere = <span class="string">'Auto'</span>;
+0309 
+0310 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/value pairs.</span>
+0311 
+0312 size_MX = size(MX);
+0313 size_MY = size(MY);
+0314 size_MU = size(MU);
+0315 size_MV = size(MV);
+0316 
+0317 
+0318 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0319 <span class="comment">%% the following block checks whether MX</span>
+0320 <span class="comment">%% and MY are both vectors</span>
+0321 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0322     <span class="keyword">if</span> length(size_MX)==2 &amp;&amp; any(size_MX==1) 
+0323         <span class="comment">% MX is vector</span>
+0324         <span class="keyword">if</span> length(size_MY)==2 &amp;&amp; any(size_MY==1)
+0325             <span class="comment">% MY is vector</span>
+0326             [MX,MY] = meshgrid(MX(:),MY(:));
+0327             size_MX = size(MX);
+0328             size_MY = size(MY);
+0329         <span class="keyword">else</span>
+0330             <span class="comment">% MY is not vector</span>
+0331             error([<span class="string">'Input arguments '</span> 39 <span class="string">'MX'</span> 39 <span class="string">' and '</span> 39 <span class="string">'MY'</span> 39 <span class="string">' should have '</span> 10 <span class="string">'the same dimensions. (Error generated by'</span> 10 <span class="string">'function '</span> mfilename <span class="string">').'</span> ])
+0332         <span class="keyword">end</span>
+0333     <span class="keyword">else</span>
+0334         <span class="comment">% MX is not vector</span>
+0335         <span class="keyword">if</span> length(size_MY)==2 &amp;&amp; any(size_MY==1)
+0336             <span class="comment">% MY is vector</span>
+0337             error([<span class="string">'Input arguments '</span> 39 <span class="string">'MX'</span> 39 <span class="string">' and '</span> 39 <span class="string">'MY'</span> 39 <span class="string">' should have '</span> 10 <span class="string">'the same dimensions. (Error generated by'</span> 10 <span class="string">'function '</span> mfilename <span class="string">').'</span> ])
+0338         <span class="keyword">else</span>
+0339             <span class="comment">% MY is not vector</span>
+0340         <span class="keyword">end</span>
+0341     <span class="keyword">end</span>
+0342 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0343 
+0344 
+0345 <span class="keyword">if</span> any([length(size_MX),length(size_MY),length(size_MU),length(size_MV)]&gt;2)
+0346     error([<span class="string">'Function '</span> 39 mfilename 39 <span class="string">' is only meant to visualize arrays of'</span> 10 <span class="string">'1 or 2 dimensions.'</span>])
+0347 <span class="keyword">end</span>
+0348 
+0349 <span class="keyword">if</span> ~isequal(size_MX,size_MY)
+0350     error([<span class="string">'Position input arrays must have identical dimensions. (function:'</span> 39 mfilename 39 <span class="string">')'</span> ])    
+0351 <span class="keyword">end</span>
+0352 
+0353 <span class="keyword">if</span> ~isequal(size_MU,size_MV)
+0354     error([<span class="string">'Wind field input arrays must have identical dimensions. (function:'</span> 39 mfilename 39 <span class="string">')'</span> ])    
+0355 <span class="keyword">end</span>
+0356 
+0357 <span class="keyword">if</span> ~isequal(size_MX,size_MU)
+0358     error([<span class="string">'Location arrays must have the same dimensions as wind field arrays (function:'</span> 39 mfilename 39 <span class="string">')'</span> ])    
+0359 <span class="keyword">end</span>
+0360 
+0361 
+0362 xCoordsOfBarbs = [];
+0363 yCoordsOfBarbs = [];
+0364 
+0365 L = prod(size_MU);
+0366 
+0367 
+0368 <span class="keyword">for</span> k = 1:L
+0369     
+0370     [xv,yv,knots] = <a href="#_sub2" class="code" title="subfunction [xp,yp,knots] = ge_barb_i(X,Y,U,V,s01,hemi)">ge_barb_i</a>(MX(k),MY(k),MU(k),MV(k),barbScale,hemisphere);
+0371     
+0372     xCoordsOfBarbs = [xv;NaN;xCoordsOfBarbs];
+0373     yCoordsOfBarbs = [yv;NaN;yCoordsOfBarbs];
+0374 
+0375 <span class="keyword">end</span>
+0376 
+0377 
+0378 
+0379 <a name="_sub2" href="#_subfunctions" class="code">function [xp,yp,knots] = ge_barb_i(X,Y,U,V,s01,hemi)</a>
+0380 <span class="comment">% function includes local function:</span>
+0381 <span class="comment">% speed2knots</span>
+0382 <span class="comment">% calc_dir</span>
+0383 <span class="comment">% move_down_stalk</span>
+0384 <span class="comment">% open_windbarb</span>
+0385 <span class="comment">% add_flag</span>
+0386 <span class="comment">% add_whole_pennant</span>
+0387 <span class="comment">% add_half_pennant</span>
+0388 <span class="comment">% close_windbarb</span>
+0389 
+0390 <span class="comment">% U and V must be multiplied by -1 to account</span>
+0391 <span class="comment">% for the fact that windbarb always point</span>
+0392 <span class="comment">% into the wind:</span>
+0393 U = -U;
+0394 V = -V;
+0395 
+0396 
+0397 WindSpeed = sqrt(U.^2+V.^2);
+0398 knots = <a href="#_sub3" class="code" title="subfunction K = speed2knots(WS)">speed2knots</a>(WindSpeed);
+0399 
+0400 k5 = round(knots/5)*5;
+0401 <span class="keyword">if</span> knots&lt;2.5
+0402     s02 = 0.02*s01;
+0403     xp = [X-s02;X+s02;X+s02;X-s02;X-s02];
+0404     yp = [Y+s02;Y+s02;Y-s02;Y-s02;Y+s02];
+0405     <span class="keyword">return</span>
+0406 <span class="keyword">end</span>
+0407 
+0408 
+0409 <span class="comment">% number flags</span>
+0410 N_flags = floor(k5/50);
+0411 
+0412 <span class="comment">% number of whole pennants</span>
+0413 N_wpenn = floor((k5-N_flags*50)/10);
+0414 
+0415 <span class="comment">% number of half pennants</span>
+0416 N_hpenn = floor((k5-N_flags*50-N_wpenn*10)/5);
+0417 
+0418 
+0419 <span class="keyword">if</span> ~exist(<span class="string">'hemi'</span>, <span class="string">'var'</span>)
+0420     hemi = 1;
+0421 <span class="keyword">else</span>
+0422     <span class="keyword">if</span> strcmp(hemi,<span class="string">'North'</span>) || (strcmp(hemi,<span class="string">'Auto'</span>) &amp;&amp; Y&gt;=0)
+0423         hemi = 1;
+0424     <span class="keyword">elseif</span> strcmp(hemi,<span class="string">'South'</span>) || (strcmp(hemi,<span class="string">'Auto'</span>) &amp;&amp; Y&lt;0)
+0425         hemi = -1;
+0426     <span class="keyword">else</span>
+0427         error([<span class="string">'Variable '</span> 39 <span class="string">'hemi'</span> 39 <span class="string">' should be one of the following'</span> 10,<span class="keyword">...</span>
+0428             <span class="string">'char arrays: '</span> 39 <span class="string">'North'</span> 39 <span class="string">', '</span> 39 <span class="string">'South'</span> 39 <span class="string">', or '</span> 39 <span class="string">'Auto'</span> 39])
+0429     <span class="keyword">end</span>
+0430 <span class="keyword">end</span>
+0431 
+0432 
+0433 
+0434 d = <a href="#_sub4" class="code" title="subfunction a = calc_dir(U,V)">calc_dir</a>(U,V);
+0435 s02 = 0.15*s01;    <span class="comment">% width of the flag(s)</span>
+0436 s03 = 0.35*s01;    <span class="comment">% length of the flag(s)</span>
+0437 a_flag = tan(s02/s03);
+0438 
+0439 
+0440 [xp,yp] = <a href="#_sub6" class="code" title="subfunction [xv,yv] = open_windbarb(d,xv,yv,s01,hemi)">open_windbarb</a>(d,X,Y,s01,hemi);
+0441 
+0442 <span class="keyword">for</span> i=1:N_flags
+0443    [xp,yp] = <a href="#_sub7" class="code" title="subfunction [xv,yv,a_flag] = add_flag(d,xv,yv,s01,hemi,a_flag)">add_flag</a>(d,xp,yp,s01,hemi,a_flag);
+0444    <span class="keyword">if</span> i==N_flags
+0445        [xp,yp] = <a href="#_sub5" class="code" title="subfunction [xv,yv] = move_down_stalk(d,xv,yv,s01,hemi)">move_down_stalk</a>(d,xp,yp,s01,hemi);
+0446    <span class="keyword">end</span>
+0447 <span class="keyword">end</span>
+0448 
+0449 
+0450 <span class="keyword">for</span> i=1:N_wpenn
+0451     
+0452     [xp,yp] = <a href="#_sub8" class="code" title="subfunction [xv,yv] = add_whole_pennant(d,xv,yv,s01,hemi,a_flag)">add_whole_pennant</a>(d,xp,yp,s01,hemi,a_flag);
+0453     [xp,yp] = <a href="#_sub5" class="code" title="subfunction [xv,yv] = move_down_stalk(d,xv,yv,s01,hemi)">move_down_stalk</a>(d,xp,yp,s01,hemi);
+0454     
+0455 <span class="keyword">end</span>
+0456 
+0457 <span class="keyword">for</span> i=1:N_hpenn
+0458     
+0459     <span class="keyword">if</span> N_flags==0 &amp;&amp; N_wpenn==0
+0460         [xp,yp] = <a href="#_sub5" class="code" title="subfunction [xv,yv] = move_down_stalk(d,xv,yv,s01,hemi)">move_down_stalk</a>(d,xp,yp,s01,hemi);
+0461     <span class="keyword">end</span>
+0462 
+0463     [xp,yp] = <a href="#_sub9" class="code" title="subfunction [xv,yv] = add_half_pennant(d,xv,yv,s01,hemi,a_flag)">add_half_pennant</a>(d,xp,yp,s01,hemi,a_flag);
+0464     
+0465 <span class="keyword">end</span>
+0466 
+0467 [xp,yp] = <a href="#_sub10" class="code" title="subfunction [xv,yv] = close_windbarb(d,xv,yv,s01,hemi)">close_windbarb</a>(d,xp,yp,s01,hemi);
+0468 
+0469 
+0470 
+0471 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0472 <a name="_sub3" href="#_subfunctions" class="code">function K = speed2knots(WS)</a>
+0473 
+0474 f = 0.51; <span class="comment">% 1 knot = 0.51 m/s</span>
+0475 
+0476 K = (1/f) * WS;
+0477 
+0478 
+0479 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0480 <a name="_sub4" href="#_subfunctions" class="code">function a = calc_dir(U,V)</a>
+0481 
+0482 dy = V;
+0483 dx = U;
+0484 
+0485 <span class="keyword">if</span> (dy==0) &amp;&amp; (dx==0)
+0486     error([<span class="string">'Unable to determine the direction of'</span> 10 <span class="string">'a zero-length vector. Function: '</span> 39 mfilename 39 <span class="string">'.'</span>])
+0487 <span class="keyword">elseif</span> (dy==0)&amp;&amp;(dx&gt;0)
+0488     a = 0.5*pi;
+0489 <span class="keyword">elseif</span> (dy==0)&amp;&amp;(dx&lt;0)
+0490     a = 1.5*pi;
+0491 <span class="keyword">elseif</span> (dy&gt;0)&amp;&amp;(dx==0)
+0492     a = 0;
+0493 <span class="keyword">elseif</span> (dy&lt;0)&amp;&amp;(dx==0)
+0494     a = pi;    
+0495 <span class="keyword">elseif</span> (dy&gt;0)&amp;&amp;(dx&gt;0)
+0496     a = mod(atan(dx/dy),2*pi);<span class="comment">%#</span>
+0497 <span class="keyword">elseif</span> (dy&gt;0)&amp;&amp;(dx&lt;0)
+0498     a = mod(atan(dx/dy),2*pi);<span class="comment">%#</span>
+0499 <span class="keyword">elseif</span> (dy&lt;0)&amp;&amp;(dx&gt;0)
+0500     a = mod(pi+atan(dx/dy),2*pi);<span class="comment">%#</span>
+0501 <span class="keyword">elseif</span> (dy&lt;0)&amp;&amp;(dx&lt;0)
+0502     a = mod(pi+atan(dx/dy),2*pi);<span class="comment">%#</span>
+0503 <span class="keyword">else</span>
+0504     a=NaN;<span class="comment">%#</span>
+0505 <span class="keyword">end</span>
+0506 
+0507 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0508 <a name="_sub5" href="#_subfunctions" class="code">function [xv,yv] = move_down_stalk(d,xv,yv,s01,hemi)</a>
+0509 
+0510 s07 = 0.04*s01;    <span class="comment">% stalks separation interval</span>
+0511 
+0512 xv = [xv;xv(end) + s07*sin(d+pi)];
+0513 yv = [yv;yv(end) + s07*cos(d+pi)];
+0514 
+0515 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0516 <a name="_sub6" href="#_subfunctions" class="code">function [xv,yv] = open_windbarb(d,xv,yv,s01,hemi)</a>
+0517 
+0518 s02 = 0.02*s01;    <span class="comment">% width of the flag pole</span>
+0519 
+0520 ax = xv(end) - s02*sin(d+hemi*0.5*pi);
+0521 ay = yv(end) - s02*cos(d+hemi*0.5*pi);
+0522 
+0523 bx = ax + s01*sin(d);
+0524 by = ay + s01*cos(d);
+0525 
+0526 cx = bx + 2*s02*sin(d+hemi*0.5*pi);
+0527 cy = by + 2*s02*cos(d+hemi*0.5*pi);
+0528 
+0529 xv = [xv;ax;bx;cx];
+0530 yv = [yv;ay;by;cy];
+0531 
+0532 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0533 <a name="_sub7" href="#_subfunctions" class="code">function [xv,yv,a_flag] = add_flag(d,xv,yv,s01,hemi,a_flag)</a>
+0534 
+0535 
+0536 
+0537 s03 = 0.35*s01;    <span class="comment">% length of the flag(s)</span>
+0538 s02 = s03*tan(a_flag);    <span class="comment">% width of the flag(s)</span>
+0539 
+0540 fx = xv(end) + s03*sin(d+hemi*0.5*pi);
+0541 fy = yv(end) + s03*cos(d+hemi*0.5*pi);
+0542 
+0543 gx = xv(end) + s02*sin(d-pi);
+0544 gy = yv(end) + s02*cos(d-pi);
+0545 
+0546 xv = [xv;fx;gx];
+0547 yv = [yv;fy;gy];
+0548 
+0549 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0550 <a name="_sub8" href="#_subfunctions" class="code">function [xv,yv] = add_whole_pennant(d,xv,yv,s01,hemi,a_flag)</a>
+0551 
+0552 s02 = 0.34*s01; <span class="comment">% stalk length</span>
+0553 s03 = 0.03*s01; <span class="comment">% stalk width</span>
+0554 
+0555 cx = xv(end) + s03 * sin(d+hemi*pi);
+0556 cy = yv(end) + s03 * cos(d+hemi*pi);
+0557 
+0558 ax = xv(end) + s02 * sin(d+hemi*(0.5*pi-a_flag));
+0559 ay = yv(end) + s02 * cos(d+hemi*(0.5*pi-a_flag));
+0560 
+0561 bx = ax + s03 * sin(d+hemi*pi);
+0562 by = ay + s03 * cos(d+hemi*pi);
+0563 
+0564 
+0565 xv = [xv;ax;bx;cx];
+0566 yv = [yv;ay;by;cy];
+0567 
+0568 
+0569 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0570 <a name="_sub9" href="#_subfunctions" class="code">function [xv,yv] = add_half_pennant(d,xv,yv,s01,hemi,a_flag)</a>
+0571 
+0572 s02 = 0.18*s01; <span class="comment">% stalk length</span>
+0573 s03 = 0.03*s01; <span class="comment">% stalk width</span>
+0574 
+0575 cx = xv(end) + s03 * sin(d+hemi*pi);
+0576 cy = yv(end) + s03 * cos(d+hemi*pi);
+0577 
+0578 ax = xv(end) + s02 * sin(d+hemi*(0.5*pi-a_flag));
+0579 ay = yv(end) + s02 * cos(d+hemi*(0.5*pi-a_flag));
+0580 
+0581 bx = ax + s03 * sin(d+hemi*pi);
+0582 by = ay + s03 * cos(d+hemi*pi);
+0583 
+0584 
+0585 xv = [xv;ax;bx;cx];
+0586 yv = [yv;ay;by;cy];
+0587 
+0588 
+0589 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0590 <a name="_sub10" href="#_subfunctions" class="code">function [xv,yv] = close_windbarb(d,xv,yv,s01,hemi)</a>
+0591 
+0592 s02 = 0.02*s01;    <span class="comment">% width of the flag pole</span>
+0593 
+0594 xv = [xv;xv(1) + s02*sin(d+hemi*0.5*pi);xv(1)];
+0595 yv = [yv;yv(1) + s02*cos(d+hemi*0.5*pi);yv(1)];
+0596 
+0597 
+0598 
+0599 
+0600 
+0601 
+0602</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

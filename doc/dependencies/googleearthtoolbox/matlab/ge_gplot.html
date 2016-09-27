@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ge_gplot</title>
+  <meta name="keywords" content="ge_gplot">
+  <meta name="description" content="Reference page in help browser:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; ge_gplot.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ge_gplot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Reference page in help browser:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function output = ge_gplot(A, Vertices, varargin)% </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Reference page in help browser: 
+ 
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_gplot.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="ge_plot.html" class="code" title="function output = ge_plot(X,Y,varargin)">ge_plot</a>	Reference page in help browser:</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../dependencies/googleearthtoolbox/matlab/demo/demo_ge_gplot.html" class="code" title="function demo_ge_gplot()">demo_ge_gplot</a>	</li><li><a href="../../../dependencies/googleearthtoolbox/matlab/tests/test_ge_gplot.html" class="code" title="">test_ge_gplot</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function output = ge_gplot(A, Vertices, varargin)</a><span class="comment">%</span>
+0002 <span class="comment">% Reference page in help browser:</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_gplot.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation</span>
+0005 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</span>
+0006 <span class="comment">%</span>
+0007 
+0008 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0009 
+0010                  
+0011          id   = <span class="string">'gplot'</span>;
+0012       idTag   = <span class="string">'id'</span>;
+0013        name   = <span class="string">'ge_gplot'</span>;
+0014 description   = <span class="string">''</span>;
+0015      snippet  = <span class="string">' '</span>;
+0016     timeStamp = <span class="string">' '</span>;
+0017 timeSpanStart = <span class="string">' '</span>;
+0018  timeSpanStop = <span class="string">' '</span>;
+0019  visibility   = 1;
+0020   lineColor   = <span class="string">'ffffffff'</span>;
+0021   lineWidth   = 1.0;
+0022    altitude   = 1;
+0023  altitudeMode = <span class="string">'clampToGround'</span>;
+0024  msgToScreen  = false;
+0025  region = <span class="string">' '</span>;
+0026  forceAsLine  = false; <span class="comment">% Reduces file size with no loss in...</span>
+0027                       <span class="comment">% accuracy, i.e. as long as all lines...</span>
+0028                       <span class="comment">% have only 1 segment.</span>
+0029  tessellate = 1;
+0030  extrude = 0;
+0031  
+0032 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/value pairs.</span>
+0033 
+0034 <span class="keyword">if</span> msgToScreen
+0035     disp([<span class="string">'Running: '</span>,mfilename,<span class="string">'...'</span>])
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="keyword">if</span> ( isempty( A ) | isempty(Vertices) )
+0039     error(<span class="string">'empty coordinates passed to ge_gplot(...).'</span>);
+0040 <span class="keyword">end</span>
+0041 
+0042 
+0043 <span class="keyword">if</span> ~(isequal(altitudeMode,<span class="string">'clampToGround'</span>)||<span class="keyword">...</span>
+0044    isequal(altitudeMode,<span class="string">'relativeToGround'</span>)||<span class="keyword">...</span>
+0045    isequal(altitudeMode,<span class="string">'absolute'</span>))
+0046 
+0047     error([<span class="string">'Variable '</span>,39,<span class="string">'altitudeMode'</span>,39, <span class="string">' should be one of '</span> ,39,<span class="string">'clampToGround'</span>,39,<span class="string">', '</span>,10,39,<span class="string">'relativeToGround'</span>,39,<span class="string">', or '</span>,39,<span class="string">'absolute'</span>,39,<span class="string">'.'</span> ])
+0048     
+0049 <span class="keyword">end</span>
+0050 
+0051 
+0052 <span class="comment">% It used to say here:</span>
+0053 <span class="comment">% [i,j] = find(A);</span>
+0054 <span class="comment">% but that would unnecessarily double the number of points.</span>
+0055 
+0056 [i,j] = find(triu(ones(size(A))).*A);
+0057 [ignore, p] = sort(max(i,j));
+0058 i = i(p);
+0059 j = j(p);
+0060 
+0061 <span class="comment">% Create a long, NaN-separated list of line segments,</span>
+0062 <span class="comment">% rather than individual segments.</span>
+0063 
+0064 X = [ Vertices(i,1) Vertices(j,1) repmat(NaN,size(i))]';
+0065 Y = [ Vertices(i,2) Vertices(j,2) repmat(NaN,size(i))]';
+0066 X = X(:);
+0067 Y = Y(:);
+0068 
+0069 output = <a href="ge_plot.html" class="code" title="function output = ge_plot(X,Y,varargin)">ge_plot</a>(X,Y, <span class="keyword">...</span>
+0070                 <span class="string">'name'</span>, name, <span class="keyword">...</span>
+0071                 <span class="string">'snippet'</span>, snippet, <span class="keyword">...</span>
+0072                 <span class="string">'description'</span>, description, <span class="keyword">...</span>
+0073                 <span class="string">'region'</span>, region, <span class="keyword">...</span>
+0074                 <span class="string">'timeStamp'</span>, timeStamp, <span class="keyword">...</span>
+0075                 <span class="string">'timeSpanStart'</span>, timeSpanStart, <span class="keyword">...</span>
+0076                 <span class="string">'timeSpanStop'</span>, timeSpanStop, <span class="keyword">...</span>
+0077                 <span class="string">'visibility'</span>, visibility, <span class="keyword">...</span>
+0078                 <span class="string">'lineColor'</span>, lineColor, <span class="keyword">...</span>
+0079                 <span class="string">'lineWidth'</span>, lineWidth,<span class="keyword">...</span>
+0080                 <span class="string">'altitude'</span>,altitude,<span class="keyword">...</span>
+0081                 <span class="string">'altitudeMode'</span>,altitudeMode,<span class="keyword">...</span>
+0082                 <span class="string">'extrude'</span>,extrude,<span class="keyword">...</span>
+0083                 <span class="string">'tessellate'</span>,tessellate,<span class="keyword">...</span>
+0084                 <span class="string">'forceAsLine'</span>,forceAsLine);
+0085 
+0086 
+0087 <span class="keyword">if</span> msgToScreen
+0088     disp([<span class="string">'Running: '</span> mfilename,<span class="string">'...Done'</span>])
+0089 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

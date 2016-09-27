@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cs2cs</title>
+  <meta name="keywords" content="cs2cs">
+  <meta name="description" content="CS2CS - cartographic coordinate system filter">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="index.html">matlab-cs2cs</a> &gt; cs2cs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/matlab-cs2cs&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>cs2cs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CS2CS - cartographic coordinate system filter</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [x,y]=cs2cs(u, v, prj4_params) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CS2CS - cartographic coordinate system filter
+  This is a wrapper-function for cs2cs.
+
+ Syntax:  [x,y] = cs2cs(u, v, prj4_params)
+ 
+ Inputs: 
+    u - vector with horizontal input coordinates
+    v - vector with vertical input coordinates
+    prj4_params - parameters of cs2cs
+ 
+ Outputs:
+    x - vector with horicontal output coordinates
+    y - vector with vertical output coordinates</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../tidaldatabase/my_project.html" class="code" title="function [out_east,out_north] = my_project(in_east,in_north,direction)">my_project</a>	Sample user-defined projection and inverse projection of (lon,lat) to (x,y)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [x,y]=cs2cs(u, v, prj4_params)</a>
+0002 <span class="comment">%CS2CS - cartographic coordinate system filter</span>
+0003 <span class="comment">%  This is a wrapper-function for cs2cs.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Syntax:  [x,y] = cs2cs(u, v, prj4_params)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Inputs:</span>
+0008 <span class="comment">%    u - vector with horizontal input coordinates</span>
+0009 <span class="comment">%    v - vector with vertical input coordinates</span>
+0010 <span class="comment">%    prj4_params - parameters of cs2cs</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Outputs:</span>
+0013 <span class="comment">%    x - vector with horicontal output coordinates</span>
+0014 <span class="comment">%    y - vector with vertical output coordinates</span>
+0015 <span class="comment">%</span>
+0016 
+0017 <span class="comment">% Author: Erwin Nindl</span>
+0018 <span class="comment">% Email: nine-cs2cs-2013@wirdorange.org</span>
+0019 <span class="comment">% Website: https://github.com/nine/matlab-cs2cs</span>
+0020 <span class="comment">% April 2013; Last revision: 12-May-2004</span>
+0021 
+0022   <span class="comment">% call cs2cs from matlab</span>
+0023   <span class="comment">% inspired by</span>
+0024   <span class="comment">% http://marinescience.wiki.otago.ac.nz/Cs2csFromMatlab</span>
+0025   <span class="comment">%------------------------------------------------------------------------</span>
+0026   
+0027   <span class="comment">% input validation</span>
+0028   <span class="comment">%------------------------------------------------------------------------</span>
+0029   <span class="keyword">if</span> nargin&lt;3
+0030     error(<span class="string">'please provide all params'</span>);
+0031   <span class="keyword">end</span>
+0032   <span class="comment">%if ~isvector(u)</span>
+0033       [nx, ny]=size(u);
+0034   <span class="comment">%end</span>
+0035   u = u(:);
+0036   v = v(:);
+0037   <span class="keyword">if</span> length(u)~=length(v)
+0038     error(<span class="string">'input coordinates must have the same length'</span>);
+0039   <span class="keyword">end</span>
+0040   
+0041   <span class="keyword">if</span> ~isempty(u)
+0042     <span class="comment">% cs2cs: operating system dependent stuff</span>
+0043     <span class="comment">%----------------------------------------------------------------------</span>
+0044     <span class="keyword">if</span> ispc() <span class="comment">% MS windows</span>
+0045       f = filesep();
+0046       [pathstr,~,~] =  fileparts(mfilename(<span class="string">'fullpath'</span>));
+0047       proj_path     = [pathstr f <span class="string">'util'</span> f <span class="string">'proj'</span> f <span class="string">'bin'</span>];
+0048       proj_lib_path = [pathstr f <span class="string">'util'</span> f <span class="string">'proj'</span> f <span class="string">'nad'</span>];
+0049       clear pathstr;
+0050       clear f;
+0051       setenv(<span class="string">'PATH'</span>, [getenv(<span class="string">'PATH'</span>) <span class="string">';'</span> proj_path]);
+0052       setenv(<span class="string">'PROJ_LIB'</span>, proj_lib_path);
+0053     <span class="keyword">else</span>
+0054       <span class="keyword">if</span> isunix() || ismac()
+0055         <span class="keyword">if</span> unix(<span class="string">'which cs2cs'</span>)
+0056           error(<span class="string">'binary of cs2cs not found in path'</span>);
+0057         <span class="keyword">end</span>
+0058       <span class="keyword">else</span> <span class="comment">% unknown OS</span>
+0059         error(<span class="string">'operating system not supported'</span>);
+0060       <span class="keyword">end</span>
+0061     <span class="keyword">end</span>
+0062   
+0063     <span class="comment">% call cs2cs</span>
+0064     <span class="comment">%----------------------------------------------------------------------</span>
+0065     tmp_file1 = tempname(); <span class="comment">% infile</span>
+0066     tmp_file2 = tempname(); <span class="comment">% outfile</span>
+0067     dlmwrite(tmp_file1, [u, v], <span class="string">'delimiter'</span>, <span class="string">' '</span>, <span class="string">'precision'</span>, <span class="string">'%.6f'</span>);
+0068 
+0069     [status,result] = system([<span class="string">'cs2cs '</span> prj4_params <span class="string">' &lt; '</span> tmp_file1 <span class="string">' &gt; '</span> tmp_file2]);
+0070     <span class="keyword">if</span> status~=0
+0071       error([<span class="string">'Calling cs2cs: '</span> result]);
+0072     <span class="keyword">end</span>
+0073 
+0074     M = dlmread(tmp_file2);
+0075     x = M(:,1);
+0076     y = M(:,2);
+0077     x = reshape(x, nx, ny);
+0078     y = reshape(y, nx, ny);
+0079 
+0080     <span class="comment">% cleanup</span>
+0081     <span class="comment">%----------------------------------------------------------------------</span>
+0082     delete(tmp_file1);
+0083     delete(tmp_file2);
+0084   <span class="keyword">else</span>
+0085     x = [];
+0086     y = [];
+0087   <span class="keyword">end</span>
+0088 
+0089 <span class="keyword">end</span> <span class="comment">%eof</span></pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_ge_poly</title>
+  <meta name="keywords" content="demo_ge_poly">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="../index.html">matlab</a> &gt; <a href="index.html">demo</a> &gt; demo_ge_poly.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab/demo&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>demo_ge_poly
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function demo_ge_poly()%% Demo ge_poly </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>	Reference page in help browser:</li><li><a href="../../../../dependencies/googleearthtoolbox/matlab/ge_poly.html" class="code" title="function output = ge_poly(X,Y,varargin)">ge_poly</a>	Reference page in help browser:</li><li><a href="../../../../dependencies/googleearthtoolbox/matlab/googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function demo_ge_poly()</a><span class="comment">%% Demo ge_poly</span>
+0002 
+0003 load(fullfile(<a href="../../../../dependencies/googleearthtoolbox/matlab/googleearthroot.html" class="code" title="function s=googleearthroot()">googleearthroot</a>,<span class="string">'data'</span>,<span class="string">'conus.mat'</span>));
+0004 
+0005 world_coasts = <a href="../../../../dependencies/googleearthtoolbox/matlab/ge_poly.html" class="code" title="function output = ge_poly(X,Y,varargin)">ge_poly</a>(uslon,uslat,<span class="keyword">...</span>
+0006                        <span class="string">'polyColor'</span>,<span class="string">'9933ffff'</span>,<span class="keyword">...</span>
+0007                         <span class="string">'altitude'</span>,150000,<span class="keyword">...</span>
+0008                     <span class="string">'altitudeMode'</span>,<span class="string">'relativeToGround'</span>,<span class="keyword">...</span>
+0009                          <span class="string">'extrude'</span>,1,<span class="keyword">...</span>
+0010                       <span class="string">'tessellate'</span>,true);
+0011                   
+0012 kmlFileName = <span class="string">'demo_ge_poly.kml'</span>;
+0013 <a href="../../../../dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>(kmlFileName,world_coasts);
+0014 
+0015 
+0016 
+0017</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

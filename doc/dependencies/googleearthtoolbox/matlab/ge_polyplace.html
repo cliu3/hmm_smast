@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ge_polyplace</title>
+  <meta name="keywords" content="ge_polyplace">
+  <meta name="description" content="Reference page in help browser:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; ge_polyplace.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ge_polyplace
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Reference page in help browser:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [output] = ge_polyplace(X, Y, blPlace, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Reference page in help browser: 
+ 
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_polyplace.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../dependencies/googleearthtoolbox/matlab/tests/test_id_links.html" class="code" title="">test_id_links</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [output] = ge_polyplace(X, Y, blPlace, varargin)</a>
+0002 <span class="comment">% Reference page in help browser:</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_polyplace.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation</span>
+0005 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</span>
+0006 <span class="comment">%</span>
+0007 
+0008 
+0009 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0010 
+0011                  
+0012          id = <span class="string">'polyplace'</span>;
+0013       idTag = <span class="string">'id'</span>;
+0014        name = <span class="string">'ge_polyplace'</span>;
+0015 description = <span class="string">''</span>;
+0016     timeStamp = <span class="string">' '</span>;
+0017 timeSpanStart = <span class="string">' '</span>;
+0018  timeSpanStop = <span class="string">' '</span>;
+0019  visibility = 1;
+0020   lineColor = <span class="string">'ffffffff'</span>;
+0021   polyColor = <span class="string">'ffffffff'</span>;
+0022   lineWidth = 1.0;
+0023     snippet = <span class="string">' '</span>;
+0024    altitude = 1.0;
+0025      extrude = 1;
+0026      tessellate = 0;
+0027  altitudeMode = <span class="string">'clampToGround'</span>;
+0028  msgToScreen = false;
+0029      region = <span class="string">' '</span>;
+0030  
+0031 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/Value pairs.</span>
+0032 
+0033 <span class="keyword">if</span> msgToScreen
+0034     disp([<span class="string">'Running :'</span>,mfilename,<span class="string">'...'</span>])
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="keyword">if</span> ( isempty( Y ) || isempty(X) )
+0038     error(<span class="string">'empty coordinates passed to ge_box(...).'</span>);
+0039 <span class="keyword">elseif</span> length(Y) ~= length(X)
+0040     error(<span class="string">'Length of Y is different to length of X'</span>);
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="keyword">if</span> ~(isequal(altitudeMode,<span class="string">'clampToGround'</span>)||<span class="keyword">...</span>
+0044    isequal(altitudeMode,<span class="string">'relativeToGround'</span>)||<span class="keyword">...</span>
+0045    isequal(altitudeMode,<span class="string">'absolute'</span>))
+0046 
+0047     error([<span class="string">'Variable '</span>,39,<span class="string">'altitudeMode'</span>,39, <span class="string">' should be one of '</span> ,39,<span class="string">'clampToGround'</span>,39,<span class="string">', '</span>,10,39,<span class="string">'relativeToGround'</span>,39,<span class="string">', or '</span>,39,<span class="string">'absolute'</span>,39,<span class="string">'.'</span> ])
+0048     
+0049 <span class="keyword">end</span>   
+0050 
+0051 <span class="keyword">if</span> region == <span class="string">' '</span>
+0052     region_chars = <span class="string">''</span>;
+0053 <span class="keyword">else</span>
+0054     region_chars = [ region, 10 ];
+0055 <span class="keyword">end</span>
+0056 
+0057 id_chars = [ idTag <span class="string">'=&quot;'</span> id <span class="string">'&quot;'</span> ];
+0058 poly_id_chars = [ idTag <span class="string">'=&quot;poly_'</span> id <span class="string">'&quot;'</span> ];
+0059 name_chars = [ <span class="string">'&lt;name&gt;'</span>,10, name,10, <span class="string">'&lt;/name&gt;'</span>,10 ];
+0060 description_chars = [ <span class="string">'&lt;description&gt;'</span>,10,<span class="string">'&lt;![CDATA['</span> description <span class="string">']]&gt;'</span>,10,<span class="string">'&lt;/description&gt;'</span>,10 ];
+0061 visibility_chars = [ <span class="string">'&lt;visibility&gt;'</span>,10, int2str(visibility),10, <span class="string">'&lt;/visibility&gt;'</span>,10 ];
+0062 lineColor_chars = [ <span class="string">'&lt;color&gt;'</span>,10, lineColor ,10,<span class="string">'&lt;/color&gt;'</span>,10 ];
+0063 polyColor_chars = [ <span class="string">'&lt;color&gt;'</span>,10, polyColor ,10,<span class="string">'&lt;/color&gt;'</span>,10 ];
+0064 lineWidth_chars= [ <span class="string">'&lt;width&gt;'</span>,10, num2str(lineWidth, <span class="string">'%.2f'</span>),10, <span class="string">'&lt;/width&gt;'</span>,10 ];
+0065 altitudeMode_chars = [ <span class="string">'&lt;altitudeMode&gt;'</span>,10, altitudeMode ,10,<span class="string">'&lt;/altitudeMode&gt;'</span>,10 ];
+0066 <span class="keyword">if</span> snippet == <span class="string">' '</span>
+0067     snippet_chars = <span class="string">''</span>;
+0068 <span class="keyword">else</span>
+0069     snippet_chars = [ <span class="string">'&lt;Snippet&gt;'</span> snippet <span class="string">'&lt;/Snippet&gt;'</span>,10 ];    
+0070 <span class="keyword">end</span>
+0071 extrude_chars = [ <span class="string">'&lt;extrude&gt;'</span> int2str(extrude) <span class="string">'&lt;/extrude&gt;'</span>,10 ];
+0072 tessellate_chars = [ <span class="string">'&lt;tessellate&gt;'</span> int2str(tessellate) <span class="string">'&lt;/tessellate&gt;'</span>,10 ];
+0073 
+0074 <span class="keyword">if</span> timeStamp == <span class="string">' '</span>
+0075     timeStamp_chars = <span class="string">''</span>;
+0076 <span class="keyword">else</span>
+0077     timeStamp_chars = [ <span class="string">'&lt;TimeStamp&gt;&lt;when&gt;'</span> timeStamp <span class="string">'&lt;/when&gt;&lt;/TimeStamp&gt;'</span>,10 ];
+0078 <span class="keyword">end</span>
+0079 
+0080 <span class="keyword">if</span> timeSpanStart == <span class="string">' '</span>
+0081     timeSpan_chars = <span class="string">''</span>;
+0082 <span class="keyword">else</span>
+0083     <span class="keyword">if</span> timeSpanStop == <span class="string">' '</span> 
+0084         timeSpan_chars = [ <span class="string">'&lt;TimeSpan&gt;&lt;begin&gt;'</span> timeSpanStart <span class="string">'&lt;/begin&gt;&lt;/TimeSpan&gt;'</span>,10 ];
+0085     <span class="keyword">else</span>
+0086         timeSpan_chars = [ <span class="string">'&lt;TimeSpan&gt;&lt;begin&gt;'</span> timeSpanStart <span class="string">'&lt;/begin&gt;&lt;end&gt;'</span> timeSpanStop <span class="string">'&lt;/end&gt;&lt;/TimeSpan&gt;'</span>,10 ];    
+0087     <span class="keyword">end</span>
+0088         
+0089 <span class="keyword">end</span>
+0090 
+0091 header = [<span class="string">'&lt;Placemark '</span>,id_chars,<span class="string">'&gt;'</span>,10, <span class="keyword">...</span>
+0092             name_chars, <span class="keyword">...</span>
+0093             timeStamp_chars,<span class="keyword">...</span>
+0094             timeSpan_chars,<span class="keyword">...</span>
+0095             visibility_chars, <span class="keyword">...</span>
+0096             snippet_chars, <span class="keyword">...</span>
+0097             description_chars, <span class="keyword">...</span>
+0098             region_chars, <span class="keyword">...</span>
+0099             <span class="string">'&lt;Style&gt;'</span>,10,<span class="keyword">...</span>
+0100                 <span class="string">'&lt;LineStyle&gt;'</span>,10,<span class="keyword">...</span>
+0101                     lineColor_chars, <span class="keyword">...</span>
+0102                     lineWidth_chars, <span class="keyword">...</span>
+0103                 <span class="string">'&lt;/LineStyle&gt;'</span>,10,<span class="keyword">...</span>
+0104                 <span class="string">'&lt;PolyStyle&gt;'</span>,10, <span class="keyword">...</span>
+0105                     polyColor_chars, <span class="keyword">...</span>
+0106                 <span class="string">'&lt;/PolyStyle&gt;'</span>,10, <span class="keyword">...</span>
+0107             <span class="string">'&lt;/Style&gt;'</span>,10,<span class="keyword">...</span>
+0108           <span class="string">'&lt;Polygon '</span>,poly_id_chars,<span class="string">'&gt;'</span>,10, <span class="keyword">...</span><span class="comment">.</span>
+0109             extrude_chars, <span class="keyword">...</span>
+0110             altitudeMode_chars, <span class="keyword">...</span>
+0111             <span class="string">'&lt;outerBoundaryIs&gt;'</span>,10, <span class="keyword">...</span>
+0112               extrude_chars, <span class="keyword">...</span>
+0113               <span class="string">'&lt;LinearRing&gt;'</span>,10, <span class="keyword">...</span>
+0114               extrude_chars, <span class="keyword">...</span>
+0115               tessellate_chars, <span class="keyword">...</span>
+0116               altitudeMode_chars, <span class="keyword">...</span>
+0117                 <span class="string">'&lt;coordinates&gt;'</span>,10];
+0118 
+0119 footer = [<span class="string">'&lt;/coordinates&gt;'</span>,10, <span class="keyword">...</span>
+0120       <span class="string">'&lt;/LinearRing&gt;'</span>,10, <span class="keyword">...</span>
+0121     <span class="string">'&lt;/outerBoundaryIs&gt;'</span>,10, <span class="keyword">...</span>
+0122   <span class="string">'&lt;/Polygon&gt;'</span>,10, <span class="keyword">...</span>
+0123 <span class="string">'&lt;/Placemark&gt;'</span>,10];
+0124 
+0125 
+0126 latnans = isnan(Y);
+0127 nPolygons = sum(latnans);
+0128 polyIdx = find( latnans &gt; 0 );
+0129 idx = 1;
+0130 output = <span class="string">''</span>;
+0131 <span class="keyword">for</span> x = 1:nPolygons
+0132 
+0133     pre_header = <span class="string">''</span>;
+0134     <span class="keyword">if</span> blPlace
+0135         <span class="comment">%placemark in centroid</span>
+0136         pre_header = [<span class="string">'&lt;Placemark '</span>,id_chars,<span class="string">'&gt;'</span>,10, <span class="keyword">...</span>
+0137                     name_chars, <span class="keyword">...</span>
+0138                     timeStamp_chars,<span class="keyword">...</span>
+0139                     timeSpan_chars,<span class="keyword">...</span>
+0140                     description_chars, <span class="keyword">...</span>
+0141                    <span class="string">'&lt;Point&gt;'</span>,10, <span class="keyword">...</span>
+0142                         extrude_chars,<span class="keyword">...</span>
+0143                         altitudeMode_chars, <span class="keyword">...</span>
+0144                         <span class="string">'&lt;coordinates&gt;'</span> <span class="keyword">...</span>
+0145                             sprintf(<span class="string">'%.6f,%.6f,%.6f '</span>, mean(X(idx:(polyIdx(x)-1))), mean(Y(idx:(polyIdx(x)-1))), mean(altitude)) <span class="keyword">...</span>
+0146                          <span class="string">'&lt;/coordinates&gt;'</span>,10,<span class="keyword">...</span>
+0147                     <span class="string">'&lt;/Point&gt;'</span>,10, <span class="keyword">...</span>
+0148                   <span class="string">'&lt;/Placemark&gt;'</span>,10];
+0149     <span class="keyword">end</span> <span class="comment">%if</span>
+0150 
+0151     <span class="comment">%generate Coords</span>
+0152     coordinates = [];
+0153     <span class="keyword">for</span> i=idx:(polyIdx(x)-1)
+0154 
+0155         coordinates = [ coordinates, <span class="keyword">...</span>
+0156                         sprintf(<span class="string">'%.6f,%.6f,%.6f '</span>, X(i), Y(i), altitude)];
+0157     <span class="keyword">end</span> <span class="comment">%for</span>
+0158     idx = i+2;
+0159     coordinates = [ coordinates, 10];
+0160     output = [ output, pre_header, header, coordinates, footer];
+0161         
+0162     
+0163 <span class="keyword">end</span>
+0164 
+0165 
+0166 <span class="keyword">if</span> msgToScreen
+0167     disp([<span class="string">'Running '</span>,mfilename,<span class="string">'...Done'</span>])
+0168 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

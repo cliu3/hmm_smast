@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo_ge_surf</title>
+  <meta name="keywords" content="demo_ge_surf">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="../index.html">matlab</a> &gt; <a href="index.html">demo</a> &gt; demo_ge_surf.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab/demo&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>demo_ge_surf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function demo_ge_surf() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../dependencies/googleearthtoolbox/matlab/ge_colorbar.html" class="code" title="function [output] = ge_colorbar(x,y,data,varargin)">ge_colorbar</a>	Reference page in help browser:</li><li><a href="../../../../dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>	Reference page in help browser:</li><li><a href="../../../../dependencies/googleearthtoolbox/matlab/ge_surf.html" class="code" title="function kmlStr = ge_surf(x,y,z,varargin)">ge_surf</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function demo_ge_surf()</a>
+0002 
+0003 figure
+0004 z = peaks(30);
+0005 x = linspace(-158.5,-157.5,size(z,2));
+0006 y = linspace(20,21,size(z,1));
+0007 cLimLow = min(z(:));
+0008 cLimHigh = max(z(:));
+0009 
+0010 kmlFileName = <span class="string">'demo_ge_surf.kml'</span>;
+0011 
+0012 surf(x,y,z);
+0013 
+0014 kmlStr1 = <a href="../../../../dependencies/googleearthtoolbox/matlab/ge_surf.html" class="code" title="function kmlStr = ge_surf(x,y,z,varargin)">ge_surf</a>(x,y,z,<span class="keyword">...</span>
+0015             <span class="string">'polyAlpha'</span>,<span class="string">'FF'</span>,<span class="keyword">...</span>
+0016             <span class="string">'lineColor'</span>,<span class="string">'FF0000FF'</span>,<span class="keyword">...</span>
+0017             <span class="string">'lineWidth'</span>,0.1,<span class="keyword">...</span>
+0018               <span class="string">'cLimLow'</span>,cLimLow,<span class="keyword">...</span>
+0019              <span class="string">'cLimHigh'</span>,cLimHigh,<span class="keyword">...</span>
+0020             <span class="string">'vertExagg'</span>,5e3,<span class="keyword">...</span>
+0021           <span class="string">'altRefLevel'</span>,2e4,<span class="keyword">...</span>
+0022               <span class="string">'extrude'</span>,true);
+0023 
+0024               
+0025 kmlStr2 = <a href="../../../../dependencies/googleearthtoolbox/matlab/ge_colorbar.html" class="code" title="function [output] = ge_colorbar(x,y,data,varargin)">ge_colorbar</a>(x(end),y(1),z,<span class="keyword">...</span>
+0026                        <span class="string">'numClasses'</span>,20,<span class="keyword">...</span>
+0027                           <span class="string">'cLimLow'</span>,cLimLow,<span class="keyword">...</span>
+0028                          <span class="string">'cLimHigh'</span>,cLimHigh,<span class="keyword">...</span>
+0029                     <span class="string">'cBarFormatStr'</span>,<span class="string">'%+07.4f'</span>);
+0030 
+0031 <a href="../../../../dependencies/googleearthtoolbox/matlab/ge_output.html" class="code" title="function ge_output(filename,output,varargin)">ge_output</a>(kmlFileName,[kmlStr1,kmlStr2],<span class="keyword">...</span>
+0032                <span class="string">'name'</span>,<span class="string">'everybody&amp;#0039;s gone surfin'</span>);
+0033                                            
+0034</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ge_surf</title>
+  <meta name="keywords" content="ge_surf">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; ge_surf.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ge_surf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function kmlStr = ge_surf(x,y,z,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">
+ ge_surf(x,y,z,varargin)
+ Reference page in help browser: 
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_surf.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="ge_poly3.html" class="code" title="function output = ge_poly3(X,Y,Z,varargin)">ge_poly3</a>	Reference page in help browser:</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../dependencies/googleearthtoolbox/matlab/demo/demo_ge_surf.html" class="code" title="function demo_ge_surf()">demo_ge_surf</a>	</li><li><a href="../../../dependencies/googleearthtoolbox/matlab/demo/demo_ge_surf_mesh.html" class="code" title="function demo_ge_surf_mesh()%% Demo ge_imagesc">demo_ge_surf_mesh</a>	</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function S = conv2colorstr(B,G,R)</a></li><li><a href="#_sub2" class="code">function ZVex = det_altitude(X,Y,DATA,R,C,vertExagg,halfLonRes,halfLatRes,altRefLevel)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function kmlStr = ge_surf(x,y,z,varargin)</a>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% ge_surf(x,y,z,varargin)</span>
+0004 <span class="comment">% Reference page in help browser:</span>
+0005 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_surf.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation</span>
+0006 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</span>
+0007 <span class="comment">%</span>
+0008 
+0009 
+0010 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0011 
+0012 
+0013 <span class="keyword">if</span> isempty(x)||isempty(y)
+0014     error(<span class="string">'empty coordinates passed to ge_imagesc().'</span>);
+0015 <span class="keyword">elseif</span> isempty(z) 
+0016     error(<span class="string">'Empty data array passed to ge_imagesc().'</span>);    
+0017 <span class="keyword">end</span>
+0018 
+0019            id = <span class="string">'imagesc'</span>;
+0020    visibility = 1;
+0021     lineColor = <span class="string">'00000000'</span>;
+0022 <span class="comment">%     timeStamp = ' ';</span>
+0023 timeSpanStart = <span class="string">' '</span>;
+0024  timeSpanStop = <span class="string">' '</span>;
+0025     lineWidth = 0.25;
+0026      snippet = <span class="string">' '</span>;
+0027      description = <span class="string">''</span>;
+0028      altitude = 1.0;
+0029       extrude = 0;
+0030  altitudeMode = <span class="string">'relativeToGround'</span>;
+0031   msgToScreen = 0;
+0032     polyAlpha = <span class="string">'ff'</span>;
+0033          cMap = <span class="string">'jet'</span>;
+0034    tessellate = 1;
+0035        region = <span class="string">' '</span>;
+0036 <span class="comment">%      cLimHigh: see further down</span>
+0037 <span class="comment">%       cLimLow: see further down</span>
+0038 vertExagg = 1e4;
+0039 altRefLevel = 0; 
+0040 
+0041 checkMateX = size(x);
+0042 checkMateY = size(y);
+0043 checkMateZ = size(z);
+0044 
+0045 <span class="keyword">if</span> checkMateX(1) ~= checkMateX(2) &amp;&amp; checkMateY(1) ~= checkMateY(2)
+0046     x = repmat(x,length(x),1);
+0047     y = repmat(y,length(y),1)';
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="keyword">if</span> checkMateZ(1) ~= checkMateZ(2)
+0051     z = repmat(z,length(z),1);
+0052 <span class="keyword">end</span>
+0053     
+0054   
+0055 dy = y(2:end)-y(1:end-1);
+0056 dx = x(2:end)-x(1:end-1);
+0057 <span class="comment">% if any(abs(dy(2:end)-dy(1:end-1))&gt;1e-12)||any(abs(dx(2:end)-dx(1:end-1))&gt;1e-12)</span>
+0058 <span class="comment">%     error(['Function ' 39 mfilename 39 ' does not allow varying grid cell size.'])</span>
+0059 <span class="comment">% end</span>
+0060 <span class="comment">% clear dx dy</span>
+0061 xResolution = abs(x(1,2)-x(1,1));
+0062 yResolution = abs(y(2)-y(1));
+0063 
+0064 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/Value pairs.</span>
+0065 
+0066 <span class="keyword">if</span> msgToScreen
+0067    disp([<span class="string">'Running '</span> mfilename <span class="string">'...'</span>]) 
+0068 <span class="keyword">end</span>
+0069 
+0070 <span class="keyword">if</span> ~(isequal(altitudeMode,<span class="string">'clampToGround'</span>)||<span class="keyword">...</span>
+0071    isequal(altitudeMode,<span class="string">'relativeToGround'</span>)||<span class="keyword">...</span>
+0072    isequal(altitudeMode,<span class="string">'absolute'</span>))
+0073 
+0074     error([<span class="string">'Variable '</span>,39,<span class="string">'altitudeMode'</span>,39, <span class="string">' should be one of '</span> ,39,<span class="string">'clampToGround'</span>,39,<span class="string">', '</span>,10,39,<span class="string">'relativeToGround'</span>,39,<span class="string">', or '</span>,39,<span class="string">'absolute'</span>,39,<span class="string">'.'</span> ])
+0075     
+0076 <span class="keyword">end</span>   
+0077 
+0078 <span class="keyword">if</span> numel(xResolution)~=1
+0079     error([<span class="string">'Function '</span>,39,mfilename,39,<span class="string">': variable '</span>,39,<span class="string">'xResolution'</span>,39,<span class="string">' should be scalar.'</span>])
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="keyword">if</span> numel(yResolution)~=1
+0083     error([<span class="string">'Function '</span>,39,mfilename,39,<span class="string">': variable '</span>,39,<span class="string">'yResolution'</span>,39,<span class="string">' should be scalar.'</span>])
+0084 <span class="keyword">end</span>
+0085 
+0086 <span class="keyword">if</span> ~((length(x)&gt;1)&amp;&amp;(length(y)&gt;1))
+0087     error([<span class="string">'Input variables '</span> 39 <span class="string">'x'</span> 39 <span class="string">' and '</span> 39 <span class="string">'y'</span> 39 <span class="string">' should at least contain 2 values.'</span>])
+0088 <span class="keyword">end</span>
+0089 
+0090 <span class="keyword">if</span> exist(<span class="string">'nanValue'</span>,<span class="string">'var'</span>)&amp;&amp;~isnan(nanValue)
+0091     z(z==nanValue)=NaN;
+0092 <span class="keyword">end</span>
+0093 <span class="keyword">if</span> ~exist(<span class="string">'cLimHigh'</span>,<span class="string">'var'</span>)
+0094     cLimHigh = max(z(:));
+0095 <span class="keyword">end</span>
+0096 <span class="keyword">if</span> ~exist(<span class="string">'cLimLow'</span>,<span class="string">'var'</span>)
+0097     cLimLow = min(z(:));
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="keyword">if</span> region == <span class="string">' '</span>
+0101     region_chars = <span class="string">''</span>;
+0102 <span class="keyword">else</span>
+0103     region_chars = [ region, 10 ];
+0104 <span class="keyword">end</span>
+0105 
+0106 
+0107 halfLonRes = 0.5*xResolution;     
+0108 halfLatRes = 0.5*yResolution;
+0109 
+0110 RIx = round(rand*10000);
+0111 C=[];
+0112 figure(RIx)
+0113 eval([<span class="string">'C = colormap('</span> cMap <span class="string">'(100));'</span>]);
+0114 close(RIx)
+0115 clear RIx
+0116 
+0117 X = linspace(0,1,100)';
+0118 YRed = C(:,1);
+0119 YGreen = C(:,2);
+0120 YBlue = C(:,3);
+0121 
+0122 kmlStr=<span class="string">''</span>;
+0123 
+0124 <span class="keyword">for</span> r=2:length(y(:,1))-1
+0125     <span class="keyword">for</span> c=2:length(x(1,:))-1
+0126         
+0127         <span class="keyword">if</span> ~isnan(z(r,c))
+0128             <span class="keyword">if</span> isequal(polyAlpha,<span class="string">'00'</span>)
+0129                 hexColorStr = <span class="string">'FFFFFF'</span>;
+0130                 newPolyAlpha = <span class="string">'00'</span>;
+0131             <span class="keyword">else</span>
+0132 
+0133                 f = (z(r,c)-cLimLow)/(cLimHigh-cLimLow);
+0134 
+0135                 <span class="keyword">if</span> f&lt;0
+0136                     f=0;
+0137                 <span class="keyword">end</span>
+0138                 <span class="keyword">if</span> f&gt;1
+0139                     f=1;
+0140                 <span class="keyword">end</span>
+0141 
+0142                 YIRed = interp1(X,YRed,f);
+0143                 YIGreen = interp1(X,YGreen,f);
+0144                 YIBlue = interp1(X,YBlue,f);
+0145                 <span class="comment">%hexColorStr = conv2colorstr(YIBlue,YIGreen,YIRed);</span>
+0146                 hexColorStr = <a href="#_sub1" class="code" title="subfunction S = conv2colorstr(B,G,R)">conv2colorstr</a>(YIRed,YIGreen,YIBlue);
+0147                 newPolyAlpha = polyAlpha;
+0148             <span class="keyword">end</span>
+0149 
+0150             xv=[x(r,c)-halfLonRes;x(r,c)+halfLonRes;x(r,c)+halfLonRes;x(r,c)-halfLonRes];
+0151             yv=[y(r,c)-halfLatRes;y(r,c)-halfLatRes;y(r,c)+halfLatRes;y(r,c)+halfLatRes];
+0152             zv=<a href="#_sub2" class="code" title="subfunction ZVex = det_altitude(X,Y,DATA,R,C,vertExagg,halfLonRes,halfLatRes,altRefLevel)">det_altitude</a>(x,y,z,r,c,vertExagg,halfLonRes,halfLatRes,altRefLevel);
+0153 
+0154                kmlStr = [kmlStr,<a href="ge_poly3.html" class="code" title="function output = ge_poly3(X,Y,Z,varargin)">ge_poly3</a>(xv,yv,zv,<span class="keyword">...</span>
+0155                                            <span class="string">'snippet'</span>, snippet,<span class="keyword">...</span>
+0156                                            <span class="string">'description'</span>, description, <span class="keyword">...</span>
+0157                                            <span class="string">'name'</span>,[<span class="string">'row='</span>,num2str(r),<span class="string">';col='</span>,num2str(c)],<span class="keyword">...</span>
+0158                                       <span class="string">'polyColor'</span>,[newPolyAlpha,hexColorStr],<span class="keyword">...</span>
+0159                                     <span class="string">'description'</span>,<span class="string">''</span>,<span class="keyword">...</span>
+0160                                     <span class="string">'region'</span>, region,<span class="keyword">...</span>
+0161                                    <span class="string">'lineColor'</span>,lineColor,<span class="keyword">...</span>
+0162                                    <span class="string">'lineWidth'</span>,lineWidth,<span class="keyword">...</span>
+0163                                <span class="string">'timeSpanStart'</span>,timeSpanStart,<span class="keyword">...</span>
+0164                                 <span class="string">'timeSpanStop'</span>,timeSpanStop,<span class="keyword">...</span>
+0165                                   <span class="string">'visibility'</span>,visibility,<span class="keyword">...</span>
+0166                                      <span class="string">'extrude'</span>,extrude,<span class="keyword">...</span>
+0167                                 <span class="string">'altitudeMode'</span>,altitudeMode,<span class="keyword">...</span>
+0168                                   <span class="string">'tessellate'</span>,tessellate)];
+0169         <span class="keyword">end</span>
+0170     <span class="keyword">end</span>
+0171 <span class="keyword">end</span>
+0172 
+0173 
+0174 <span class="keyword">if</span> msgToScreen
+0175    disp([<span class="string">'Running '</span> mfilename <span class="string">'...Done'</span>]) 
+0176 <span class="keyword">end</span>
+0177 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0178 <span class="comment">%% local function</span>
+0179 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0180 
+0181 <a name="_sub1" href="#_subfunctions" class="code">function S = conv2colorstr(B,G,R)</a>
+0182 <span class="comment">% Please note that this conv2colorstr is different from that in</span>
+0183 <span class="comment">% ge_colorbar. This one writes KML formatted hexadecimal</span>
+0184 <span class="comment">% colorstrings, ge_colorbar() writes HTML formatted colorstr.</span>
+0185 
+0186 
+0187 S=<span class="string">'000000'</span>;
+0188 
+0189 hexB = dec2hex(round(B*255));
+0190 hexG = dec2hex(round(G*255));
+0191 hexR = dec2hex(round(R*255));
+0192 
+0193 LB = length(hexB);
+0194 LG = length(hexG);
+0195 LR = length(hexR);
+0196 
+0197 S(3-LB:2)=hexB;
+0198 S(5-LG:4)=hexG;
+0199 S(7-LR:6)=hexR;
+0200 
+0201 
+0202 <a name="_sub2" href="#_subfunctions" class="code">function ZVex = det_altitude(X,Y,DATA,R,C,vertExagg,halfLonRes,halfLatRes,altRefLevel)</a>
+0203 
+0204 <span class="comment">% xi = X([C-1,C+1;C-1,C+1]);</span>
+0205 <span class="comment">% yi = Y([R-1,R-1;R+1,R+1]);</span>
+0206 <span class="comment">% Ix = sub2ind([length(Y),length(X)],[R-1,R-1;R+1,R+1],[C-1,C+1;C-1,C+1]);</span>
+0207 <span class="comment">% zi = DATA(Ix);</span>
+0208 <span class="comment">%</span>
+0209 <span class="comment">% x0=[X(C)-halfLonRes;X(C)+halfLonRes;X(C)+halfLonRes;X(C)-halfLonRes];</span>
+0210 <span class="comment">% y0=[Y(R)-halfLatRes;Y(R)-halfLatRes;Y(R)+halfLatRes;Y(R)+halfLatRes];</span>
+0211 <span class="comment">%</span>
+0212 <span class="comment">% ZVex(1:4,1)=interp2(xi,yi,zi*vertExagg+altRefLevel,x0,y0);</span>
+0213 a = mean([DATA(R,C),DATA(R,C-1),DATA(R-1,C-1),DATA(R-1,C)]);
+0214 b = mean([DATA(R,C),DATA(R-1,C),DATA(R-1,C+1),DATA(R,C+1)]);
+0215 c = mean([DATA(R,C),DATA(R,C+1),DATA(R+1,C+1),DATA(R+1,C)]);
+0216 d = mean([DATA(R,C),DATA(R+1,C),DATA(R+1,C-1),DATA(R,C-1)]);
+0217 ZVex(1:4,1)=[a;b;c;d]*vertExagg+altRefLevel;</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of t_demo</title>
+  <meta name="keywords" content="t_demo">
+  <meta name="description" content="T_DEMO - demonstration of capabilities.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="index.html">t_tide</a> &gt; t_demo.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/t_tide&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>t_demo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>T_DEMO - demonstration of capabilities.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> T_DEMO - demonstration of capabilities.
+ Short example of capabilities of tidal analysis toolbox.
+
+ In this example, we 
+         a) do nodal corrections for satellites, 
+         b) use inference for P1 and K2, and
+         c) force a fit to a shallow-water constituent.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="t_tide.html" class="code" title="function [nameu,fu,tidecon,xout]=t_tide(xin,varargin);">t_tide</a>	T_TIDE Harmonic analysis of a time series</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% T_DEMO - demonstration of capabilities.</span>
+0002 <span class="comment">% Short example of capabilities of tidal analysis toolbox.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% In this example, we</span>
+0005 <span class="comment">%         a) do nodal corrections for satellites,</span>
+0006 <span class="comment">%         b) use inference for P1 and K2, and</span>
+0007 <span class="comment">%         c) force a fit to a shallow-water constituent.</span>
+0008 
+0009 <span class="comment">% Version 1.0</span>
+0010 
+0011 echo on
+0012        echo on
+0013        <span class="comment">% Load the example.</span>
+0014        load t_example
+0015       
+0016        <span class="comment">% Define inference parameters.</span>
+0017        infername=[<span class="string">'P1'</span>;<span class="string">'K2'</span>];
+0018        inferfrom=[<span class="string">'K1'</span>;<span class="string">'S2'</span>];
+0019        infamp=[.33093;.27215];
+0020        infphase=[-7.07;-22.40];
+0021        
+0022        <span class="comment">% The call (see t_demo code for details).</span>
+0023        [tidestruc,pout]=<a href="t_tide.html" class="code" title="function [nameu,fu,tidecon,xout]=t_tide(xin,varargin);">t_tide</a>(tuk_elev,<span class="keyword">...</span>
+0024        <span class="string">'interval'</span>,1, <span class="keyword">...</span><span class="comment">                     % hourly data</span>
+0025        <span class="string">'start'</span>,tuk_time(1),<span class="keyword">...</span><span class="comment">               % start time is datestr(tuk_time(1))</span>
+0026        <span class="string">'latitude'</span>,69+27/60,<span class="keyword">...</span><span class="comment">               % Latitude of obs</span>
+0027        <span class="string">'inference'</span>,infername,inferfrom,infamp,infphase,<span class="keyword">...</span>
+0028        <span class="string">'shallow'</span>,<span class="string">'M10'</span>,<span class="keyword">...</span><span class="comment">                   % Add a shallow-water constituent </span>
+0029        <span class="string">'error'</span>,<span class="string">'linear'</span>,<span class="keyword">...</span><span class="comment">                   % coloured boostrap CI</span>
+0030        <span class="string">'synthesis'</span>,1);                       <span class="comment">% Use SNR=1 for synthesis.</span>
+0031 
+0032 
+0033        echo off
+0034 
+0035     <span class="comment">%    pout=t_predic(tuk_time,tidestruc,,...</span>
+0036     <span class="comment">%                  'latitude',69+27/60,...</span>
+0037     <span class="comment">%                  'synthesis',1);</span>
+0038 
+0039 clf;orient tall;
+0040 subplot(411);
+0041 plot(tuk_time-datenum(1975,1,0),[tuk_elev pout]);
+0042 line(tuk_time-datenum(1975,1,0),tuk_elev-pout,<span class="string">'linewi'</span>,2,<span class="string">'color'</span>,<span class="string">'r'</span>);
+0043 xlabel(<span class="string">'Days in 1975'</span>);
+0044 ylabel(<span class="string">'Elevation (m)'</span>);
+0045 text(190,5.5,<span class="string">'Original Time series'</span>,<span class="string">'color'</span>,<span class="string">'b'</span>);
+0046 text(190,4.75,<span class="string">'Tidal prediction from Analysis'</span>,<span class="string">'color'</span>,[0 .5 0]);
+0047 text(190,4.0,<span class="string">'Original time series minus Prediction'</span>,<span class="string">'color'</span>,<span class="string">'r'</span>);
+0048 title(<span class="string">'Demonstration of t\_tide toolbox'</span>);
+0049 
+0050 subplot(412);
+0051 fsig=tidestruc.tidecon(:,1)&gt;tidestruc.tidecon(:,2); <span class="comment">% Significant peaks</span>
+0052 semilogy([tidestruc.freq(~fsig),tidestruc.freq(~fsig)]',[.0005*ones(sum(~fsig),1),tidestruc.tidecon(~fsig,1)]',<span class="string">'.-r'</span>);
+0053 line([tidestruc.freq(fsig),tidestruc.freq(fsig)]',[.0005*ones(sum(fsig),1),tidestruc.tidecon(fsig,1)]',<span class="string">'marker'</span>,<span class="string">'.'</span>,<span class="string">'color'</span>,<span class="string">'b'</span>);
+0054 line(tidestruc.freq,tidestruc.tidecon(:,2),<span class="string">'linestyle'</span>,<span class="string">':'</span>,<span class="string">'color'</span>,[0 .5 0]);
+0055 set(gca,<span class="string">'ylim'</span>,[.0005 1],<span class="string">'xlim'</span>,[0 .5]);
+0056 xlabel(<span class="string">'frequency (cph)'</span>);
+0057 text(tidestruc.freq,tidestruc.tidecon(:,1),tidestruc.name,<span class="string">'rotation'</span>,45,<span class="string">'vertical'</span>,<span class="string">'base'</span>);
+0058 ylabel(<span class="string">'Amplitude (m)'</span>);
+0059 text(.27,.4,<span class="string">'Analyzed lines with 95% significance level'</span>);
+0060 text(.35,.2,<span class="string">'Significant Constituents'</span>,<span class="string">'color'</span>,<span class="string">'b'</span>);
+0061 text(.35,.1,<span class="string">'Insignificant Constituents'</span>,<span class="string">'color'</span>,<span class="string">'r'</span>);
+0062 text(.35,.05,<span class="string">'95% Significance Level'</span>,<span class="string">'color'</span>,[0 .5 0]);
+0063 
+0064 subplot(413);
+0065 errorbar(tidestruc.freq(~fsig),tidestruc.tidecon(~fsig,3),tidestruc.tidecon(~fsig,4),<span class="string">'.r'</span>);
+0066 hold on;
+0067 errorbar(tidestruc.freq(fsig),tidestruc.tidecon(fsig,3),tidestruc.tidecon(fsig,4),<span class="string">'o'</span>);
+0068 hold off;
+0069 set(gca,<span class="string">'ylim'</span>,[-45 360+45],<span class="string">'xlim'</span>,[0 .5],<span class="string">'ytick'</span>,[0:90:360]);
+0070 xlabel(<span class="string">'frequency (cph)'</span>);
+0071 ylabel(<span class="string">'Greenwich Phase (deg)'</span>);
+0072 text(.27,330,<span class="string">'Analyzed Phase angles with 95% CI'</span>);
+0073 text(.35,290,<span class="string">'Significant Constituents'</span>,<span class="string">'color'</span>,<span class="string">'b'</span>);
+0074 text(.35,250,<span class="string">'Insignificant Constituents'</span>,<span class="string">'color'</span>,<span class="string">'r'</span>);
+0075 
+0076 subplot(414);
+0077 ysig=tuk_elev;
+0078 yerr=tuk_elev-pout;
+0079 nfft=389;
+0080 bd=isnan(ysig);
+0081 gd=find(~bd);
+0082 bd([1:(min(gd)-1) (max(gd)+1):end])=0;
+0083 ysig(bd)=interp1(gd,ysig(gd),find(bd)); 
+0084 <span class="comment">%[Pxs,F]=psd(ysig(isfinite(ysig)),nfft,1,[],ceil(nfft/2));</span>
+0085 [Pxs,F]=pwelch(ysig(isfinite(ysig)),hanning(nfft),ceil(nfft/2),nfft,1);
+0086 Pxs=Pxs/2;
+0087 <span class="comment">%%[Pxso,Fo]=psd(ysig(isfinite(ysig)),nfft,1,[],ceil(nfft/2));</span>
+0088 
+0089 <span class="comment">%[Pxs,F]=pmtm(ysig(isfinite(ysig)),4,4096,1);</span>
+0090 yerr(bd)=interp1(gd,yerr(gd),find(bd)); 
+0091 <span class="comment">%[Pxe,F]=psd(yerr(isfinite(ysig)),nfft,1,[],ceil(nfft/2));</span>
+0092 [Pxe,F]=pwelch(yerr(isfinite(ysig)),hanning(nfft),ceil(nfft/2),nfft,1);
+0093 Pxe=Pxe/2;
+0094 <span class="comment">%[Pxe,F]=pmtm(yerr(isfinite(ysig)),4,4096,1);</span>
+0095 
+0096 semilogy(F,Pxs);
+0097 line(F,Pxe,<span class="string">'color'</span>,<span class="string">'r'</span>);
+0098 xlabel(<span class="string">'frequency (cph)'</span>);
+0099 ylabel(<span class="string">'m^2/cph'</span>);
+0100 text(.17,1e4,<span class="string">'Spectral Estimates before and after removal of tidal energy'</span>);
+0101 text(.35,1e3,<span class="string">'Original (interpolated) series'</span>,<span class="string">'color'</span>,<span class="string">'b'</span>);
+0102 text(.35,1e2,<span class="string">'Analyzed Non-tidal Energy'</span>,<span class="string">'color'</span>,<span class="string">'r'</span>);
+0103 
+0104 
+0105</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

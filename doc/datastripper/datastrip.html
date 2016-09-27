@@ -1,0 +1,362 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of datastrip</title>
+  <meta name="keywords" content="datastrip">
+  <meta name="description" content="DATASTRIP  Strip data file and save in *.mat file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">datastripper</a> &gt; datastrip.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for datastripper&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>datastrip
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>DATASTRIP  Strip data file and save in *.mat file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function YTdatastrip(tagdata,dt) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">DATASTRIP  Strip data file and save in *.mat file.
+   DATASTRIP(TAGNO,FILETS,FILERELCATCH,UNIT,TYP)
+
+   - TAGNO as string eg. TAGNO = '2255' =&gt; raw2255.mat.
+   - FILETS pointer to file with time and depth data
+   as string eg. FILETS = '2255PRES.CSV'.
+   - FILERELCATCH pointer to file with release and recapture data
+   as string eg. FILERELCATCH = 'relcatch2255.CSV'.
+
+   -- Units --
+   UNIT = 'm'    - meter,                  1 m = 1 m.
+   UNIT = 'dbar' - decabar,                1 m = 1.0194 dbar.
+   UNIT = 'psi'  - pounds per square inch, 1 m = 0.7028 psi.
+
+   -- Data types --
+   TYP = '1' eg. 2001/03/30 00:01:00,9.698552   (#2255)
+   TYP = '2' eg. 24/03/99 00:01,-0.110853       (#1432)
+   TYP = '3' eg. 06/10/1999 17:21,1.835654      (#2324)
+   TYP = '4' eg. 21.11.2003 00:01,-0.146        (#6448, #872, #897, #6433)
+   TYP = '5' eg. 11.03.2005 00:01,-1.15,6.152   (#1186)
+   TYP = '6' eg. 04/12/05 00:01:00 16.326       (#1950)
+   TYP = '7' eg. 16.03.2003  16:10:00,57.2263   (#3446)
+   TYP = '8' eg. 06/02/2003  13:50    43.57 7.594  (NNS_65)
+   TYP = '9' eg. 38113.68449074  20.11   -1.84  (Excel date since 1900, T(C) PSI) - YT
+
+  EXAMPLE   
+   DATASTRIP('2255','2255PRES.CSV','2255relcatch.CSV','dbar','1')
+   results in the file raw2255.mat being stored in the current dir.
+
+   Date: 6/12 - 2007, ver. 0.51
+   HMM geolocation toolbox, DTU Informatics and DTU Aqua</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function YTdatastrip(tagdata,dt)</a>
+0002 
+0003 <span class="comment">%DATASTRIP  Strip data file and save in *.mat file.</span>
+0004 <span class="comment">%   DATASTRIP(TAGNO,FILETS,FILERELCATCH,UNIT,TYP)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   - TAGNO as string eg. TAGNO = '2255' =&gt; raw2255.mat.</span>
+0007 <span class="comment">%   - FILETS pointer to file with time and depth data</span>
+0008 <span class="comment">%   as string eg. FILETS = '2255PRES.CSV'.</span>
+0009 <span class="comment">%   - FILERELCATCH pointer to file with release and recapture data</span>
+0010 <span class="comment">%   as string eg. FILERELCATCH = 'relcatch2255.CSV'.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   -- Units --</span>
+0013 <span class="comment">%   UNIT = 'm'    - meter,                  1 m = 1 m.</span>
+0014 <span class="comment">%   UNIT = 'dbar' - decabar,                1 m = 1.0194 dbar.</span>
+0015 <span class="comment">%   UNIT = 'psi'  - pounds per square inch, 1 m = 0.7028 psi.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   -- Data types --</span>
+0018 <span class="comment">%   TYP = '1' eg. 2001/03/30 00:01:00,9.698552   (#2255)</span>
+0019 <span class="comment">%   TYP = '2' eg. 24/03/99 00:01,-0.110853       (#1432)</span>
+0020 <span class="comment">%   TYP = '3' eg. 06/10/1999 17:21,1.835654      (#2324)</span>
+0021 <span class="comment">%   TYP = '4' eg. 21.11.2003 00:01,-0.146        (#6448, #872, #897, #6433)</span>
+0022 <span class="comment">%   TYP = '5' eg. 11.03.2005 00:01,-1.15,6.152   (#1186)</span>
+0023 <span class="comment">%   TYP = '6' eg. 04/12/05 00:01:00 16.326       (#1950)</span>
+0024 <span class="comment">%   TYP = '7' eg. 16.03.2003  16:10:00,57.2263   (#3446)</span>
+0025 <span class="comment">%   TYP = '8' eg. 06/02/2003  13:50    43.57 7.594  (NNS_65)</span>
+0026 <span class="comment">%   TYP = '9' eg. 38113.68449074  20.11   -1.84  (Excel date since 1900, T(C) PSI) - YT</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  EXAMPLE</span>
+0029 <span class="comment">%   DATASTRIP('2255','2255PRES.CSV','2255relcatch.CSV','dbar','1')</span>
+0030 <span class="comment">%   results in the file raw2255.mat being stored in the current dir.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   Date: 6/12 - 2007, ver. 0.51</span>
+0033 <span class="comment">%   HMM geolocation toolbox, DTU Informatics and DTU Aqua</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%</span>
+0036 
+0037 <span class="keyword">if</span> nargin &lt; 2, dt = tagdata.timestep_max; <span class="keyword">end</span>
+0038 
+0039 td.dt = dt; 
+0040 td.tagno = tagdata.tag_ID; 
+0041 td.unit = <span class="string">'m'</span>; 
+0042 td.time_org = tagdata.time; 
+0043 td.depth_org = tagdata.depth; 
+0044 td.temp_org =tagdata.temp ; 
+0045 td.time = []; td.depth = []; td.temp = [];
+0046 disp(sprintf(<span class="string">'\n\n=== Commencing datastrip for tag #%s ==='</span>,td.tagno))
+0047 <span class="comment">%disp(sprintf('TYPE = %s, UNIT = %s\n',typ,unit))</span>
+0048 
+0049 <span class="comment">% Open release and recapture file</span>
+0050 <span class="comment">% dat = fopen(filerelcatch,'r');</span>
+0051 <span class="comment">% if dat==-1, error('No file named %s found!',filerelcatch), end</span>
+0052 <span class="comment">% disp(sprintf('Accessing %s and searching for data...',filerelcatch))</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">% lin = fgetl(dat);</span>
+0055 <span class="comment">% b = fscanf(dat,'%f,%f,%f,%f,%f',inf);</span>
+0056 td.rel_long   = tagdata.rel_lon;
+0057 td.rel_lat    = tagdata.rel_lat;
+0058 td.catch_long = tagdata.rec_lon;
+0059 td.catch_lat  = tagdata.rec_lat;
+0060 td.catch_unc  = tagdata.tow_length; <span class="comment">%recapture location uncertainty in km?</span>
+0061 td.flag_recpos=tagdata.flag_recpos;
+0062 <span class="comment">% Open depth data file</span>
+0063 <span class="comment">% dat = fopen(filets,'r');</span>
+0064 <span class="comment">% if dat==-1, error('No file named %s found!',filets), end</span>
+0065 <span class="comment">% disp(sprintf('Accessing %s and searching for data...',filets))</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">% % Make definitions based on type</span>
+0068 <span class="comment">% switch typ</span>
+0069 <span class="comment">%     case '1' % 2001/03/30 00:01:00,9.698552 (#2255)</span>
+0070 <span class="comment">%         form = '%d/%d/%d %d:%d:%d,%f\n';</span>
+0071 <span class="comment">%         stringlength = 7;</span>
+0072 <span class="comment">%     case '2' % 24/03/99 00:01,-0.110853 (#1432)</span>
+0073 <span class="comment">%         form = '%d/%d/%d %d:%d,%f\n';</span>
+0074 <span class="comment">%         stringlength = 6;</span>
+0075 <span class="comment">%     case '3' % 06/10/1999 17:21,1.835654 (#2324)</span>
+0076 <span class="comment">%         form = '%d/%d/%d %d:%d,%f\n';</span>
+0077 <span class="comment">%         stringlength = 6;</span>
+0078 <span class="comment">%     case '4' % 21.11.2003 00:01,-0.146 (#872)</span>
+0079 <span class="comment">%         form = '%d.%d.%d %d:%d,%f\n';</span>
+0080 <span class="comment">%         stringlength = 6;</span>
+0081 <span class="comment">%     case '5' % 11.03.2005 00:01,-1.15,6.152 (#1186)</span>
+0082 <span class="comment">%         form = '%d.%d.%d %d:%d,%f,%f\n';</span>
+0083 <span class="comment">%         stringlength = 7;</span>
+0084 <span class="comment">%     case '6' % 04/12/05 00:01:00    16.326 (#1950)</span>
+0085 <span class="comment">%         form = '%d/%d/%d %d:%d:%d %f\n';</span>
+0086 <span class="comment">%         stringlength = 7;</span>
+0087 <span class="comment">%     case '7' % 16.03.2003  16:10:00,57.22638 (#3446)</span>
+0088 <span class="comment">%         form = '%d.%d.%d %d:%d:%d,%f\n';</span>
+0089 <span class="comment">%         stringlength = 7;</span>
+0090 <span class="comment">%     case '8' % 06/02/2003    13:50    43.57    7.594 (NNS_65)</span>
+0091 <span class="comment">%         form = '%d/%d/%d %d:%d %f %f\n'</span>
+0092 <span class="comment">%         stringlength = 7;</span>
+0093 <span class="comment">%     case '9' % 38113.68449074  20.11   -1.84</span>
+0094 <span class="comment">%         form = '%f %f %f\n';</span>
+0095 <span class="comment">%         stringlength = 3;</span>
+0096 <span class="comment">%     otherwise</span>
+0097 <span class="comment">%         error('No type stated!')</span>
+0098 <span class="comment">% end</span>
+0099 <span class="comment">%</span>
+0100 <span class="comment">% % Find data and save in a</span>
+0101 <span class="comment">% disp('Finding and arranging data in file...')</span>
+0102 <span class="comment">% a = []; lin = 1; m=0;</span>
+0103 <span class="comment">% while lin ~= -1</span>
+0104 <span class="comment">%     n=0;</span>
+0105 <span class="comment">%     a_temp = fscanf(dat,form,inf);</span>
+0106 <span class="comment">%     while length(a_temp) &lt; stringlength*2</span>
+0107 <span class="comment">%         lin=fgetl(dat);</span>
+0108 <span class="comment">%         a_temp = fscanf(dat,form,inf);</span>
+0109 <span class="comment">%         n=n+1;</span>
+0110 <span class="comment">%         if n&gt;2000, break, end</span>
+0111 <span class="comment">%         if lin == -1, break, end</span>
+0112 <span class="comment">%     end</span>
+0113 <span class="comment">%     %a_temp(end-20:end)</span>
+0114 <span class="comment">%     a=[a; a_temp(1:end-stringlength)];  %gwc, why cut the last data point</span>
+0115 <span class="comment">%     m=m+1;</span>
+0116 <span class="comment">%     if m&gt;2000, break, end</span>
+0117 <span class="comment">%     if m&gt;2, warning('Data file may have missing data points!'), end</span>
+0118 <span class="comment">% end</span>
+0119 <span class="comment">% fclose(dat);</span>
+0120 <span class="comment">%</span>
+0121 <span class="comment">%</span>
+0122 <span class="comment">% % Reshape to matrix</span>
+0123 <span class="comment">% a=reshape(a,stringlength,length(a)/stringlength);</span>
+0124 <span class="comment">%</span>
+0125 <span class="comment">%</span>
+0126 <span class="comment">% % Create vectors of time, depth and temperature if available</span>
+0127 <span class="comment">% switch typ</span>
+0128 <span class="comment">%     case '1' % (#2255)</span>
+0129 <span class="comment">%         td.time_org  = datenum(a(1,:), a(2,:),  a(3,:), a(4,:), a(5,:), a(6,:));</span>
+0130 <span class="comment">%         td.depth_org = a(7,:);</span>
+0131 <span class="comment">%     case '2' % (#1432)</span>
+0132 <span class="comment">%         td.time_org  = datenum(a(3,:)+1900, a(2,:),  a(1,:), a(4,:), a(5,:), 0);</span>
+0133 <span class="comment">%         td.depth_org = a(6,:);</span>
+0134 <span class="comment">%     case '3' % (#2324)</span>
+0135 <span class="comment">%         td.time_org  = datenum(a(3,:), a(2,:),  a(1,:), a(4,:), a(5,:), 0);</span>
+0136 <span class="comment">%         td.depth_org = a(6,:);</span>
+0137 <span class="comment">%     case '4' % (#872)</span>
+0138 <span class="comment">%         td.time_org  = datenum(a(3,:), a(2,:),  a(1,:), a(4,:), a(5,:), 0);</span>
+0139 <span class="comment">%         td.depth_org = a(6,:);</span>
+0140 <span class="comment">%     case '5' % (#1186)</span>
+0141 <span class="comment">%         td.time_org  = datenum(a(3,:), a(2,:),  a(1,:), a(4,:), a(5,:), 0);</span>
+0142 <span class="comment">%         td.depth_org = a(6,:);</span>
+0143 <span class="comment">%         td.temp_org =   a(7,:);</span>
+0144 <span class="comment">%     case '6' % (#1950)</span>
+0145 <span class="comment">%         td.time_org  = datenum(a(3,:)+2000, a(2,:), a(1,:), a(4,:), a(5,:), a(6,:));</span>
+0146 <span class="comment">%         td.depth_org = a(7,:);</span>
+0147 <span class="comment">%     case '7' % (#3446)</span>
+0148 <span class="comment">%         td.time_org  = datenum(a(3,:), a(2,:), a(1,:), a(4,:), a(5,:), a(6,:));</span>
+0149 <span class="comment">%         td.depth_org = a(7,:);</span>
+0150 <span class="comment">%     case '8'</span>
+0151 <span class="comment">%         td.time_org  = datenum(a(3,:), a(2,:),  a(1,:), a(4,:), a(5,:), 0);</span>
+0152 <span class="comment">%         td.depth_org = a(6,:);</span>
+0153 <span class="comment">%         td.temp_org =   a(7,:);</span>
+0154 <span class="comment">%     case '9'</span>
+0155 <span class="comment">%         %smast-preprocessed tags, note time is shifted from excel time (days since 1900,1,0,0,0,0)</span>
+0156 <span class="comment">%         %into the datenum time (days since 0000,1,0,0,0,0).</span>
+0157 <span class="comment">%         %note, we also subtract 1 day because Excel (Windows version, not Mac version)</span>
+0158 <span class="comment">%         %incorrectly believes that 1900 was a leap year</span>
+0159 <span class="comment">%         %which it was not.  Datenum correctly calculates all the leap years.</span>
+0160 <span class="comment">%         td.time_org  = a(1,:) - 1.  + datenum(1900,1,0,0,0,0);  %shift from excel days to datenum</span>
+0161 <span class="comment">%         td.temp_org  = a(2,:);</span>
+0162 <span class="comment">%         td.depth_org = a(3,:);</span>
+0163 <span class="comment">%         td.time_org  = td.time_org + 5/24.; %shift to GMT from EST</span>
+0164 <span class="comment">%     otherwise</span>
+0165 <span class="comment">%         error('No type stated!')</span>
+0166 <span class="comment">% end</span>
+0167 
+0168 <span class="comment">% Assure that time starts at a 1 minute</span>
+0169 <span class="comment">% inittime = datestr(td.time_org(1));</span>
+0170 <span class="comment">% if length(inittime) == 11, numremove = 1; else</span>
+0171 <span class="comment">% numremove = mod(11-str2num(inittime(17)),10); end</span>
+0172 <span class="comment">% if numremove ~= 0</span>
+0173 <span class="comment">%     td.time_org(1:numremove)  = [];</span>
+0174 <span class="comment">%     td.depth_org(1:numremove) = [];</span>
+0175 <span class="comment">% end</span>
+0176 
+0177 <span class="comment">% Initialise time and depth records</span>
+0178 td.depth = td.depth_org;
+0179 td.time = td.time_org;
+0180 plot(td.time_org-td.time_org(1))
+0181 figure
+0182 plot(td.time_org-td.time_org(1),td.depth)
+0183 figure
+0184 plot(diff(td.time_org)*60*24) 
+0185 title(<span class="string">'time interval from raw tag time'</span>)
+0186 figure
+0187 datestr(td.time_org(1))
+0188 datestr(td.time_org(end))
+0189 
+0190 <span class="comment">% gwc - note</span>
+0191 <span class="comment">% this subsampling is a mess, converting to integers and comparing will still suffer</span>
+0192 <span class="comment">% from floating point depending on the format of the raw tag time</span>
+0193 <span class="comment">% we should consider either resplining the raw data to a common time (why would that be bad)</span>
+0194 <span class="comment">% or transferring to the common time with an exact threshold (within +/- a few seconds is fine)</span>
+0195   
+0196 
+0197 <span class="comment">% Subsample in 'dt' min sample intervals</span>
+0198 disp(<span class="string">'Subsampling...'</span>)
+0199 SF = 1/(24*60/dt); <span class="comment">% Sample frequency in days</span>
+0200 td.time = td.time(1):SF:td.time(end);
+0201 save junk td
+0202 <span class="comment">% integer vectors containing sample freq time and original time</span>
+0203 t  = round(td.time_org*1e7);
+0204 tn = round(td.time*1e7);
+0205 <span class="comment">% allocate space for depth and temperature on subsample time vector</span>
+0206 td.depth = zeros(1,length(tn));
+0207 td.temp = zeros(1,length(tn));
+0208 <span class="keyword">if</span> isempty(td.temp_org), td.temp_org = zeros(1,length(td.depth_org)); <span class="keyword">end</span>  <span class="comment">%no temp data in tag, make fake temp data</span>
+0209 j = 1; p=0;
+0210 
+0211 <span class="comment">%if SF &lt; max(diff(td.time_org)), disp(sprintf('There might be missing data or selected sample rate, %3.1fmin, is faster than data i.e. data is removed!',dt)), pause(0.01), end</span>
+0212 <span class="comment">% gwc, deal with precision problem</span>
+0213 <span class="keyword">if</span> (diff(td.time_org) - SF &gt; 1./(24*3600)  ), disp(sprintf(<span class="string">'There might be missing data or selected sample rate, %3.1fmin, is faster than data i.e. data is removed!'</span>,dt)), pause(0.01), <span class="keyword">end</span>
+0214 <span class="comment">% subsampling does not interpolate.  If time from the raw matches exactly (using the integer) subsample time, then it will use the data</span>
+0215 <span class="comment">% from the tag at that time.  If it finds no time stamp at that time, it will give it no data and give an eror</span>
+0216 <span class="comment">% thus, the subsample time (dt) must be an integer multiple of the largest time interval from the raw tag</span>
+0217 mis = 0;
+0218 <span class="keyword">for</span> i=1:length(tn)
+0219     k=0; f=0;
+0220     <span class="keyword">while</span> k&lt;dt*(6+1) &amp;&amp; f~=1
+0221 <span class="comment">%        if tn(i) == t(j)</span>
+0222         <span class="keyword">if</span> (abs(tn(i) - t(j)) &lt; 100) <span class="comment">%time stamps are within a second should be OK</span>
+0223             td.depth(i) = td.depth_org(j);
+0224             td.temp(i) = td.temp_org(j);
+0225             f=1;
+0226         <span class="keyword">elseif</span> tn(i) &lt; t(j) <span class="comment">% if data missing</span>
+0227             tn(i)       = []; <span class="comment">% remove expected data</span>
+0228             td.time(i)  = []; <span class="comment">% remove expected data</span>
+0229             td.depth(i) = []; <span class="comment">% remove expected data</span>
+0230             td.temp(i)  = []; <span class="comment">% remove expected data</span>
+0231             j=j-1;
+0232             mis = mis + 1;
+0233             <span class="keyword">if</span> mis == 1000, disp(<span class="string">'Program execution might be slow due to missing data, or badly selected sample rate!'</span>),pause(0.01), <span class="keyword">end</span>
+0234         <span class="keyword">end</span>
+0235         k=k+1; 
+0236         j=j+1;
+0237     <span class="keyword">end</span>
+0238     <span class="keyword">if</span> j&gt;length(td.time_org), <span class="keyword">break</span>, <span class="keyword">end</span>
+0239 <span class="keyword">end</span>
+0240 disp(sprintf(<span class="string">'...subsampling removed %i datapoints.'</span>,length(td.time_org)-length(td.time)))
+0241 
+0242 <span class="comment">% Calibrate tag</span>
+0243 <span class="comment">% disp('Calibrating and converting units...')</span>
+0244 <span class="comment">% switch td.unit</span>
+0245 <span class="comment">%     case 'm',    td.depth = -1 * td.depth;</span>
+0246 <span class="comment">%     case 'dbar', td.depth = -1/(0.981) * td.depth;</span>
+0247 <span class="comment">%     case 'psi',  td.depth = -1/(1.4504) * td.depth;</span>
+0248 <span class="comment">%     otherwise, error('No unit defined!')</span>
+0249 <span class="comment">% end</span>
+0250 
+0251 <span class="comment">%td.depth = td.depth-td.depth(1); % Make sea level equal to zero, KJ</span>
+0252 <span class="comment">%td.depth = td.depth-max(td.depth); % Make sea level equal to zero</span>
+0253 
+0254 <span class="comment">% Find time of release and recapture</span>
+0255 <span class="comment">% disp('Finding time of release and recapture and trimming...')</span>
+0256 <span class="comment">% lengthbefore = length(td.time);</span>
+0257 <span class="comment">% diffdepth = find(abs(diff(td.depth)) &gt; 0.5); % The first and last time the depth changes by more than 0.5 m are the times of release and recapture respectively</span>
+0258 <span class="comment">% release   = min(diffdepth);</span>
+0259 <span class="comment">% recapture = max(diffdepth)+1;</span>
+0260 <span class="comment">% atliberty = release:recapture;</span>
+0261 <span class="comment">% td.time   = td.time(atliberty);</span>
+0262 <span class="comment">% td.depth  = td.depth(atliberty);</span>
+0263 <span class="comment">% td.temp   = td.temp(atliberty);</span>
+0264 <span class="comment">% trimmed = lengthbefore-length(td.time);</span>
+0265 <span class="comment">% disp(sprintf('...trimmed %i datapoints (%1.1f days of data).',trimmed,trimmed*SF)) % SF is sample frequency</span>
+0266 
+0267 <span class="comment">% Make td.time_plot and shift td.time</span>
+0268 year = str2num(datestr(td.time(1),10)); 
+0269 td.time_plot = td.time;
+0270 td.time = td.time - datenum(year,1,1,0,0,0);
+0271 
+0272 <span class="comment">% Creating *.mat file</span>
+0273 filename = sprintf(<span class="string">'raw%s'</span>,td.tagno);
+0274 disp(sprintf(<span class="string">'Saving -&gt; %s.mat &lt;- in\n%s'</span>,filename,cd))
+0275 save(filename,<span class="string">'td'</span>)
+0276 disp(sprintf(<span class="string">'\nDONE with datastrip! \n\nNow run --&gt; tidebehavextr \n\nto create/update tidal and behaviour extraction!\n'</span>))
+0277 
+0278 <span class="comment">%% Plot result %%</span>
+0279 plot(td.time_org,td.depth_org,<span class="string">'-'</span>), datetick(<span class="string">'x'</span>,<span class="string">'QQ-YY'</span>)
+0280 xlabel(<span class="string">'Date'</span>), ylabel(sprintf(<span class="string">'Unit: %s'</span>,<span class="string">'Depth [m]'</span>))
+0281 title(sprintf(<span class="string">'Unprocessed depth record for tag #%s'</span>,td.tagno))
+0282 figure, plot(td.time_plot,td.depth,<span class="string">'-'</span>), datetick(<span class="string">'x'</span>,<span class="string">'QQ-YY'</span>)
+0283 xlabel(<span class="string">'Date'</span>), ylabel(<span class="string">'Depth, m'</span>)
+0284 title(sprintf(<span class="string">'Subsampled and trimmed depth record for tag #%s'</span>,td.tagno))
+0285</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

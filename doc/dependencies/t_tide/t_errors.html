@@ -1,0 +1,362 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of t_errors</title>
+  <meta name="keywords" content="t_errors">
+  <meta name="description" content="Status of error estimates (Version 1.0, 1/Sep/01)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="index.html">t_tide</a> &gt; t_errors.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/t_tide&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>t_errors
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Status of error estimates (Version 1.0, 1/Sep/01)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Status of error estimates (Version 1.0, 1/Sep/01)
+
+  To generate a harmonic analysis, we
+
+     a) fit the series to either sines and cosines at specified
+        (positive) frequencies, or to complex exponentials at both
+        positive and negative frequencies. Traditionally sine/cosines
+        have been used, in t_tide I deal with the complex exponentials
+        as the math is conceptually (and practically) simpler. The
+        use of complex exponentials also unifies the treatment of
+        real time series (e.g. tidal height) and complex time
+        series (e.g. currents, u+i*v).
+     b) The complex amplitudes of constituents are corrected for
+        various factors (nodal modulations, inference, etc.)...
+     c) ...and then converted to ellipse parameters (semi-major axis,
+        Greenwich phase, etc.).
+
+  Since it is well-known that some of the less-important constituents
+  can be below the &quot;geophysical noise&quot; level, it is important to have 
+  confidence intervals for these estimates, giving some idea about
+  their trustworthiness for predictive purposes.
+
+  Currently two different methods of estimating confidence intervals
+  are implemented in t_tide.
+
+  1) &quot;Linear Analysis&quot;
+
+  Munk and Cartwright in their paper on the &quot;response method&quot; (Phil. 
+  Trans Roy. Soc. Lon. A, vol 259, 1966, pg 533-581) outlined the
+  analysis for estimating noise levels in spectra. Although this was 
+  used for &quot;transfer function&quot; estimates, the formalism was adapted by 
+  W. S. Brown and J. D. Irish (unpublished notes, 1991) for the case
+  when the transfer function is the output of a harmonic analysis. 
+  A conversion from errors in the cos/sine amplitudes to errors
+  in ellipse parameters (axis lengths, inclination, etc.) can be done
+  through a linearized analysis (B. Beardsley, unpublished notes, 1999,
+  checking earlier work by R. Signell).
+
+  In essence, 9 frequency bands are chosen, bracketing M0,M1...M8. In 
+  each band the amplitude of the residual power spectrum is estimated.
+  It is then assumed that this noise contaminates both sin and cosine
+  components of the harmonic fit equally. Errors in ellipse parameters
+  are determined through a linearized analysis in which variances are
+  summed, weighted by analytically calculated sensitivity terms.
+
+  The results appears to be adequate for real time series (e.g., 
+  tidal height), as long as the SNR (amp/error)^2 &lt;10, and is probably 
+  not bad for SNR as low as 2 or 3.
+
+  The formalism has been extended to complex time series, with the
+  assumption that noise in the real and imaginary parts is 
+  uncorrelated, although the levels of noise in both directions are 
+  allowed to be different. Unfortunately this means that error bars 
+  are not rotationally independent, i.e., the size of error bars may 
+  change depending on whether you input your time series in N/E 
+  coordinates, or along/across bathymetry coordinates. 
+
+  I visualize the bivariate error model by seeing it as an ellipse on
+  the plane - if the ellipse is not pointing along the x or y axes,
+  this error analysis will fail to produce the correct results. Of 
+  course, you can always rotate the coordinate system so that it is 
+  aligned with the axes.
+
+  Thus I currently recommend that if you really care about your CI,
+  you submit your time series in a coordinate system in which the
+  ellipse semi-major axis lies roughly along one of the coordinate 
+  axes.
+  
+
+ 2) &quot;Nonlinear analysis&quot;
+
+ The linear analysis described above has two problems - first, it 
+ linearizes a non-linear transformation, and second, it doesn't really
+ account for complex noise which might be correlated.
+
+ The first problem is probably not much of an issue, since it is of
+ concern only at very low SNR where the results are probably not very
+ useful anyway. However, it would be nice to do something about this.
+ The second problem is more serious (in my opinion), since it 
+ potentially affects any kind of current analysis.
+
+ The modern way of dealing with nonlinearity is through resampling
+ techniques. Here I use a 'parametric bootstrap'. The idea is to
+ estimate an uncertainty in the complex amplitudes of the constituents.
+ Assuming the original noise to be roughly white, so will the noise in
+ the complex coefficients. However, there are interesting correlations
+ between the real and imaginary parts of both positive and negative
+ frequencies. These can be written in terms of a 4x4 matrix in which
+ the variance and covariance of the real and imaginary parts of the 
+ time series appear. An eigenvalue decomposition can be used to 
+ generate a transformation matrix that will take 4 uncorrelated white
+ noise series and give us noise of the correct characteristics; this 
+ can then be use to generate a series of 'constituent replicates'.
+
+ The replicates are then nonlinearly transformed into ellipse 
+ parameters, and confidence intervals estimated directly from the 
+ results, taking into account the nonlinearity.
+ 
+ The computational time required is essentially minimal using a modern
+ PC.
+
+ Thus, this can account for both the nonlinear transformation, and for
+ correlated noise! So, what's the problem?
+
+ The first is that, so far, I have done the math for just two cases:
+  a) white, correlated continuum spectrum (suitable for complex time
+     series with a flat background spectrum)
+  b) coloured, uncorrelated continuum spectrum (suitable for scalar
+     time series with a sloped background spectrum).
+
+ Ideally, of course, I would like to handle coloured, correlated noise.
+ I'm working on it...
+
+
+ SUMMARY
+
+ For scalar time series - either method is OK. The nonlinear method
+ handles low SNR cases slightly better. This shows how well both 
+ methods work for a relatively low noise level (for a detailed 
+ explanation of the plots, see 'help t_synth'):
+
+ &gt;t_synth('nrun',40,'error','.1*colrand(SY,-1)','time',[0:24*30],'tidecon',[1 0 0 60]);
+
+ And this is for higher noise levels where the transformations is more
+ nonlinear.
+
+ &gt;t_synth('nrun',40,'error','20*colrand(SY,-1)','time',[0:24*30],'tidecon',[1 0 0 60]);
+ 
+ For vector time series. If your noise is isotropic (in space), but
+ coloured (in time), both methods work fine. Again, the nonlinear 
+ method handles low SNR cases slightly better:
+
+ &gt;t_synth('nrun',40,'error','.01*(colrand(SY,-1)+i*colrand(SY,-1))','time',[0:24*30]);
+
+ &gt;t_synth('nrun',20,'error','10*(colrand(SY,-1)+i*colrand(SY,-1))','time',[0:24*30]);
+
+ If your noise is non-isotropic (in space) and spectrally flat (in time), 
+ the nonlinear analysis wins hands down. Here is an extreme case, where the
+ noise is at 45 degrees to the axes:
+
+ &gt;t_synth('nrun',20,'error','.1*(1+i)*randn(SY)','time',[0:24*30],'boota','w');
+
+ However, noise is hardly ever spectrally flat in real life.
+
+ If your noise is non-isotropic (in space) and spectrally coloured,
+ then AS LONG AS YOU ROTATE THE TIME SERIES so that the noise in real
+ and imaginary parts is uncorrelated, which is always possible for
+ bivariate noise, then both methods works fine.
+
+
+ R. Pawlowicz (rich@ocgy.ubc.ca)
+ 1/Sep/01</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="t_errors.html" class="code" title="">t_errors</a>	Status of error estimates (Version 1.0, 1/Sep/01)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="t_errors.html" class="code" title="">t_errors</a>	Status of error estimates (Version 1.0, 1/Sep/01)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Status of error estimates (Version 1.0, 1/Sep/01)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%  To generate a harmonic analysis, we</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%     a) fit the series to either sines and cosines at specified</span>
+0006 <span class="comment">%        (positive) frequencies, or to complex exponentials at both</span>
+0007 <span class="comment">%        positive and negative frequencies. Traditionally sine/cosines</span>
+0008 <span class="comment">%        have been used, in t_tide I deal with the complex exponentials</span>
+0009 <span class="comment">%        as the math is conceptually (and practically) simpler. The</span>
+0010 <span class="comment">%        use of complex exponentials also unifies the treatment of</span>
+0011 <span class="comment">%        real time series (e.g. tidal height) and complex time</span>
+0012 <span class="comment">%        series (e.g. currents, u+i*v).</span>
+0013 <span class="comment">%     b) The complex amplitudes of constituents are corrected for</span>
+0014 <span class="comment">%        various factors (nodal modulations, inference, etc.)...</span>
+0015 <span class="comment">%     c) ...and then converted to ellipse parameters (semi-major axis,</span>
+0016 <span class="comment">%        Greenwich phase, etc.).</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%  Since it is well-known that some of the less-important constituents</span>
+0019 <span class="comment">%  can be below the &quot;geophysical noise&quot; level, it is important to have</span>
+0020 <span class="comment">%  confidence intervals for these estimates, giving some idea about</span>
+0021 <span class="comment">%  their trustworthiness for predictive purposes.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%  Currently two different methods of estimating confidence intervals</span>
+0024 <span class="comment">%  are implemented in t_tide.</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%  1) &quot;Linear Analysis&quot;</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  Munk and Cartwright in their paper on the &quot;response method&quot; (Phil.</span>
+0029 <span class="comment">%  Trans Roy. Soc. Lon. A, vol 259, 1966, pg 533-581) outlined the</span>
+0030 <span class="comment">%  analysis for estimating noise levels in spectra. Although this was</span>
+0031 <span class="comment">%  used for &quot;transfer function&quot; estimates, the formalism was adapted by</span>
+0032 <span class="comment">%  W. S. Brown and J. D. Irish (unpublished notes, 1991) for the case</span>
+0033 <span class="comment">%  when the transfer function is the output of a harmonic analysis.</span>
+0034 <span class="comment">%  A conversion from errors in the cos/sine amplitudes to errors</span>
+0035 <span class="comment">%  in ellipse parameters (axis lengths, inclination, etc.) can be done</span>
+0036 <span class="comment">%  through a linearized analysis (B. Beardsley, unpublished notes, 1999,</span>
+0037 <span class="comment">%  checking earlier work by R. Signell).</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%  In essence, 9 frequency bands are chosen, bracketing M0,M1...M8. In</span>
+0040 <span class="comment">%  each band the amplitude of the residual power spectrum is estimated.</span>
+0041 <span class="comment">%  It is then assumed that this noise contaminates both sin and cosine</span>
+0042 <span class="comment">%  components of the harmonic fit equally. Errors in ellipse parameters</span>
+0043 <span class="comment">%  are determined through a linearized analysis in which variances are</span>
+0044 <span class="comment">%  summed, weighted by analytically calculated sensitivity terms.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%  The results appears to be adequate for real time series (e.g.,</span>
+0047 <span class="comment">%  tidal height), as long as the SNR (amp/error)^2 &lt;10, and is probably</span>
+0048 <span class="comment">%  not bad for SNR as low as 2 or 3.</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%  The formalism has been extended to complex time series, with the</span>
+0051 <span class="comment">%  assumption that noise in the real and imaginary parts is</span>
+0052 <span class="comment">%  uncorrelated, although the levels of noise in both directions are</span>
+0053 <span class="comment">%  allowed to be different. Unfortunately this means that error bars</span>
+0054 <span class="comment">%  are not rotationally independent, i.e., the size of error bars may</span>
+0055 <span class="comment">%  change depending on whether you input your time series in N/E</span>
+0056 <span class="comment">%  coordinates, or along/across bathymetry coordinates.</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%  I visualize the bivariate error model by seeing it as an ellipse on</span>
+0059 <span class="comment">%  the plane - if the ellipse is not pointing along the x or y axes,</span>
+0060 <span class="comment">%  this error analysis will fail to produce the correct results. Of</span>
+0061 <span class="comment">%  course, you can always rotate the coordinate system so that it is</span>
+0062 <span class="comment">%  aligned with the axes.</span>
+0063 <span class="comment">%</span>
+0064 <span class="comment">%  Thus I currently recommend that if you really care about your CI,</span>
+0065 <span class="comment">%  you submit your time series in a coordinate system in which the</span>
+0066 <span class="comment">%  ellipse semi-major axis lies roughly along one of the coordinate</span>
+0067 <span class="comment">%  axes.</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">% 2) &quot;Nonlinear analysis&quot;</span>
+0071 <span class="comment">%</span>
+0072 <span class="comment">% The linear analysis described above has two problems - first, it</span>
+0073 <span class="comment">% linearizes a non-linear transformation, and second, it doesn't really</span>
+0074 <span class="comment">% account for complex noise which might be correlated.</span>
+0075 <span class="comment">%</span>
+0076 <span class="comment">% The first problem is probably not much of an issue, since it is of</span>
+0077 <span class="comment">% concern only at very low SNR where the results are probably not very</span>
+0078 <span class="comment">% useful anyway. However, it would be nice to do something about this.</span>
+0079 <span class="comment">% The second problem is more serious (in my opinion), since it</span>
+0080 <span class="comment">% potentially affects any kind of current analysis.</span>
+0081 <span class="comment">%</span>
+0082 <span class="comment">% The modern way of dealing with nonlinearity is through resampling</span>
+0083 <span class="comment">% techniques. Here I use a 'parametric bootstrap'. The idea is to</span>
+0084 <span class="comment">% estimate an uncertainty in the complex amplitudes of the constituents.</span>
+0085 <span class="comment">% Assuming the original noise to be roughly white, so will the noise in</span>
+0086 <span class="comment">% the complex coefficients. However, there are interesting correlations</span>
+0087 <span class="comment">% between the real and imaginary parts of both positive and negative</span>
+0088 <span class="comment">% frequencies. These can be written in terms of a 4x4 matrix in which</span>
+0089 <span class="comment">% the variance and covariance of the real and imaginary parts of the</span>
+0090 <span class="comment">% time series appear. An eigenvalue decomposition can be used to</span>
+0091 <span class="comment">% generate a transformation matrix that will take 4 uncorrelated white</span>
+0092 <span class="comment">% noise series and give us noise of the correct characteristics; this</span>
+0093 <span class="comment">% can then be use to generate a series of 'constituent replicates'.</span>
+0094 <span class="comment">%</span>
+0095 <span class="comment">% The replicates are then nonlinearly transformed into ellipse</span>
+0096 <span class="comment">% parameters, and confidence intervals estimated directly from the</span>
+0097 <span class="comment">% results, taking into account the nonlinearity.</span>
+0098 <span class="comment">%</span>
+0099 <span class="comment">% The computational time required is essentially minimal using a modern</span>
+0100 <span class="comment">% PC.</span>
+0101 <span class="comment">%</span>
+0102 <span class="comment">% Thus, this can account for both the nonlinear transformation, and for</span>
+0103 <span class="comment">% correlated noise! So, what's the problem?</span>
+0104 <span class="comment">%</span>
+0105 <span class="comment">% The first is that, so far, I have done the math for just two cases:</span>
+0106 <span class="comment">%  a) white, correlated continuum spectrum (suitable for complex time</span>
+0107 <span class="comment">%     series with a flat background spectrum)</span>
+0108 <span class="comment">%  b) coloured, uncorrelated continuum spectrum (suitable for scalar</span>
+0109 <span class="comment">%     time series with a sloped background spectrum).</span>
+0110 <span class="comment">%</span>
+0111 <span class="comment">% Ideally, of course, I would like to handle coloured, correlated noise.</span>
+0112 <span class="comment">% I'm working on it...</span>
+0113 <span class="comment">%</span>
+0114 <span class="comment">%</span>
+0115 <span class="comment">% SUMMARY</span>
+0116 <span class="comment">%</span>
+0117 <span class="comment">% For scalar time series - either method is OK. The nonlinear method</span>
+0118 <span class="comment">% handles low SNR cases slightly better. This shows how well both</span>
+0119 <span class="comment">% methods work for a relatively low noise level (for a detailed</span>
+0120 <span class="comment">% explanation of the plots, see 'help t_synth'):</span>
+0121 <span class="comment">%</span>
+0122 <span class="comment">% &gt;t_synth('nrun',40,'error','.1*colrand(SY,-1)','time',[0:24*30],'tidecon',[1 0 0 60]);</span>
+0123 <span class="comment">%</span>
+0124 <span class="comment">% And this is for higher noise levels where the transformations is more</span>
+0125 <span class="comment">% nonlinear.</span>
+0126 <span class="comment">%</span>
+0127 <span class="comment">% &gt;t_synth('nrun',40,'error','20*colrand(SY,-1)','time',[0:24*30],'tidecon',[1 0 0 60]);</span>
+0128 <span class="comment">%</span>
+0129 <span class="comment">% For vector time series. If your noise is isotropic (in space), but</span>
+0130 <span class="comment">% coloured (in time), both methods work fine. Again, the nonlinear</span>
+0131 <span class="comment">% method handles low SNR cases slightly better:</span>
+0132 <span class="comment">%</span>
+0133 <span class="comment">% &gt;t_synth('nrun',40,'error','.01*(colrand(SY,-1)+i*colrand(SY,-1))','time',[0:24*30]);</span>
+0134 <span class="comment">%</span>
+0135 <span class="comment">% &gt;t_synth('nrun',20,'error','10*(colrand(SY,-1)+i*colrand(SY,-1))','time',[0:24*30]);</span>
+0136 <span class="comment">%</span>
+0137 <span class="comment">% If your noise is non-isotropic (in space) and spectrally flat (in time),</span>
+0138 <span class="comment">% the nonlinear analysis wins hands down. Here is an extreme case, where the</span>
+0139 <span class="comment">% noise is at 45 degrees to the axes:</span>
+0140 <span class="comment">%</span>
+0141 <span class="comment">% &gt;t_synth('nrun',20,'error','.1*(1+i)*randn(SY)','time',[0:24*30],'boota','w');</span>
+0142 <span class="comment">%</span>
+0143 <span class="comment">% However, noise is hardly ever spectrally flat in real life.</span>
+0144 <span class="comment">%</span>
+0145 <span class="comment">% If your noise is non-isotropic (in space) and spectrally coloured,</span>
+0146 <span class="comment">% then AS LONG AS YOU ROTATE THE TIME SERIES so that the noise in real</span>
+0147 <span class="comment">% and imaginary parts is uncorrelated, which is always possible for</span>
+0148 <span class="comment">% bivariate noise, then both methods works fine.</span>
+0149 <span class="comment">%</span>
+0150 <span class="comment">%</span>
+0151 <span class="comment">% R. Pawlowicz (rich@ocgy.ubc.ca)</span>
+0152 <span class="comment">% 1/Sep/01</span>
+0153 
+0154 help <a href="t_errors.html" class="code" title="">t_errors</a>
+0155 
+0156 
+0157 
+0158 
+0159 
+0160 
+0161 
+0162 
+0163 
+0164</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

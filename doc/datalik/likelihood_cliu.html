@@ -1,0 +1,422 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of likelihood_cliu</title>
+  <meta name="keywords" content="likelihood_cliu">
+  <meta name="description" content="Construction of likelihood function after (Le Bris et al, 2013 eq (2))">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">datalik</a> &gt; likelihood_cliu.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for datalik&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>likelihood_cliu
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Construction of likelihood function after (Le Bris et al, 2013 eq (2))</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function likelihood_cliu(fish_no,path_to_tags,tagname) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Construction of likelihood function after (Le Bris et al, 2013 eq (2))
+ using daily max depth and depth where tidal signal is detected, with
+ coorespoding temperature.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../backfun/lssinfit.html" class="code" title="function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)">lssinfit</a>	LSSINFIT Fit a sinewave to input data by LS.</li><li><a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>	NORMCDF Find the cdf value of a Gaussian distributed number.</li><li><a href="../tidaldatabase/my_project.html" class="code" title="function [out_east,out_north] = my_project(in_east,in_north,direction)">my_project</a>	Sample user-defined projection and inverse projection of (lon,lat) to (x,y)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tbworkdir/run_tag.html" class="code" title="">run_tag</a>	clear all;</li><li><a href="../test/run_tag.html" class="code" title="">run_tag</a>	clear all;</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function likelihood_cliu(fish_no,path_to_tags,tagname)</a>
+0002 <span class="comment">% Construction of likelihood function after (Le Bris et al, 2013 eq (2))</span>
+0003 <span class="comment">% using daily max depth and depth where tidal signal is detected, with</span>
+0004 <span class="comment">% coorespoding temperature.</span>
+0005 
+0006 
+0007 <span class="comment">%addpath('../../hmm_smast/backfun/')</span>
+0008 tag_name=[num2str(fish_no),<span class="string">'_raw'</span>];
+0009 load([path_to_tags tagname]);
+0010 tagno=[num2str(fish_no),<span class="string">'_'</span>,tag.tag_id];
+0011 <span class="keyword">global</span> tideLV
+0012 <span class="comment">%tideLV  = [0.22 0.85 0.2 2.0];</span>
+0013 
+0014 mean_ampli=[];std_ampli=[];mean_phase=[];std_phase=[];
+0015 Twindow = 5;  <span class="comment">%time window = 13 h</span>
+0016 <span class="comment">% for Twindow=10:0.5:20</span>
+0017 nwindow = floor(Twindow*3600/tag.min_intvl_seconds); <span class="comment">% window size in data point numbers</span>
+0018 
+0019 <span class="comment">%p: M2 period in hours</span>
+0020 p = 12.420601;
+0021 w=2*pi/(p/24); <span class="comment">% Angular frequency</span>
+0022 
+0023 <span class="comment">%tag.dnum=tag.dnum+4/24; %convert time to UTC</span>
+0024 
+0025 
+0026 <span class="comment">%load tidaldb.mat</span>
+0027 
+0028 ntimes = numel(tag.dnum);
+0029 
+0030 int_dnum = floor(tag.dnum);
+0031 dbeg = int_dnum(1);
+0032 dend = int_dnum(end);
+0033 days = dbeg:dend;
+0034 ndays = numel(days);
+0035 
+0036 <span class="comment">%%% !!!!!!!!!!!!!!!!!!!!!!!!!!</span>
+0037 <span class="comment">%%% !!!!!!!!!!!comment this</span>
+0038 <span class="comment">%ndays=30;</span>
+0039 <span class="comment">%%% !!!!!!!!!!!!!!!!!!!!!!!!!!</span>
+0040 
+0041 sint = sin(w*tag.dnum);
+0042 cost = cos(w*tag.dnum);
+0043 
+0044 
+0045 figure(1);plot(tag.dnum,tag.depth,<span class="string">'b-'</span>)
+0046 hold on
+0047 <span class="comment">%loop over day to detect tidal signal</span>
+0048 td_detected=nan(size(tag.dnum));
+0049 td_used=td_detected;
+0050 day_tidal_depth=nan(size(days));
+0051 day_tidal_depth_temp=day_tidal_depth;
+0052 day_max_depth=nan(size(days));
+0053 fprintf(<span class="string">'Detecting tidal signal...\n'</span>);
+0054 <span class="keyword">for</span> i=1:ndays;
+0055     fprintf([<span class="string">'day: '</span> num2str(i) <span class="string">' of '</span> num2str(ndays) <span class="string">' \n'</span>])
+0056     days_idx=find(int_dnum == days(i));
+0057     rmse=[];rsquare=[];ampli=[];
+0058     <span class="keyword">if</span> (days_idx(1)+nwindow &gt; ntimes)
+0059         [day_max_depth(i),day_max_dep_ind]=max(tag.depth(days_idx));
+0060         day_max_depth_temp(i)=tag.temp(days_idx(day_max_dep_ind));
+0061         <span class="keyword">break</span>
+0062     <span class="keyword">end</span>
+0063     [day_max_depth(i),day_max_dep_ind]=max(tag.depth(days_idx));
+0064     day_max_depth_temp(i)=tag.temp(days_idx(day_max_dep_ind));
+0065     <span class="comment">%move window for each data point</span>
+0066     <span class="keyword">for</span> j=1:numel(days_idx)
+0067         <span class="keyword">if</span> (days_idx(j)+nwindow &gt; ntimes)
+0068             <span class="keyword">break</span>
+0069         <span class="keyword">end</span>
+0070         intv=days_idx(j):min(ntimes,days_idx(j)+nwindow-1);
+0071         [rmse(j) rsquare(j) ampli(j) jnk pred{j} mwh(j) alpha beta]=<a href="../backfun/lssinfit.html" class="code" title="function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)">lssinfit</a>(ones(numel(intv),1), cost(intv), sint(intv),tag.depth(intv));
+0072         <span class="comment">%phase(j) = deg2rad(191.25) - acos(alpha/ampli(j)); %phase is in Greenwich phase, 191.25 is phase lag of matlab datenum=0</span>
+0073         
+0074         crit = (rmse(j)&lt;tideLV(1) &amp; rsquare(j)&gt;tideLV(2) &amp; ampli(j)&gt;tideLV(3) &amp; ampli(j)&lt;tideLV(4));
+0075         <span class="keyword">if</span> crit==1
+0076             td_detected(intv)=1;
+0077         <span class="keyword">end</span>
+0078         
+0079         <span class="comment">%         figure(1);plot(tag.dnum(intv),pred{j},'r-')</span>
+0080         <span class="comment">%         xlim([min(tag.dnum(intv)) max(tag.dnum(intv))])</span>
+0081     <span class="keyword">end</span>
+0082     
+0083     <span class="comment">% Find intervals with tidal information according to criteria</span>
+0084     crit = (rmse&lt;tideLV(1) &amp; rsquare&gt;tideLV(2) &amp; ampli&gt;tideLV(3) &amp; ampli&lt;tideLV(4));
+0085     <span class="comment">%crit=ones(numel(rmse));</span>
+0086     <span class="comment">%find best fit for each day and reconstruct corresponding fvcom signal</span>
+0087     <span class="keyword">if</span> (sum(crit)&gt;0)
+0088         idx=find(rmse==min(rmse(crit)));
+0089         idx=idx(1);
+0090         intv=days_idx(idx):min(ntimes,days_idx(idx)+nwindow-1);
+0091         td_used(intv)=1;
+0092         day_tidal_depth(i)=mean(tag.depth(intv));
+0093         day_tidal_depth_temp(i)=mean(tag.temp(intv));
+0094     <span class="keyword">end</span>
+0095     
+0096     
+0097     
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% figure(1);plot(tag.dnum.*td_detected,tag.depth.*td_detected,'g','LineWidth',3);</span>
+0101 <span class="comment">% figure(1);plot(tag.dnum.*td_used,tag.depth.*td_used,'y','LineWidth',3);</span>
+0102 <span class="comment">% figure(1);plot(tag.dnum.*td_used,tag.temp.*td_used,'r','LineWidth',1);</span>
+0103 <span class="comment">% xlim([min(tag.dnum),max(tag.dnum)])</span>
+0104 <span class="comment">% figure(2);hold on;</span>
+0105 <span class="comment">% plot(days,day_max_depth);</span>
+0106 <span class="comment">% plot(days,day_tidal_depth,'k-');</span>
+0107 
+0108 <span class="comment">%% =============</span>
+0109 <span class="comment">% likelihood</span>
+0110 <span class="comment">% ==============</span>
+0111 
+0112 
+0113 <span class="comment">% warning off</span>
+0114 close all;
+0115 <span class="comment">% addpath('../hmm_smast/backfun/')</span>
+0116 <span class="comment">%load 12_raw.mat</span>
+0117 addpath(<span class="string">'../'</span>)
+0118 
+0119 
+0120 
+0121 <span class="comment">%load ~/Dropbox/Geolocation/projects/cod_zemeckis/tag_data/vemco.mat</span>
+0122 
+0123 
+0124 <span class="comment">% ==== Load  FVCOM  ====</span>
+0125 <span class="keyword">global</span> fvcom_tidaldb
+0126 load(fvcom_tidaldb)
+0127 
+0128 <span class="comment">% search within radius</span>
+0129 <span class="comment">%search_rad=200000; %m</span>
+0130 search_rad=-1;
+0131 
+0132 [xt,yt]=<a href="../tidaldatabase/my_project.html" class="code" title="function [out_east,out_north] = my_project(in_east,in_north,direction)">my_project</a>(tag.release_lon,tag.release_lat,<span class="string">'forward'</span>);
+0133 <span class="keyword">if</span> (search_rad&gt;0)
+0134     node_idx=find( sqrt((xt-fvcom.x).^2 + (yt-fvcom.y).^2)&lt;=search_rad );
+0135 <span class="keyword">else</span>
+0136     node_idx=1:numel(fvcom.x);
+0137 <span class="keyword">end</span>
+0138 
+0139 
+0140 <span class="comment">% load bottom temperature</span>
+0141 <span class="keyword">global</span> bottom_temperature
+0142 <span class="comment">% time</span>
+0143 time_mjd = double(ncread(bottom_temperature,<span class="string">'time'</span>));
+0144 ntimes = numel(time_mjd);
+0145 time_mdl = floor(time_mjd + datenum(1858,11,17,0,0,0));
+0146 h = ncread(bottom_temperature,<span class="string">'h'</span>);
+0147 nverts = numel(h);
+0148 <span class="comment">% bottom temperature</span>
+0149 fprintf(<span class="string">'loading temperature data ... '</span>);
+0150 t = ncread(bottom_temperature,<span class="string">'temp'</span>,[1 1],[nverts ntimes]);
+0151 fprintf(<span class="string">'done loading temperature data\n\n'</span>);
+0152 
+0153 <span class="comment">% ================</span>
+0154 <span class="comment">% determine edges</span>
+0155 nEdges = fvcom.nelems*3;
+0156 edge = zeros(nEdges,2);
+0157 icnt = 1;
+0158 <span class="keyword">for</span> i=1:fvcom.nelems
+0159     edge(icnt  ,1:2) = fvcom.tri(i,1:2);
+0160     edge(icnt+1,1:2) = fvcom.tri(i,2:3);
+0161     edge(icnt+2,1:2) = fvcom.tri(i,[3,1]);
+0162     icnt = icnt + 3;
+0163 <span class="keyword">end</span>;
+0164 
+0165 <span class="comment">% determine nodes surrounding nodes (no specific order)</span>
+0166 ntsn = zeros(fvcom.nverts,1);
+0167 nbsn = nan(fvcom.nverts,12);
+0168 
+0169 <span class="keyword">for</span> i=1:nEdges
+0170     i1 = edge(i,1);
+0171     i2 = edge(i,2);
+0172     [lmin,loc] = min(abs(nbsn(i1,:)-i2));
+0173     <span class="keyword">if</span>(lmin ~= 0);
+0174         ntsn(i1) = ntsn(i1)+1;
+0175         nbsn(i1,ntsn(i1)) = i2;
+0176     <span class="keyword">end</span>;
+0177     [lmin,loc] = min(abs(nbsn(i2,:)-i1));
+0178     <span class="keyword">if</span>(lmin ~= 0);
+0179         ntsn(i2) = ntsn(i2)+1;
+0180         nbsn(i2,ntsn(i2)) = i1;
+0181     <span class="keyword">end</span>;
+0182 <span class="keyword">end</span>;
+0183 
+0184 <span class="comment">% ==============</span>
+0185 
+0186 
+0187 <span class="comment">% compute depth std for neighboring nodes</span>
+0188 std_dep=nan(size(fvcom.dep));
+0189 <span class="keyword">for</span> nd=1:numel(node_idx)
+0190     <span class="comment">% progress output</span>
+0191     <span class="keyword">if</span> (mod(nd,500)==0)
+0192         fprintf(<span class="string">'node: %d/%d\n'</span>,nd,fvcom.nverts)
+0193     <span class="keyword">end</span>
+0194     
+0195     nnode_list=nbsn(node_idx(nd),:);
+0196     nnode_list=nnode_list(isfinite(nnode_list));
+0197     std_dep(node_idx(nd))=std(fvcom.dep(nnode_list )-fvcom.dep(node_idx(nd)));
+0198     
+0199     
+0200 <span class="keyword">end</span>
+0201 
+0202 
+0203 
+0204 <span class="comment">%% loop over days, calculate daily likelihood distribution</span>
+0205 <span class="keyword">global</span> std_temp_offset std_depth_offset tag_depth_range tag_depth_accu tag_temp_accu
+0206 <span class="keyword">if</span> isempty(std_temp_offset)
+0207     std_temp_offset=2.0; <span class="comment">%higher value is more inclusive</span>
+0208 <span class="keyword">end</span>
+0209 <span class="keyword">if</span> isempty(std_depth_offset)
+0210     std_depth_offset=2.0; <span class="comment">%higher value is more inclusive</span>
+0211 <span class="keyword">end</span>
+0212 std_dep = std_dep + std_depth_offset;
+0213 <span class="keyword">if</span> isempty(tag_depth_range)
+0214     tag_depth_range = 250; <span class="comment">% in meter</span>
+0215 <span class="keyword">end</span>
+0216 <span class="keyword">if</span> isempty(tag_depth_accu)
+0217     tag_depth_accu = 0.008; <span class="comment">% fraction of depth renge</span>
+0218 <span class="keyword">end</span>
+0219 <span class="keyword">if</span> isempty(tag_temp_accu)
+0220     tag_temp_accu = 0.1; <span class="comment">% in degree C</span>
+0221 <span class="keyword">end</span>
+0222 
+0223 <span class="comment">% fig3=figure('units','normalized','position',[.05 .05 .6 .9]);</span>
+0224 <span class="comment">% plot_axis = [8e5,11e5,-2e5,2e5];</span>
+0225 <span class="comment">% pause on</span>
+0226 <span class="comment">% plot_axis = [8.2e5,9.5e5,-0.9e5,0.5e5];</span>
+0227 
+0228 <span class="keyword">if</span> (tag.recap_uncertainty_km &gt; 0)
+0229     [xr,yr]=<a href="../tidaldatabase/my_project.html" class="code" title="function [out_east,out_north] = my_project(in_east,in_north,direction)">my_project</a>(tag.recapture_lon,tag.recapture_lat,<span class="string">'forward'</span>);
+0230     dist_r = ( (fvcom.x-xr).^2+(fvcom.y-yr).^2 ).^0.5;
+0231 <span class="keyword">end</span>
+0232 
+0233 ObsLh=nan(ndays,numel(node_idx));
+0234 
+0235 tide = zeros(1,ndays); <span class="comment">% tide: activity level classification</span>
+0236 <span class="comment">% 2 - low activity</span>
+0237 <span class="comment">% 1 - moderate activity</span>
+0238 <span class="comment">% 0 - high activity</span>
+0239 
+0240 <span class="keyword">for</span> i=1:ndays;
+0241     <span class="comment">%for i=1:12</span>
+0242 
+0243 
+0244     
+0245     
+0246     <span class="keyword">if</span> isfinite(day_tidal_depth(i))
+0247         tide(i)=1;
+0248         <span class="comment">%ObsLh_dep_tidal = normcdf((day_tidal_depth(i)+250*0.008)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-...</span>
+0249          ObsLh_dep_tidal = <a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>((day_tidal_depth(i)+tag_depth_range*tag_depth_accu)*ones(size(fvcom.dep)),fvcom.dep,std_dep)-<span class="keyword">...</span>
+0250             <a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>((day_tidal_depth(i)-tag_depth_range*tag_depth_accu)*ones(size(fvcom.dep)),fvcom.dep,std_dep);
+0251         ObsLh_dep_tidal = ObsLh_dep_tidal ./ max(ObsLh_dep_tidal);
+0252         
+0253         ObsLh_dep_total=ObsLh_dep_tidal;
+0254     <span class="keyword">else</span>
+0255         tide(i)=0;
+0256         ObsLh_dep = <a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>( -day_max_depth(i)*ones(size(fvcom.dep)), -fvcom.dep,std_dep) ./ <span class="keyword">...</span>
+0257             <a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>(zeros(size(fvcom.dep)),-fvcom.dep,std_dep);
+0258 <span class="comment">%         %</span>
+0259 <span class="comment">%         figure(1);clf;</span>
+0260 <span class="comment">%         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh_dep,'edgecolor','none','facecolor','interp');</span>
+0261 <span class="comment">%         axis equal;%axis(plot_axis);</span>
+0262 <span class="comment">%         colorbar()</span>
+0263 <span class="comment">%         H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);</span>
+0264 <span class="comment">%         set(H,'FontSize',16,'Color','k');</span>
+0265 <span class="comment">%         %pause</span>
+0266         <span class="comment">%</span>
+0267         ObsLh_dep_total=ObsLh_dep;
+0268         
+0269     <span class="keyword">end</span>
+0270 
+0271     
+0272     <span class="comment">% compute temp std for neighboring nodes</span>
+0273     std_temp=nan(size(fvcom.dep));
+0274     
+0275     fprintf(<span class="string">'computing temp std for day %d\n'</span>,i)
+0276     [~,iframe] = min(abs(int_dnum(i)-time_mdl));
+0277     <span class="keyword">for</span> nd=1:numel(node_idx)
+0278         
+0279         
+0280         nnode_list=nbsn(node_idx(nd),:);
+0281         nnode_list=nnode_list(isfinite(nnode_list));
+0282         std_temp(node_idx(nd))=std(t(nnode_list,iframe )-t(node_idx(nd),iframe));
+0283         
+0284         
+0285     <span class="keyword">end</span>
+0286     std_temp=std_temp+std_temp_offset;
+0287     
+0288     
+0289     <span class="keyword">if</span> isfinite(day_tidal_depth(i))
+0290         ObsLh_temp_tidal = <a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>((day_tidal_depth_temp(i)+tag_temp_accu)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-<span class="keyword">...</span>
+0291             <a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>((day_tidal_depth_temp(i)-tag_temp_accu)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
+0292         ObsLh_temp_tidal = ObsLh_temp_tidal ./ max(ObsLh_temp_tidal);
+0293         ObsLh_temp_total=ObsLh_temp_tidal;
+0294     <span class="keyword">else</span>
+0295         ObsLh_temp = <a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>((day_max_depth_temp(i)+tag_temp_accu)*ones(size(fvcom.dep)),t(:,iframe),std_temp)-<span class="keyword">...</span>
+0296             <a href="../backfun/normcdf.html" class="code" title="function p = normcdf(x,mu,sigma)">normcdf</a>((day_max_depth_temp(i)-tag_temp_accu)*ones(size(fvcom.dep)),t(:,iframe),std_temp);
+0297         ObsLh_temp = ObsLh_temp./max(ObsLh_temp);
+0298         ObsLh_temp_total=ObsLh_temp;
+0299         
+0300         
+0301     <span class="keyword">end</span>
+0302 
+0303     
+0304     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%</span>
+0305     <span class="comment">% recapture location attraction likelihood</span>
+0306     <span class="comment">%%%%%%%%%%%%%%%%%%%%%%</span>
+0307     <span class="comment">% recap location</span>
+0308     <span class="keyword">if</span> (tag.recap_uncertainty_km &gt; 0)
+0309     
+0310         t_remain=ndays-i+1;
+0311         sigma = max( 1000*tag.recap_uncertainty_km, 0.5*25000*t_remain);
+0312         AttLh = normpdf(dist_r,0,sigma); <span class="comment">%25000: typical cod swimming speed (30 cm/s)</span>
+0313         AttLh = AttLh./max(AttLh);
+0314         
+0315     <span class="keyword">else</span>
+0316         AttLh = 1;
+0317     <span class="keyword">end</span>
+0318     
+0319     ObsLh(i,:)=ObsLh_dep_total.*ObsLh_temp_total.*AttLh;
+0320     
+0321 <span class="keyword">end</span>    
+0322 <span class="comment">% release location treatment</span>
+0323 
+0324 [xl,yl]=<a href="../tidaldatabase/my_project.html" class="code" title="function [out_east,out_north] = my_project(in_east,in_north,direction)">my_project</a>(tag.release_lon,tag.release_lat,<span class="string">'forward'</span>);
+0325 dist_rl = ( (fvcom.xc-xl).^2+(fvcom.yc-yl).^2 ).^0.5;
+0326 rel_idx = dist_rl==min(dist_rl);
+0327 ObsLh(1,fvcom.tri(rel_idx,:)) = 1;
+0328 
+0329 <span class="comment">% ObsLh(1,fvcom.tri(rel_idx,:))</span>
+0330     <span class="comment">%</span>
+0331 <span class="comment">%         figure(2);clf;</span>
+0332 <span class="comment">%         patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh(i,:),'edgecolor','none','facecolor','interp');</span>
+0333 <span class="comment">%         axis equal;%axis(plot_axis);</span>
+0334 <span class="comment">%         colorbar()</span>
+0335 <span class="comment">%         H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);</span>
+0336 <span class="comment">%         set(H,'FontSize',16,'Color','k');</span>
+0337 <span class="comment">%         pause</span>
+0338     <span class="comment">%</span>
+0339     <span class="comment">%     figure(fig3);clf;</span>
+0340     <span class="comment">%     patch('Vertices',[fvcom.x,fvcom.y],'Faces',fvcom.tri,'Cdata',ObsLh,'edgecolor','none','facecolor','interp');</span>
+0341     <span class="comment">%     figure(fig3);axis equal;axis(plot_axis);</span>
+0342     <span class="comment">%     hold on;</span>
+0343     <span class="comment">%     plot(xt,yt,'gp','MarkerSize',10,'MarkerFaceColor','none','MarkerEdgeColor','g')</span>
+0344     <span class="comment">%</span>
+0345     <span class="comment">%     colorbar()</span>
+0346     <span class="comment">%     H = text(.82e6,1.7e5,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);</span>
+0347     <span class="comment">%     %H = text(.825e6,4e4,['day: ' num2str(i) ' of ' num2str(ndays) ' ']);</span>
+0348     <span class="comment">%     set(H,'FontSize',16,'Color','k');</span>
+0349     <span class="comment">%     if tide==1</span>
+0350     <span class="comment">%         H = text(.82e6,1.6e5,'Tide: Yes ');</span>
+0351     <span class="comment">%         set(H,'FontSize',16,'Color','g');</span>
+0352     <span class="comment">%     else</span>
+0353     <span class="comment">%         H = text(.82e6,1.6e5,'Tide: No ');</span>
+0354     <span class="comment">%         set(H,'FontSize',16,'Color','r');</span>
+0355     <span class="comment">%     end</span>
+0356     <span class="comment">%</span>
+0357     <span class="comment">%     vst=find(i==vemco.dnum-dbeg+1 &amp; vemco.FISHID==fish_no);</span>
+0358     <span class="comment">%     figure(fig3);plot(vemco.x(vst),vemco.y(vst),'w+')</span>
+0359     <span class="comment">%     H = text(.82e6,1.5e5,vemco.STATION(vst));</span>
+0360     <span class="comment">%     set(H,'FontSize',16,'Color','k');</span>
+0361     
+0362     <span class="comment">%     %export_fig(['22_out/22_',num2str(i,'%02d'),'.png']);</span>
+0363     <span class="comment">%     saveas(fig3,[tag_name,'_out/',tag_name,'_',num2str(i,'%02d'),'.png'],'png');</span>
+0364     <span class="comment">%     hold off</span>
+0365 
+0366 
+0367 filename = sprintf(<span class="string">'ObsLh%s'</span>,tagno);
+0368 disp(sprintf(<span class="string">'Saving -&gt; %s.mat &lt;- \n'</span>,filename))
+0369 save(filename,<span class="string">'ObsLh'</span>,<span class="string">'tide'</span>)
+0370 
+0371 
+0372 <span class="keyword">end</span>
+0373</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

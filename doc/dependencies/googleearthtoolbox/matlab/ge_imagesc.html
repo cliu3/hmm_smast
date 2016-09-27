@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ge_imagesc</title>
+  <meta name="keywords" content="ge_imagesc">
+  <meta name="description" content="Reference page in help browser:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="#">googleearthtoolbox</a> &gt; <a href="index.html">matlab</a> &gt; ge_imagesc.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/googleearthtoolbox/matlab&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>ge_imagesc
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Reference page in help browser:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [kmlStr] = ge_imagesc(x,y,data,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Reference page in help browser: 
+ 
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_imagesc.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation
+ &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>	% all available options to each function</li><li><a href="ge_groundoverlay.html" class="code" title="function output = ge_groundoverlay(y_max,x_max,y_min,x_min,varargin)">ge_groundoverlay</a>	Reference page in help browser:</li><li><a href="parsepairs.html" class="code" title="">parsepairs</a>	% Please use the link below to view the documentation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../dependencies/googleearthtoolbox/matlab/demo/demo_ge_imagesc.html" class="code" title="function demo_ge_imagesc()%% Demo ge_imagesc">demo_ge_imagesc</a>	</li><li><a href="ge_imagesc_TMP.html" class="code" title="function [kmlStr] = ge_imagesc(x,y,data,varargin)">ge_imagesc_TMP</a>	Reference page in help browser:</li><li><a href="../../../postprocessing/write_ge_track_UD.html" class="code" title="function write_ge_track_UD(tagno)">write_ge_track_UD</a>	write the most probably track to a google earth file</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [kmlStr] = ge_imagesc(x,y,data,varargin)</a>
+0002 <span class="comment">% Reference page in help browser:</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','ge_imagesc.html'),'-helpbrowser')&quot;&gt;link&lt;/a&gt; to html documentation</span>
+0005 <span class="comment">% &lt;a href=&quot;matlab:web(fullfile(ge_root,'html','license.html'),'-helpbrowser')&quot;&gt;show license statement&lt;/a&gt;</span>
+0006 <span class="comment">%</span>
+0007 
+0008 AuthorizedOptions = <a href="authoptions.html" class="code" title="function [AuthorizedOptions] = authoptions( filename )">authoptions</a>( mfilename );
+0009 
+0010 
+0011 <span class="keyword">if</span> isempty(x)||isempty(y)
+0012     error(<span class="string">'empty coordinates passed to ge_imagesc().'</span>);
+0013 <span class="keyword">elseif</span> isempty(data) 
+0014     error(<span class="string">'Empty data array passed to ge_imagesc().'</span>);    
+0015 <span class="keyword">end</span>
+0016 
+0017 <span class="comment">%            id = 'imagesc';</span>
+0018 <span class="comment">%       idTag = 'id';</span>
+0019    visibility = 1;
+0020 <span class="comment">%     lineColor = '00000000';</span>
+0021     timeStamp = <span class="string">' '</span>;
+0022 timeSpanStart = <span class="string">' '</span>;
+0023  timeSpanStop = <span class="string">' '</span>;
+0024 <span class="comment">%     lineWidth = 0.25;</span>
+0025       snippet = <span class="string">' '</span>;
+0026      altitude = 1.0;
+0027  altitudeMode = <span class="string">'clampToGround'</span>;
+0028   msgToScreen = 0;
+0029      colorMap = <span class="string">'jet'</span>;
+0030 <span class="comment">% dataFormatStr = '%g';</span>
+0031        imgURL = <span class="string">'ge_imagesc.png'</span>;
+0032          name = <span class="string">'ge_imagesc'</span>;
+0033        region = <span class="string">' '</span>;
+0034   alphaMatrix = double(~isnan(data));
+0035   crispFactor = 5;  
+0036       nColors = 256;
+0037        
+0038 <span class="comment">%      cLimHigh: see further down</span>
+0039 <span class="comment">%       cLimLow: see further down</span>
+0040 
+0041 <span class="keyword">if</span> ~any(size(x)==1)
+0042     error(<span class="string">'longitude array should be Nx1 or 1xN'</span>)
+0043 <span class="keyword">end</span>
+0044 <span class="keyword">if</span> ~any(size(y)==1)
+0045     error(<span class="string">'latitude array should be Nx1 or 1xN'</span>)
+0046 <span class="keyword">end</span>
+0047   
+0048 dy = y(2:end)-y(1:end-1);
+0049 dx = x(2:end)-x(1:end-1);
+0050 
+0051 <span class="keyword">if</span> (max(dy)-min(dy))&gt;1e-8
+0052     warning(<span class="string">'Latitude array should be spaced linearly. Distortions may occur.'</span>)
+0053 <span class="keyword">end</span>
+0054 <span class="keyword">if</span> (max(dx)-min(dx))&gt;1e-8
+0055     warning(<span class="string">'Longitude array should be spaced linearly. Distortions may occur.'</span>)
+0056 <span class="keyword">end</span>
+0057 
+0058 
+0059 <span class="keyword">if</span> dy&lt;0
+0060     error(<span class="string">'Latitude resolution can not be negative.'</span>)
+0061 <span class="keyword">elseif</span> dy==0
+0062     error(<span class="string">'Latitude resolution can not be zero.'</span>)
+0063 <span class="keyword">else</span>
+0064 <span class="keyword">end</span>
+0065 
+0066 <span class="keyword">if</span> dx&lt;0
+0067     error(<span class="string">'Longitude resolution can not be negative.'</span>)
+0068 <span class="keyword">elseif</span> dx==0
+0069     error(<span class="string">'Longitude resolution can not be zero.'</span>)
+0070 <span class="keyword">else</span>
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">% if any(abs(dy(2:end)-dy(1:end-1))&gt;1e-12)||any(abs(dx(2:end)-dx(1:end-1))&gt;1e-12)</span>
+0074 <span class="comment">%     error(['Function ' 39 mfilename 39 ' does not allow varying grid cell size.'])</span>
+0075 <span class="comment">% end</span>
+0076 <span class="comment">% clear dx dy</span>
+0077 xResolution = abs(x(2)-x(1));
+0078 yResolution = abs(y(2)-y(1));
+0079 
+0080 <a href="parsepairs.html" class="code" title="">parsepairs</a> <span class="comment">%script that parses Parameter/Value pairs.</span>
+0081 
+0082 <span class="keyword">if</span> msgToScreen
+0083    disp([<span class="string">'Running '</span> mfilename <span class="string">'...'</span>]) 
+0084 <span class="keyword">end</span>
+0085 
+0086 <span class="keyword">if</span> ~(isequal(altitudeMode,<span class="string">'clampToGround'</span>)||<span class="keyword">...</span>
+0087    isequal(altitudeMode,<span class="string">'relativeToGround'</span>)||<span class="keyword">...</span>
+0088    isequal(altitudeMode,<span class="string">'absolute'</span>))
+0089 
+0090     error([<span class="string">'Variable '</span>,39,<span class="string">'altitudeMode'</span>,39, <span class="string">' should be one of '</span> ,39,<span class="string">'clampToGround'</span>,39,<span class="string">', '</span>,10,39,<span class="string">'relativeToGround'</span>,39,<span class="string">', or '</span>,39,<span class="string">'absolute'</span>,39,<span class="string">'.'</span> ])
+0091     
+0092 <span class="keyword">end</span>   
+0093 
+0094 <span class="keyword">if</span> numel(xResolution)~=1
+0095     error([<span class="string">'Function '</span>,39,mfilename,39,<span class="string">': variable '</span>,39,<span class="string">'xResolution'</span>,39,<span class="string">' should be scalar.'</span>])
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="keyword">if</span> numel(yResolution)~=1
+0099     error([<span class="string">'Function '</span>,39,mfilename,39,<span class="string">': variable '</span>,39,<span class="string">'yResolution'</span>,39,<span class="string">' should be scalar.'</span>])
+0100 <span class="keyword">end</span>
+0101 
+0102 <span class="keyword">if</span> ~((length(x)&gt;1)&amp;&amp;(length(y)&gt;1))
+0103     error([<span class="string">'Input variables '</span> 39 <span class="string">'x'</span> 39 <span class="string">' and '</span> 39 <span class="string">'y'</span> 39 <span class="string">' should at least contain 2 values.'</span>])
+0104 <span class="keyword">end</span>
+0105 
+0106 <span class="keyword">if</span> exist(<span class="string">'nanValue'</span>,<span class="string">'var'</span>)&amp;&amp;~isnan(nanValue)
+0107     data(data==nanValue)=NaN;
+0108 <span class="keyword">end</span>
+0109 <span class="keyword">if</span> ~exist(<span class="string">'cLimHigh'</span>,<span class="string">'var'</span>)
+0110     cLimHigh = max(data(:));
+0111 <span class="keyword">end</span>
+0112 <span class="keyword">if</span> ~exist(<span class="string">'cLimLow'</span>,<span class="string">'var'</span>)
+0113     cLimLow = min(data(:));
+0114 <span class="keyword">end</span>
+0115 
+0116 
+0117 
+0118 halfLonRes = 0.5*xResolution;     
+0119 halfLatRes = 0.5*yResolution;
+0120 N = max(y)+halfLatRes;
+0121 E = max(x)+halfLonRes;
+0122 S = min(y)-halfLatRes;
+0123 W = min(x)-halfLonRes;
+0124 
+0125 [nRows,nCols] = size(data);
+0126 
+0127 
+0128 <span class="keyword">if</span> crispFactor == 1
+0129     dataXL = data;
+0130     alphaMatrixXL = zeros(size(data));
+0131     IO = ~isnan(data);
+0132     alphaMatrixXL(IO) = alphaMatrix(IO);
+0133 <span class="keyword">else</span>
+0134 
+0135     dataXL = repmat(NaN,[nRows,nCols]*crispFactor);
+0136     alphaMatrixXL = repmat(NaN,[nRows,nCols]*crispFactor);
+0137 
+0138     <span class="keyword">for</span> r=1:nRows
+0139         <span class="keyword">for</span> c=1:nCols
+0140 
+0141             sr = (r-1)*crispFactor+1;
+0142             er = r*crispFactor;
+0143 
+0144             sc = (c-1)*crispFactor+1;
+0145             ec = c*crispFactor;
+0146 
+0147             dataXL(sr:er,sc:ec) = data(r,c);
+0148 
+0149             <span class="keyword">if</span> isnan(data(r,c))
+0150                 alphaMatrixXL(sr:er,sc:ec) =  0;
+0151             <span class="keyword">else</span>
+0152                 alphaMatrixXL(sr:er,sc:ec) =  alphaMatrix(r,c);
+0153             <span class="keyword">end</span>
+0154         <span class="keyword">end</span>
+0155     <span class="keyword">end</span>
+0156     
+0157 <span class="keyword">end</span>
+0158        
+0159 data3 = mat2gray(dataXL,[cLimLow,cLimHigh]);
+0160 
+0161 <span class="keyword">if</span> ischar(colorMap)
+0162     X = gray2ind(data3,nColors);
+0163     eval([<span class="string">'data3 = ind2rgb(X,'</span>,colorMap,<span class="string">'('</span>,num2str(nColors),<span class="string">'));'</span>]);
+0164 <span class="keyword">else</span>
+0165     nColors = size(colorMap,1);
+0166     X = gray2ind(data3,nColors);
+0167     data3 = ind2rgb(X,colorMap);    
+0168 <span class="keyword">end</span>
+0169 
+0170 imwrite(data3,imgURL,<span class="string">'png'</span>,<span class="string">'alpha'</span>,alphaMatrixXL);
+0171 
+0172 
+0173 kmlStr = <a href="ge_groundoverlay.html" class="code" title="function output = ge_groundoverlay(y_max,x_max,y_min,x_min,varargin)">ge_groundoverlay</a>(N,E,S,W,<span class="keyword">...</span>
+0174                            <span class="string">'name'</span>,name,<span class="keyword">...</span>
+0175                          <span class="string">'imgURL'</span>,imgURL,<span class="keyword">...</span>
+0176                         <span class="string">'snippet'</span>,snippet,<span class="keyword">...</span>
+0177                       <span class="string">'timeStamp'</span>,timeStamp,<span class="keyword">...</span>
+0178                   <span class="string">'timeSpanStart'</span>,timeSpanStart,<span class="keyword">...</span>
+0179                    <span class="string">'timeSpanStop'</span>,timeSpanStop,<span class="keyword">...</span>
+0180                      <span class="string">'visibility'</span>,visibility,<span class="keyword">...</span>
+0181                        <span class="string">'altitude'</span>,altitude,<span class="keyword">...</span>
+0182                         <span class="string">'region'</span>,region,<span class="keyword">...</span>
+0183                    <span class="string">'altitudeMode'</span>,altitudeMode);
+0184 
+0185 
+0186 <span class="keyword">if</span> msgToScreen
+0187    disp([<span class="string">'Running '</span> mfilename <span class="string">'...Done'</span>]) 
+0188 <span class="keyword">end</span>
+0189</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

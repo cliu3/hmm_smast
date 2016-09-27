@@ -1,0 +1,619 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of t_xtide</title>
+  <meta name="keywords" content="t_xtide">
+  <meta name="description" content="T_XTIDE Tidal prediction">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">dependencies</a> &gt; <a href="index.html">t_tide</a> &gt; t_xtide.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for dependencies/t_tide&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>t_xtide
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>T_XTIDE Tidal prediction</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function pred=t_xtide(varargin); </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> T_XTIDE Tidal prediction
+ YOUT=T_XTIDE(STATION) makes a tidal prediction
+ for the current day using the harmonics file from XTIDE. 
+ if STATION is a string then the first match found in the database is
+ used, you can request matches to other stations by appending '(2)' to
+ the string. If you don't know the station name but want to find the
+ nearest to a given LONG,LAT, try T_XTIDE(LONG,LAT).
+
+ The times of predicted tides are given by the next numerical argument
+ (if any), e.g. [...]=T_XTIDE(STATION,TIM). 
+ TIM can be: a vector of matlab-format decimal days (from DATENUM).
+           : a scalar &lt;1000, taken as the number of days from present
+           : a scalar &gt;1000, taken as the starting time in matlab-format 
+             for a 2 day time series. 
+           : not given, in which case the current time is used as a start 
+             time.
+
+ Times are usually taken to be in 
+ standard time for the given location (no daylight savings adjustments); 
+ if in doubt use the 'info' or 'full' options where offset from UTC is given.
+
+ 
+ Other optional arguments can be specified following this using 
+ property/value pairs: 
+
+     'format'     'raw' (default)
+                    YOUT is just a time series to match the time in TIM
+
+                  'times'
+                    YOUT is a structure of high/low tide information
+                    between times min(TIM) and max(TIM).
+
+                  'info'
+                    YOUT is a structure giving station information
+                    (location, time zone, units, harmonic constituents)
+
+                  'full'
+                    Combination of 'raw' and 'info' in a structure YOUT.
+
+     'units'     {'meters' | 'feet' | 'm/s' | 'knots' | 'original' }
+                    Units of result (default is original units)
+
+ If no output argument is specified data is plotted and/or displayed.
+
+ If the chosen name matches several stations then the first in the list is
+ chosen. Specific choices can be made by appending a '(2)' or '(3)' (etc.)
+ to the name, e.g.  T_XTIDE('tofino (2)',...).
+
+  Requires the xtide harmonics file  - get this from 
+            http://bel-marduk.unh.edu/xtide/files.html</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="t_xtide.html" class="code" title="function pred=t_xtide(varargin);">t_xtide</a>	T_XTIDE Tidal prediction</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="t_xtide.html" class="code" title="function pred=t_xtide(varargin);">t_xtide</a>	T_XTIDE Tidal prediction</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [xtide,xharm]=read_xtidefile(fid);</a></li><li><a href="#_sub2" class="code">function l=fgetl_nocom(fid);</a></li><li><a href="#_sub3" class="code">function [units,convf]=convert_units(unt,origunits);</a></li><li><a href="#_sub4" class="code">function [d,hdg]=t_gcdist(lat1,lon1,lat2,lon2)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function pred=t_xtide(varargin);</a>
+0002 <span class="comment">% T_XTIDE Tidal prediction</span>
+0003 <span class="comment">% YOUT=T_XTIDE(STATION) makes a tidal prediction</span>
+0004 <span class="comment">% for the current day using the harmonics file from XTIDE.</span>
+0005 <span class="comment">% if STATION is a string then the first match found in the database is</span>
+0006 <span class="comment">% used, you can request matches to other stations by appending '(2)' to</span>
+0007 <span class="comment">% the string. If you don't know the station name but want to find the</span>
+0008 <span class="comment">% nearest to a given LONG,LAT, try T_XTIDE(LONG,LAT).</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% The times of predicted tides are given by the next numerical argument</span>
+0011 <span class="comment">% (if any), e.g. [...]=T_XTIDE(STATION,TIM).</span>
+0012 <span class="comment">% TIM can be: a vector of matlab-format decimal days (from DATENUM).</span>
+0013 <span class="comment">%           : a scalar &lt;1000, taken as the number of days from present</span>
+0014 <span class="comment">%           : a scalar &gt;1000, taken as the starting time in matlab-format</span>
+0015 <span class="comment">%             for a 2 day time series.</span>
+0016 <span class="comment">%           : not given, in which case the current time is used as a start</span>
+0017 <span class="comment">%             time.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Times are usually taken to be in</span>
+0020 <span class="comment">% standard time for the given location (no daylight savings adjustments);</span>
+0021 <span class="comment">% if in doubt use the 'info' or 'full' options where offset from UTC is given.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% Other optional arguments can be specified following this using</span>
+0025 <span class="comment">% property/value pairs:</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%     'format'     'raw' (default)</span>
+0028 <span class="comment">%                    YOUT is just a time series to match the time in TIM</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%                  'times'</span>
+0031 <span class="comment">%                    YOUT is a structure of high/low tide information</span>
+0032 <span class="comment">%                    between times min(TIM) and max(TIM).</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%                  'info'</span>
+0035 <span class="comment">%                    YOUT is a structure giving station information</span>
+0036 <span class="comment">%                    (location, time zone, units, harmonic constituents)</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%                  'full'</span>
+0039 <span class="comment">%                    Combination of 'raw' and 'info' in a structure YOUT.</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%     'units'     {'meters' | 'feet' | 'm/s' | 'knots' | 'original' }</span>
+0042 <span class="comment">%                    Units of result (default is original units)</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">% If no output argument is specified data is plotted and/or displayed.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% If the chosen name matches several stations then the first in the list is</span>
+0047 <span class="comment">% chosen. Specific choices can be made by appending a '(2)' or '(3)' (etc.)</span>
+0048 <span class="comment">% to the name, e.g.  T_XTIDE('tofino (2)',...).</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%  Requires the xtide harmonics file  - get this from</span>
+0051 <span class="comment">%            http://bel-marduk.unh.edu/xtide/files.html</span>
+0052 
+0053 <span class="comment">% R. Pawlowicz 1/Dec/2001</span>
+0054 <span class="comment">% Version 1.0</span>
+0055 <span class="comment">%          16/May/02 - added lat/long options (thanks to Richard Dewey).</span>
+0056 
+0057 
+0058 <span class="comment">% Get the harmonics data from a) a mat-file if it exists, or b) from a harmonics</span>
+0059 <span class="comment">% file.</span>
+0060 
+0061 <span class="keyword">if</span> ~exist(<span class="string">'t_xtide.mat'</span>,<span class="string">'file'</span>), <span class="comment">% Read the harmonics file and make a mat file</span>
+0062 
+0063   filnam=<span class="string">'/usr/share/xtide/harmonics.txt'</span>;
+0064   
+0065   fprintf(<span class="string">'\n********Can''t find mat-file t_xtide.mat ********\n\n'</span>);
+0066   fprintf(<span class="string">'Attempting to generate one from an xtide harmonics file....\n\n'</span>);
+0067   fprintf(<span class="string">'Latest version available from http://bel-marduk.unh.edu/xtide/files.html\n\n'</span>);
+0068   
+0069   <span class="comment">% Input name</span>
+0070   fid=-1;
+0071   <span class="keyword">while</span> fid==-1,
+0072     rep=filnam;
+0073     <span class="keyword">while</span> (lower(rep(1))~=<span class="string">'y'</span>),
+0074      filnam=rep;
+0075      rep=<span class="string">'n'</span>;
+0076      rep=input([<span class="string">'Harmonics filename: '</span> filnam <span class="string">'? (y/Y/new file name):'</span>],<span class="string">'s'</span>);
+0077      <span class="keyword">if</span> isempty(rep), rep=<span class="string">'y'</span>; <span class="keyword">end</span>;
+0078     <span class="keyword">end</span>; 
+0079     
+0080     fid=fopen(filnam);
+0081     <span class="keyword">if</span> fid==-1,
+0082       fprintf([<span class="string">'\n****** Can''t open filename -&gt;'</span> filnam <span class="string">'&lt;-\n\n'</span>]);
+0083     <span class="keyword">end</span>;
+0084   <span class="keyword">end</span>;
+0085     
+0086   fprintf(<span class="string">'Reading harmonics file (this will take a while)\n'</span>);
+0087   [xtide,xharm]=<a href="#_sub1" class="code" title="subfunction [xtide,xharm]=read_xtidefile(fid);">read_xtidefile</a>(fid);
+0088   
+0089   fprintf(<span class="string">'Saving harmonic information to t_xtide.mat\n'</span>);
+0090   save <a href="t_xtide.html" class="code" title="function pred=t_xtide(varargin);">t_xtide</a> xtide xharm
+0091    
+0092 <span class="keyword">else</span>
+0093   load <a href="t_xtide.html" class="code" title="function pred=t_xtide(varargin);">t_xtide</a>
+0094 <span class="keyword">end</span>;
+0095 
+0096 <span class="keyword">if</span> nargin&gt;0,
+0097 
+0098   <span class="keyword">if</span> isstr(varargin{1}),  <span class="comment">% Station  name given</span>
+0099     <span class="comment">% Identify station - look for exact match first</span>
+0100     ista=strmatch(lower(varargin{1}),lower(xharm.station),<span class="string">'exact'</span>);
+0101     <span class="comment">% otherwise go for partial matches</span>
+0102     <span class="keyword">if</span> isempty(ista),
+0103       <span class="comment">% First check to see if a number was selected:</span>
+0104       inum=-10;
+0105       <span class="keyword">while</span> inum&lt;-1,
+0106         inum=inum+1;
+0107         ll=findstr(lower(varargin{1}),sprintf(<span class="string">'(%d)'</span>,-inum));
+0108         <span class="keyword">if</span> ~isempty(ll),
+0109           inum=abs(inum);
+0110           varargin{1}=deblank(varargin{1}(1:ll-1));
+0111         <span class="keyword">end</span>;
+0112       <span class="keyword">end</span>;  
+0113       ista=strmatch(lower(varargin{1}),lower(xharm.station));
+0114       <span class="keyword">if</span> length(ista)&gt;1,
+0115         <span class="keyword">if</span> inum&gt;0 &amp; inum&lt;=length(ista),
+0116           ista=ista(inum);
+0117         <span class="keyword">else</span>    
+0118           fprintf(<span class="string">'Ambiguous Station Choice - Taking first of:\n'</span>);
+0119           <span class="keyword">for</span> kk=1:length(ista),
+0120             fprintf(<span class="string">'%5d: %s\n'</span>,ista(kk),deblank(xharm.station(ista(kk),:)));
+0121             fprintf(<span class="string">'      Long: %.4f  Lat: %.4f \n'</span>,xharm.longitude(ista(kk)),xharm.latitude(ista(kk)));
+0122           <span class="keyword">end</span>;
+0123           fprintf(<span class="string">'\n'</span>);
+0124           ista=ista(1);
+0125         <span class="keyword">end</span>     
+0126       <span class="keyword">elseif</span> length(ista)==1 &amp; inum&gt;1,
+0127         fprintf(<span class="string">'***Can''t find variant (%d) of station - Taking only choice\n'</span>,inum);
+0128       <span class="keyword">elseif</span> length(ista)==0,  
+0129         error(<span class="string">'Could not match station'</span>);
+0130       <span class="keyword">end</span>;    
+0131      <span class="keyword">end</span>;
+0132      varargin(1)=[];
+0133 
+0134    <span class="keyword">else</span>   <span class="comment">% Lat/long?</span>
+0135       [dist,hdg]=<a href="#_sub4" class="code" title="subfunction [d,hdg]=t_gcdist(lat1,lon1,lat2,lon2)">t_gcdist</a>(xharm.latitude,xharm.longitude,varargin{2},varargin{1});
+0136       [mind,ista]=min(dist);
+0137       <span class="keyword">if</span> length(ista)&gt;1,
+0138         fprintf(<span class="string">'Ambiguous Station Choice - Taking first of:\n'</span>);
+0139         <span class="keyword">for</span> kk=1:length(ista),
+0140           fprintf(<span class="string">'%5d: %s\n'</span>,ista(kk),deblank(xharm.station(ista(kk),:)));
+0141           fprintf(<span class="string">'      Long: %.4f  Lat: %.4f \n'</span>,xharm.longitude(ista(kk)),xharm.latitude(ista(kk)));
+0142         <span class="keyword">end</span>;
+0143         fprintf(<span class="string">'\n'</span>);
+0144         ista=ista(1);
+0145       <span class="keyword">else</span>
+0146          fprintf(<span class="string">'%5d: %s\n'</span>,ista,deblank(xharm.station(ista,:)));
+0147         fprintf(<span class="string">'      Long: %.4f  Lat: %.4f \n'</span>,xharm.longitude(ista),xharm.latitude(ista)); 
+0148       <span class="keyword">end</span>;
+0149       varargin(1:2)=[];
+0150    <span class="keyword">end</span>;
+0151   
+0152   <span class="comment">% Time vector (if available) otherwise take current time.</span>
+0153 
+0154   <span class="keyword">if</span> length(varargin)&gt;0 &amp; ~isstr(varargin{1}),
+0155     tim=varargin{1};
+0156     tim=tim(:)';
+0157     varargin(1)=[];
+0158     <span class="keyword">if</span> length(tim)==1,
+0159       <span class="keyword">if</span> tim&lt;1000,
+0160         dat=clock;
+0161         tim=datenum(dat(1),dat(2),dat(3))+[0:1/48:tim];
+0162       <span class="keyword">else</span>
+0163         tim=tim+[0:1/48:2]; <span class="comment">% 2 days worth.</span>
+0164       <span class="keyword">end</span>;         
+0165     <span class="keyword">end</span>;
+0166   <span class="keyword">else</span> 
+0167     dat=clock;
+0168     tim=datenum(dat(1),dat(2),dat(3))+[0:.25:48]/24;
+0169   <span class="keyword">end</span>;
+0170  
+0171    <span class="comment">% Parse properties</span>
+0172 
+0173   format=<span class="string">'raw'</span>;
+0174   unt=<span class="string">'original'</span>;
+0175   
+0176   k=1;
+0177   <span class="keyword">while</span> length(varargin)&gt;0,
+0178       <span class="keyword">switch</span> lower(varargin{1}(1:3)),
+0179     <span class="keyword">case</span> <span class="string">'for'</span>,
+0180      format=lower(varargin{2});
+0181     <span class="keyword">case</span> <span class="string">'uni'</span>,
+0182      unt=lower(varargin{2}); 
+0183     <span class="keyword">otherwise</span>,
+0184            error([<span class="string">'Can''t understand property:'</span> varargin{1}]);
+0185       <span class="keyword">end</span>;
+0186       varargin([1 2])=[]; 
+0187   <span class="keyword">end</span>;
+0188  
+0189   <span class="comment">% if we want a time series</span>
+0190   pred=[];
+0191   <span class="comment">% Convert units if requested.</span>
+0192   [units,convf]=<a href="#_sub3" class="code" title="subfunction [units,convf]=convert_units(unt,origunits);">convert_units</a>(unt,xharm.units(ista,:));
+0193   <span class="keyword">if</span> strcmp(format(1:2),<span class="string">'ra'</span>) | strcmp(format(1:2),<span class="string">'fu'</span>) | strcmp(format(1:2),<span class="string">'ti'</span>)
+0194     
+0195     <span class="comment">% Data every minute for hi/lo forecasting.</span>
+0196     <span class="keyword">if</span> strcmp(format(1:2),<span class="string">'ti'</span>),
+0197       tim=tim(1):(1/1440):tim(end); 
+0198     <span class="keyword">end</span>;
+0199 
+0200     <span class="comment">% Convert into time since the beginning of year</span>
+0201     mid=datevec(mean(tim));
+0202     iyr=mid(1)-xtide.startyear+1;
+0203     lt=length(tim);
+0204     xtim=(tim-datenum(mid(1),1,1))*24; <span class="comment">% Hours since beginning of year</span>
+0205 
+0206     <span class="comment">%-----------------------------------------------------</span>
+0207     <span class="comment">% Sum up everything for the prediction!</span>
+0208 
+0209     pred=xharm.datum(ista)+sum( <span class="keyword">...</span>
+0210       repmat(xtide.nodefactor(:,iyr).*xharm.A(ista,:)',1,lt).* <span class="keyword">...</span>
+0211       cos( ( xtide.speed*xtim + repmat(xtide.equilibarg(:,iyr)-xharm.kappa(ista,:)',1,lt) )*(pi/180) ),1);
+0212     <span class="comment">%-----------------------------------------------------</span>
+0213 
+0214     pred=pred*convf;
+0215     
+0216     <span class="comment">% Compute times of hi/lo from every-minute data</span>
+0217     <span class="keyword">if</span> strcmp(format(1:2),<span class="string">'ti'</span>),
+0218      <span class="comment">% Check if this is a current station</span>
+0219       <span class="keyword">if</span> ~isempty(findstr(<span class="string">'Current'</span>,xharm.station(ista,:))), currents=1; <span class="keyword">else</span> currents=0; <span class="keyword">end</span>;
+0220       dpred=diff(pred);
+0221       ddpred=diff(dpred&gt;0);
+0222 
+0223       flat=find(ddpred~=0)+1;
+0224       slk=find(sign(pred(1:end-1))~=sign(pred(2:end)));
+0225       
+0226       hi.mtime=tim(flat);
+0227       hi.value=pred(flat);
+0228 
+0229       hi.type=zeros(size(flat));
+0230       hi.type(find(ddpred(flat-1)&lt;0))=1;  <span class="comment">% 0=lo, 1=hi</span>
+0231       hi.units=deblank(units);
+0232       
+0233       pred=hi;
+0234     <span class="keyword">end</span>;
+0235   <span class="keyword">end</span>;
+0236   
+0237   <span class="comment">% Create information structure</span>
+0238   
+0239   <span class="keyword">if</span> strcmp(format(1:2),<span class="string">'in'</span>) | strcmp(format(1:2),<span class="string">'fu'</span>),
+0240     <span class="keyword">if</span> ~isempty(pred), 
+0241       pred.yout=pred; 
+0242       pred.mtime=tim; 
+0243     <span class="keyword">else</span>
+0244       kk=find(xharm.A(ista,:)~=0);
+0245       pred.freq=xtide.name(kk,:);
+0246       pred.A=full(xharm.A(ista,kk)')*convf;
+0247       pred.kappa=full(xharm.kappa(ista,kk)'); 
+0248     <span class="keyword">end</span>;
+0249     pred.station=deblank(xharm.station(ista,:));
+0250     pred.longitude=xharm.longitude(ista);
+0251     pred.latitude=xharm.latitude(ista);
+0252     pred.timezone=xharm.timezone(ista);
+0253     pred.units=deblank(units);
+0254     pred.datum=xharm.datum(ista)*convf;
+0255   <span class="keyword">end</span>;
+0256  
+0257 <span class="keyword">end</span>;
+0258 
+0259 <span class="comment">% If no output parameters then we plot or display things</span>
+0260 
+0261 <span class="keyword">if</span> nargout==0,
+0262   <span class="keyword">switch</span> format(1:2),    
+0263     <span class="keyword">case</span> <span class="string">'ti'</span>,
+0264   
+0265     fprintf(<span class="string">'High/Low Predictions for %s\n'</span>,xharm.station(ista,:));
+0266     fprintf(<span class="string">'Time offset %.1f from UTC\n\n'</span>,xharm.timezone(ista));
+0267     
+0268     outstr=repmat(<span class="string">' '</span>,length(flat),41);
+0269     outstr(:,1:20)=datestr(hi.mtime);
+0270     outstr(:,22:27)=reshape(sprintf(<span class="string">'%6.2f'</span>,hi.value),6,length(flat))';
+0271     <span class="keyword">if</span> currents,
+0272       ll=hi.type==1;
+0273       outstr(ll,31:41)=repmat(<span class="string">' Flood Tide'</span>,sum(ll),1);
+0274       ll=hi.type==0;
+0275       outstr(ll,31:41)=repmat(<span class="string">' Ebb Tide  '</span>,sum(ll),1);
+0276     <span class="keyword">else</span>
+0277       ll=hi.type==1;
+0278       outstr(ll,31:41)=repmat(<span class="string">' High Tide '</span>,sum(ll),1);
+0279       ll=hi.type==0;
+0280       outstr(ll,31:41)=repmat(<span class="string">' Low Tide  '</span>,sum(ll),1);
+0281     <span class="keyword">end</span>;
+0282     disp(outstr)   
+0283            
+0284     <span class="keyword">case</span> <span class="string">'ra'</span>
+0285      plot(tim,pred)
+0286      datetick;
+0287      title([<span class="string">'Tidal prediction for '</span>,deblank(xharm.station(ista,:)) <span class="string">' beginning '</span> datestr(tim(1))]); 
+0288      ylabel(deblank(xharm.units(ista,:)));
+0289 
+0290     <span class="keyword">case</span> <span class="string">'fu'</span>
+0291      plot(tim,pred.yout)
+0292      datetick;
+0293      title([<span class="string">'Tidal prediction for '</span>,deblank(xharm.station(ista,:)) <span class="string">' beginning '</span> datestr(tim(1))]); 
+0294      ylabel(deblank(xharm.units(ista,:)));
+0295      
+0296     <span class="keyword">case</span> <span class="string">'in'</span>,
+0297         
+0298     fprintf(<span class="string">'Station: %s\n'</span>,pred.station);
+0299     <span class="keyword">if</span> pred.longitude&lt;0, lon=<span class="string">'W'</span>; <span class="keyword">else</span> lon=<span class="string">'E'</span>; <span class="keyword">end</span>;
+0300     <span class="keyword">if</span> pred.latitude&lt;0,  lat=<span class="string">'S'</span>; <span class="keyword">else</span> lat=<span class="string">'N'</span>; <span class="keyword">end</span>;
+0301     fprintf(<span class="string">'Location: %d %.1f'' %c, %d %.1f'' %c\n'</span>,fix(abs(pred.latitude)),rem(abs(pred.latitude),1)*60,<span class="keyword">...</span>
+0302          lat,fix(abs(pred.longitude)),rem(abs(pred.longitude),1)*60,lon);
+0303     fprintf(<span class="string">'Time offset %.1f from UTC\n\n'</span>,pred.timezone);
+0304          
+0305    <span class="keyword">end</span>;
+0306    clear pred
+0307 <span class="keyword">end</span>;  
+0308   
+0309 <span class="comment">%%%%%%%%%%%%%%%%%%%%</span>
+0310 <a name="_sub1" href="#_subfunctions" class="code">function [xtide,xharm]=read_xtidefile(fid);</a>
+0311 <span class="comment">% Reads the xtide harmonics file and creates a data structure</span>
+0312 <span class="comment">% with all that info for faster access</span>
+0313 
+0314 
+0315 l=<a href="#_sub2" class="code" title="subfunction l=fgetl_nocom(fid);">fgetl_nocom</a>(fid);
+0316 
+0317 ncon=sscanf(l,<span class="string">'%d'</span>);
+0318 
+0319 xtide=struct(<span class="string">'name'</span>,repmat(<span class="string">' '</span>,ncon,8),<span class="string">'speed'</span>,zeros(ncon,1),<span class="keyword">...</span>
+0320          <span class="string">'startyear'</span>,0,<span class="string">'equilibarg'</span>,zeros(ncon,68),<span class="string">'nodefactor'</span>,zeros(ncon,68));
+0321 
+0322 <span class="keyword">for</span> k=1:ncon,
+0323  l=<a href="#_sub2" class="code" title="subfunction l=fgetl_nocom(fid);">fgetl_nocom</a>(fid);
+0324  xtide.name(k,:)=l(1:8);
+0325  xtide.speed(k)=sscanf(l(9:end),<span class="string">'%f'</span>);
+0326 <span class="keyword">end</span>;
+0327 
+0328 xtide.startyear=sscanf(<a href="#_sub2" class="code" title="subfunction l=fgetl_nocom(fid);">fgetl_nocom</a>(fid),<span class="string">'%d'</span>);
+0329 
+0330 nyear=sscanf(<a href="#_sub2" class="code" title="subfunction l=fgetl_nocom(fid);">fgetl_nocom</a>(fid),<span class="string">'%d'</span>);
+0331 
+0332 <span class="keyword">for</span> k=1:ncon,
+0333   l=fgetl(fid);
+0334   xtide.equilibarg(k,:)=fscanf(fid,<span class="string">'%f'</span>,nyear);
+0335   l=fgetl(fid);
+0336 <span class="keyword">end</span>;
+0337 l=fgetl(fid); <span class="comment">% Skip *END*</span>
+0338 
+0339 nyear=sscanf(<a href="#_sub2" class="code" title="subfunction l=fgetl_nocom(fid);">fgetl_nocom</a>(fid),<span class="string">'%d'</span>);
+0340 
+0341 <span class="keyword">for</span> k=1:ncon,
+0342   l=fgetl(fid);
+0343   xtide.nodefactor(k,:)=fscanf(fid,<span class="string">'%f'</span>,nyear);
+0344   l=fgetl(fid);
+0345 <span class="keyword">end</span>;
+0346 l=fgetl(fid); <span class="comment">% Skip *END*</span>
+0347 
+0348 <span class="comment">% Now read in all harmonic data</span>
+0349 
+0350 
+0351 <span class="comment">%nsta=1754; % This is number of stations in harmonics (1998-07-18)</span>
+0352 <span class="comment">%nsta=3351; % This is number of stations in v1.42 or harmonics file</span>
+0353 nsta=3316; <span class="comment">% This is number in v1.51</span>
+0354 
+0355 xharm=struct(<span class="string">'station'</span>,repmat(<span class="string">' '</span>,nsta,79),<span class="string">'units'</span>,repmat(<span class="string">' '</span>,nsta,8),<span class="keyword">...</span>
+0356          <span class="string">'longitude'</span>,zeros(nsta,1),<span class="string">'latitude'</span>,zeros(nsta,1),<span class="keyword">...</span>
+0357          <span class="string">'timezone'</span>,zeros(nsta,1),<span class="string">'datum'</span>,zeros(nsta,1),<span class="keyword">...</span>
+0358          <span class="string">'A'</span>,zeros(nsta,ncon),<span class="string">'kappa'</span>,zeros(nsta,ncon));
+0359 
+0360 nh=0;
+0361 <span class="keyword">while</span> length(l)&gt;0 &amp; l(1)~=-1,
+0362  
+0363   l=[l <span class="string">'   '</span>];
+0364   nh=nh+1;
+0365   <span class="keyword">while</span> ~strcmp(l(1:3),<span class="string">'# !'</span>),
+0366     l=[fgetl(fid) <span class="string">'   '</span>];
+0367   <span class="keyword">end</span>;
+0368   <span class="keyword">while</span> strcmp(l(1:3),<span class="string">'# !'</span>),
+0369    <span class="keyword">switch</span> l(4:7),
+0370     <span class="keyword">case</span> <span class="string">'unit'</span>,
+0371      tmp=deblank(l(findstr(l,<span class="string">':'</span>)+2:end));
+0372      xharm.units(nh,1:length(tmp))=tmp;
+0373     <span class="keyword">case</span> <span class="string">'long'</span>,
+0374       xharm.longitude(nh)=sscanf(l(findstr(l,<span class="string">':'</span>)+1:end),<span class="string">'%f'</span>);
+0375     <span class="keyword">case</span> <span class="string">'lati'</span>  
+0376       xharm.latitude(nh)=sscanf(l(findstr(l,<span class="string">':'</span>)+1:end),<span class="string">'%f'</span>);
+0377    <span class="keyword">end</span>;
+0378    l=fgetl(fid);
+0379   <span class="keyword">end</span>; 
+0380   tmp=deblank(l);
+0381   <span class="keyword">if</span> tmp(1)~=<span class="string">'#'</span>, <span class="comment">% Not commented out</span>
+0382     xharm.station(nh,1:length(tmp))=tmp;
+0383 
+0384     tmp=fgetl(fid);
+0385     k=min(findstr(tmp,<span class="string">':'</span>));
+0386     tim=sscanf(tmp(1:k-1),<span class="string">'%d'</span>)+sscanf(tmp(k+[1:2]),<span class="string">'%d'</span>)/60;
+0387     xharm.timezone(nh)=tim;
+0388 
+0389     tmp=fgetl(fid);
+0390     xharm.datum(nh)=sscanf(tmp,<span class="string">'%f'</span>);
+0391 
+0392     <span class="keyword">for</span> k=1:ncon,
+0393       l=fgetl(fid);
+0394       <span class="keyword">if</span> l(1)~=<span class="string">'x'</span>,
+0395     ll=min([findstr(<span class="string">' '</span>,l) find(abs(l)==9)]); <span class="comment">% space or tab</span>
+0396     tmp=sscanf(l(ll+1:end),<span class="string">'%f'</span>,2);
+0397     xharm.A(nh,k)=tmp(1);
+0398     xharm.kappa(nh,k)=tmp(2);
+0399       <span class="keyword">end</span>;
+0400     <span class="keyword">end</span>;
+0401     l=fgetl(fid);
+0402   <span class="keyword">else</span>
+0403     nh=nh-1;  
+0404   <span class="keyword">end</span>;
+0405   
+0406   <span class="keyword">if</span> rem(nh,50)==0, fprintf(<span class="string">'.'</span>); <span class="keyword">end</span>;
+0407 <span class="keyword">end</span>;
+0408 fprintf(<span class="string">'\n'</span>);
+0409 
+0410 <span class="comment">% Convert internally to sparse matrix storage (much smaller).</span>
+0411 xharm.A=sparse(xharm.A);
+0412 xharm.kappa=sparse(xharm.kappa);
+0413 
+0414 <span class="keyword">return</span>;
+0415   
+0416 <span class="comment">%%%%%%%%%%%%%%%%%%%%</span>
+0417 <a name="_sub2" href="#_subfunctions" class="code">function l=fgetl_nocom(fid);</a>
+0418 <span class="comment">% Gets a line that isn't a comment line</span>
+0419 <span class="comment">%</span>
+0420 l=fgetl(fid);
+0421 <span class="keyword">while</span> length(l)&gt;0 &amp; l(1)==<span class="string">'#'</span>,
+0422   l=fgetl(fid);
+0423 <span class="keyword">end</span>;
+0424   
+0425 <span class="comment">%%%%%%%%%%%%%%%%%%%%%</span>
+0426 <a name="_sub3" href="#_subfunctions" class="code">function [units,convf]=convert_units(unt,origunits);</a>
+0427 <span class="comment">% Conversion factors from origianl units if requested and possible</span>
+0428 <span class="comment">% (no conversions from knots to feet).</span>
+0429 <span class="comment">%</span>
+0430   <span class="keyword">if</span> strcmp(unt(1:3),origunits(1:3)) | strcmp(unt(1:3),<span class="string">'ori'</span>),
+0431     units=origunits;
+0432     convf=1;
+0433   <span class="keyword">else</span>
+0434    <span class="keyword">switch</span> unt(1:3),
+0435     <span class="keyword">case</span> <span class="string">'fee'</span>,
+0436        <span class="keyword">if</span> strcmp(origunits(1:3), <span class="string">'met'</span>),
+0437         units=<span class="string">'feet'</span>;
+0438         convf=3.2808399;
+0439        <span class="keyword">else</span>
+0440         units=origunits;
+0441         convf=1;
+0442        <span class="keyword">end</span>;
+0443     <span class="keyword">case</span> <span class="string">'met'</span>,
+0444        <span class="keyword">if</span> strcmp(origunits(1:3), <span class="string">'fee'</span>),
+0445         units=<span class="string">'meters'</span>;
+0446         convf=0.3048;
+0447        <span class="keyword">else</span>
+0448         units=origunits;
+0449         convf=1;
+0450        <span class="keyword">end</span>;
+0451     <span class="keyword">case</span> <span class="string">'m/s'</span>,
+0452        <span class="keyword">if</span> strcmp(origunits(1:3), <span class="string">'kno'</span>),
+0453         units=<span class="string">'meters/sec'</span>;
+0454         convf=0.51444444;
+0455        <span class="keyword">else</span>
+0456         units=origunits;
+0457         convf=1;
+0458        <span class="keyword">end</span>;
+0459     <span class="keyword">case</span> <span class="string">'kno'</span>,
+0460        <span class="keyword">if</span> strcmp(origunits(1:3), <span class="string">'m/s'</span>),
+0461         units=<span class="string">'knots'</span>;
+0462         convf=1.9438445;
+0463        <span class="keyword">else</span>
+0464         units=origunits;
+0465         convf=1;
+0466        <span class="keyword">end</span>;
+0467     <span class="keyword">otherwise</span>
+0468       error(<span class="string">'Unknown units'</span>)
+0469     <span class="keyword">end</span>;
+0470   <span class="keyword">end</span>;
+0471 
+0472 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0473 <a name="_sub4" href="#_subfunctions" class="code">function [d,hdg]=t_gcdist(lat1,lon1,lat2,lon2)</a>
+0474 <span class="comment">% function [d,hdg]=t_gcdist(lat1,lon1,lat2,lon2)</span>
+0475 <span class="comment">% Function to calculate distance in kilometers and heading between two</span>
+0476 <span class="comment">% positions in latitude and longitude.</span>
+0477 <span class="comment">% Assumes -90 &gt; lat &gt; 90  and  -180 &gt; long &gt; 180</span>
+0478 <span class="comment">%    north and east are positive</span>
+0479 <span class="comment">% Uses law of cosines in spherical coordinates to calculate distance</span>
+0480 <span class="comment">% calculate conversion constants</span>
+0481 <span class="comment">%</span>
+0482 <span class="comment">%  Code from Richard Dewey.</span>
+0483 
+0484 raddeg=180/pi;
+0485 degrad=1/raddeg;
+0486 <span class="comment">% convert latitude and longitude to radians</span>
+0487 lat1=lat1.*degrad;
+0488 lat2=lat2.*degrad;
+0489 in1=find(lon1&gt;180);lon1(in1)=lon1(in1)-360;
+0490 in2=find(lon2&gt;180);lon2(in2)=lon2(in2)-360;
+0491 lon1=-lon1.*degrad;
+0492 lon2=-lon2.*degrad;
+0493 <span class="comment">% calculate some basic functions</span>
+0494 coslat1=cos(lat1);
+0495 sinlat1=sin(lat1);
+0496 coslat2=cos(lat2);
+0497 sinlat2=sin(lat2);
+0498 <span class="comment">%calculate distance on unit sphere</span>
+0499 dtmp=cos(lon1-lon2);
+0500 dtmp=sinlat1.*sinlat2 + coslat1.*coslat2.*dtmp;
+0501 
+0502 <span class="comment">% check for invalid values due to roundoff errors</span>
+0503 in1=find(dtmp&gt;1.0);dtmp(in1)=1.0;
+0504 in2=find(dtmp&lt;-1.0);dtmp(in2)=-1.0;
+0505 
+0506 <span class="comment">% convert to meters for earth distance</span>
+0507 ad = acos(dtmp);
+0508 d=(111.112) .* raddeg .* ad;
+0509 
+0510 <span class="comment">% now find heading</span>
+0511 hdgcos = (sinlat2-sinlat1.*cos(ad))./(sin(ad).*coslat1);
+0512 
+0513 <span class="comment">% check value to be legal range</span>
+0514 in1=find(hdgcos&gt;1.0);hdgcos(in1)=1.0;
+0515 in2=find(hdgcos&lt;-1.0);hdgcos(in2)=-1.0;
+0516 hdg = acos(hdgcos).*raddeg;
+0517 
+0518 <span class="comment">% if longitude is decreasing then heading is between 180 and 360</span>
+0519 test = sin(lon2-lon1);
+0520 in1=find(test&gt;0.0);
+0521 hdg(in1)=360-hdg(in1);</pre></div>
+<hr><address>Generated on Tue 27-Sep-2016 19:23:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
