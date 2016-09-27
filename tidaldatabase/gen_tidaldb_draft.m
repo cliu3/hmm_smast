@@ -1,4 +1,4 @@
-function gen_tidaldb(lonmin,lonmax,latmin,latmax,delta)
+function gen_tidaldb_draft(lonmin,lonmax,latmin,latmax,delta)
 %lonmin=-71;lonmax=-66;latmin=39;latmax=44;delta=.1;
 
 global fvcom_tidaldb
@@ -25,7 +25,7 @@ for i=1:ny
   radlist = sqrt((fvcom.xc-xpos).^2 + (fvcom.yc-ypos).^2);
   ii = 0;
   found = 0;
-  while(ii <= 10 & found==0) 
+  while(ii <= 10 && found==0) 
     [minval,minloc]   = min(radlist);
     xtri    = fvcom.x(fvcom.tri(minloc,1:3));
     ytri    = fvcom.y(fvcom.tri(minloc,1:3));

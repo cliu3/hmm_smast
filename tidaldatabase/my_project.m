@@ -52,13 +52,24 @@ end;
 % Perform the projection:  USER DEFINED 
 % Example:  project/inverse project to state plane 1802
 %------------------------------------------------------------------------------
-
-if(ProjectDirection == 'forward')
-   [x,y] = sp_proj('1802','forward',lon,lat,'m');
+if ispc
+    if(ProjectDirection == 'forward')
+        prj4_params = '-f  "%.12f" +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs  +to +proj=tmerc +lat_0=42d50 +lon_0=-70d10 +k=0.9999666666666667 +x_0=900000 +y_0=0 +ellps=GRS80 +units=m +no_defs';
+        [x,y] = cs2cs(lon, lat, prj4_params);
+    else
+        prj4_params = '-f  "%.12f" +proj=tmerc +lat_0=42d50 +lon_0=-70d10 +k=0.9999666666666667 +x_0=900000 +y_0=0 +ellps=GRS80 +units=m +no_defs +to +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs';
+        [lon,lat] = cs2cs(x, y, prj4_params);
+    end;
+    
 else
-   [lon,lat] = sp_proj('1802','inverse',x,y,'m');
-end;
-
+    
+    if(ProjectDirection == 'forward')
+        [x,y] = sp_proj('1802','forward',lon,lat,'m');
+    else
+        [lon,lat] = sp_proj('1802','inverse',x,y,'m');
+    end;
+    
+end
 %------------------------------------------------------------------------------
 % Skagit, UTM, Zone 10 (see http://www.dmap.co.uk/utmworld.htm)
 %------------------------------------------------------------------------------
