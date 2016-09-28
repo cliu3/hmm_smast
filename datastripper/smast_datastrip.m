@@ -35,7 +35,7 @@ function smast_datastrip(tagdata,dt)
 
 % set the time step (use argument dt if present)
 if nargin < 2, dt = tagdata.max_intvl_seconds/60; end; 
-
+dt = round(dt);
 td.deltat = dt;
 
 %-------------------------------------------------------------------
