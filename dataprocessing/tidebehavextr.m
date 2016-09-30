@@ -93,13 +93,22 @@ if ~isfield(td,'dt'), td.dt = 10; disp('No dt field found in td struct, assuming
 [A B] = size(td.temp);  if A > 1, td.temp =td.temp';  end
 
 % Find indices of 24 hours
-SR = round(24*60/td.dt);
-first24 = ceil(SR*(ceil(td.time(1))+1/1440-td.time(1)));
-if first24 == 1
-    td.d24 = [first24:SR:length(td.time) length(td.time)];
-else
-    td.d24 = [1 first24:SR:length(td.time) length(td.time)];
+% SR = round(24*60/td.dt);
+% first24 = ceil(SR*(ceil(td.time(1))+1/1440-td.time(1)));
+% if first24 == 1
+%     td.d24 = [first24:SR:length(td.time) length(td.time)];
+% else
+%     td.d24 = [1 first24:SR:length(td.time) length(td.time)];
+% end
+[~,~,~,d24] = extrema(td.time-floor(td.time));
+d24 = sort(d24);
+if d24(1) ~= 1
+    d24 = [1 d24];
 end
+if d24(end) ~= numel(td.time)
+    d24 = [d24 numel(td.time)];
+end
+td.d24 = d24;
 
 % gwc, I think the problem is that td.d24 is somehow not an integer range
 % this is because td.dt which is the time step in minutes is not an integer
