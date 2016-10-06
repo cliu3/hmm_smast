@@ -93,7 +93,7 @@ rmse_con=ones(ndays,numel(fvcom.x));
 rmse_tag=[];
 day_ampli=nan(ndays,1);
 for i=1:ndays;
-    fprintf(['day: ' num2str(i) ' of ' num2str(ndays) ' \n'])
+    fprintf(['Tidal fitting - day: ' num2str(i) ' of ' num2str(ndays) ' \n'])
     days_idx=find(int_dnum == days(i));
     rmse=[];rsquare=[];ampli=[];
     if (days_idx(1)+nwindow > ntimes)
@@ -155,7 +155,7 @@ node_idx=find(Fr2>=Tr1 & Fr1<=Tr2);
 %[~,node_tag]=min( sqrt((xt-fvcom.x).^2 + (yt-fvcom.y).^2) );
 pha1=zeros(numel(node_idx),numel(fvcom.comps));
 amp1=zeros(numel(node_idx),numel(fvcom.comps));
-
+fprintf('Reconstructing FVCOM tidal signal ... ');
 for nd=1:numel(node_idx)
     if (mod(nd,500)==0)
         fprintf('node: %d/%d\n',nd,numel(node_idx))
@@ -180,10 +180,11 @@ end
 %thresh=tideLV(1);
 %thresh=0.8;
 %thresh=1.4;
+fprintf('Applying threashold for tidal fit ... ');
 for i=2:ndays;
     %figure(100);plot(time,eta_tag_fit{i});hold on;
     %plot(time,eta_tag_fit{i},'g');
-    
+    fprintf(['Processing day: ' num2str(i) ' of ' num2str(ndays) ' \n'])
     
     %eta_tagnode=eta1{find(node_idx==node_tag)}(intv)-mean(eta1{find(node_idx==node_tag)}(intv));
     %plot(time,eta_tagnode,'r');
