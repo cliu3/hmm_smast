@@ -35,7 +35,7 @@ function smast_datastrip(tagdata,dt)
 
 % set the time step (use argument dt if present)
 if nargin < 2, dt = tagdata.max_intvl_seconds/60; end; 
-%dt = round(dt);
+dt = round(dt);
 td.deltat = dt;
 
 %-------------------------------------------------------------------
@@ -77,57 +77,57 @@ figure
 datestr(td.time_org(1))
 datestr(td.time_org(end))
 
-% % gwc - note
-% % this subsampling is a mess, converting to integers and comparing will still suffer 
-% % from floating point depending on the format of the raw tag time
-% % we should consider either resplining the raw data to a common time (why would that be bad)
-% % or transferring to the common time with an exact threshold (within +/- a few seconds is fine)
-% % fixed - CL 5/26/2016 
-% 
-% % Subsample in 'dt' min sample intervals
-% disp('Subsampling...')
-% SF = 1/(24*60/dt); % Sample frequency in days
-% td.time = td.time(1):SF:td.time(end);
-% save junk td
-% % integer vectors containing sample freq time and original time
-% t  = round(td.time_org*1e7);
-% tn = round(td.time*1e7);
-% % allocate space for depth and temperature on subsample time vector
-% td.depth = zeros(1,length(tn));
-% td.temp = zeros(1,length(tn));
-% if isempty(td.temp_org), td.temp_org = zeros(1,length(td.depth_org)); end  %no temp data in tag, make fake temp data
-% j = 1; p=0;
-% 
-% %if SF < max(diff(td.time_org)), disp(sprintf('There might be missing data or selected sample rate, %3.1fmin, is faster than data i.e. data is removed!',dt)), pause(0.01), end
-% % gwc, deal with precision problem
-% if (diff(td.time_org) - SF > 1./(24*3600)  ), disp(sprintf('There might be missing data or selected sample rate, %3.1fmin, is faster than data i.e. data is removed!',dt)), pause(0.01), end
-% % subsampling does not interpolate.  If time from the raw matches exactly (using the integer) subsample time, then it will use the data
-% % from the tag at that time.  If it finds no time stamp at that time, it will give it no data and give an eror
-% % thus, the subsample time (dt) must be an integer multiple of the largest time interval from the raw tag
-% mis = 0;
-% for i=1:length(tn)
-%     k=0; f=0;
-%     while k<dt*(6+1) && f~=1 && i <= numel(tn)
-% %        if tn(i) == t(j)
-%         if (abs(tn(i) - t(j)) < 1000) %time stamps are within a second should be OK
-%             td.depth(i) = td.depth_org(j);
-%             td.temp(i) = td.temp_org(j);
-%             f=1;
-%         elseif tn(i) < t(j) % if data missing
-%             tn(i)       = []; % remove expected data
-%             td.time(i)  = []; % remove expected data
-%             td.depth(i) = []; % remove expected data
-%             td.temp(i)  = []; % remove expected data
-%             j=j-1;
-%             mis = mis + 1;
-%             if mis == 1000, disp('Program execution might be slow due to missing data, or badly selected sample rate!'),pause(0.01), end
-%         end
-%         k=k+1; 
-%         j=j+1;
-%     end
-%     if j>length(td.time_org), break, end
-% end
-% disp(sprintf('...subsampling removed %i datapoints.',length(td.time_org)-length(td.time)))
+% gwc - note
+% this subsampling is a mess, converting to integers and comparing will still suffer 
+% from floating point depending on the format of the raw tag time
+% we should consider either resplining the raw data to a common time (why would that be bad)
+% or transferring to the common time with an exact threshold (within +/- a few seconds is fine)
+% fixed - CL 5/26/2016 
+
+% Subsample in 'dt' min sample intervals
+disp('Subsampling...')
+SF = 1/(24*60/dt); % Sample frequency in days
+td.time = td.time(1):SF:td.time(end);
+save junk td
+% integer vectors containing sample freq time and original time
+t  = round(td.time_org*1e7);
+tn = round(td.time*1e7);
+% allocate space for depth and temperature on subsample time vector
+td.depth = zeros(1,length(tn));
+td.temp = zeros(1,length(tn));
+if isempty(td.temp_org), td.temp_org = zeros(1,length(td.depth_org)); end  %no temp data in tag, make fake temp data
+j = 1; p=0;
+
+%if SF < max(diff(td.time_org)), disp(sprintf('There might be missing data or selected sample rate, %3.1fmin, is faster than data i.e. data is removed!',dt)), pause(0.01), end
+% gwc, deal with precision problem
+if (diff(td.time_org) - SF > 1./(24*3600)  ), disp(sprintf('There might be missing data or selected sample rate, %3.1fmin, is faster than data i.e. data is removed!',dt)), pause(0.01), end
+% subsampling does not interpolate.  If time from the raw matches exactly (using the integer) subsample time, then it will use the data
+% from the tag at that time.  If it finds no time stamp at that time, it will give it no data and give an eror
+% thus, the subsample time (dt) must be an integer multiple of the largest time interval from the raw tag
+mis = 0;
+for i=1:length(tn)
+    k=0; f=0;
+    while k<dt*(6+1) && f~=1
+%        if tn(i) == t(j)
+        if (abs(tn(i) - t(j)) < 1000) %time stamps are within a second should be OK
+            td.depth(i) = td.depth_org(j);
+            td.temp(i) = td.temp_org(j);
+            f=1;
+        elseif tn(i) < t(j) % if data missing
+            tn(i)       = []; % remove expected data
+            td.time(i)  = []; % remove expected data
+            td.depth(i) = []; % remove expected data
+            td.temp(i)  = []; % remove expected data
+            j=j-1;
+            mis = mis + 1;
+            if mis == 1000, disp('Program execution might be slow due to missing data, or badly selected sample rate!'),pause(0.01), end
+        end
+        k=k+1; 
+        j=j+1;
+    end
+    if j>length(td.time_org), break, end
+end
+disp(sprintf('...subsampling removed %i datapoints.',length(td.time_org)-length(td.time)))
 
 
 % Make td.time_plot and shift td.time
