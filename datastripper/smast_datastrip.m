@@ -62,7 +62,12 @@ td.rel_lat    = tagdata.release_lat;
 td.catch_long = tagdata.recapture_lon;
 td.catch_lat  = tagdata.recapture_lat;
 td.catch_unc  = tagdata.recap_uncertainty_km;  
-
+% determine recapture availability
+if (tagdata.recap_uncertainty_km > 0 && floor(tagdata.dnum(end)) >= tagdata.recapture_dnum )
+    td.recap = 'yes';
+else
+    td.recap = 'no';
+end
 
 % Initialise time and depth records
 td.depth = td.depth_org;
