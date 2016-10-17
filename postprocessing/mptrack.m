@@ -210,7 +210,7 @@ end
 
 %%
 M(db.land) = -inf;
-if td.catch_unc > 0
+if strcmp(td.recap,'yes')
     dist=zeros(size(M));
     rp=ceil(td.catch_unc./db.h);
     flag=0;
@@ -240,6 +240,7 @@ if td.catch_unc > 0
     end
     
 else
+    disp('Recapture location not available on last day of data...')
     [val ind] = max(M(:));
     [ym xm]  = ind2sub([row col],ind);
 end
