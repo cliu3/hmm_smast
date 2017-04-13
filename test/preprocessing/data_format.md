@@ -5,7 +5,7 @@ The following is an example of a data file. Please configure SeaStar software pr
 * The first line of data to be in the 15th line of the file, and the first 14 lines to start with a number sign/pound sign `#`;
 * Date and time format to be `dd.mm.yy HH:MM:SS`;
 * Use decimal points (do not use decimal commas);
-* Temperature values to be the third column of the data and in degree celsius;
+* Temperature values to be the third column of the data and in &deg;C;
 * Depth values to be the fourth column of the data and in meters;
 * At least two decimal places to be used if possible;
 * Four underscores (`____`) to be used to indicate missing data.
