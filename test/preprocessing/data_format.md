@@ -1,7 +1,7 @@
 # Format of input data
 The HMM Geolocation Toolbox supports the input of raw ASCII data file from Star-ODDI DSTs downloaded using SeaStar.
-
-The following is an example of a data file. Please configure SeaStar software properly so that the data file generated is as close to the required format as possible. For more information please refer to Chapter 8: Settings in the [Star-ODDI's User Manual for SeaStar](http://www.star-oddi.com/updates/SeaStar/DstTD.pdf). Specifically, we require:
+## Star-ODDI DSTs
+The following is an example of a data file from a Star-ODDI DST. Please configure SeaStar software properly so that the data file generated is as close to the required format as possible. For more information please refer to Chapter 8: Settings in the [Star-ODDI's User Manual for SeaStar](http://www.star-oddi.com/updates/SeaStar/DstTD.pdf). Specifically, we require:
 * The first line of data to be in the 15th line of the file, and the first 14 lines to start with a number sign/pound sign `#`;
 * Date and time format to be `dd.mm.yy HH:MM:SS`;
 * Use decimal points (do not use decimal commas);
@@ -69,3 +69,36 @@ The following is an example of a data file. Please configure SeaStar software pr
         43	07.05.10 15:30:00	____	54.0998
         44	07.05.10 15:45:00	____	54.1868
         45	07.05.10 16:00:00	4.58	54.2739
+
+## Lotek DSTs
+The following is an example of a data file from a Lotek DST. Please configure the Lotek software properly so that the data file generated is as close to the required format as possible. Specifically, we require:
+* The first line of data to be in the 6th line of the file;
+* Date and time to be MS Excel time (days since 1900/1/0 00:00:00);
+* Use decimal points (do not use decimal commas);
+* Temperature values to be the second column of the data and in &deg;C;
+* Depth (pressure) values to be the third column of the data and in PSI;
+* At least two decimal places to be used if possible;
+
+        "loggerfile",100,16384
+        "","","","","","",""
+        2
+        12586
+        Time/Date                   degC          psi           
+        42097.69865017              21.96         -0.05         
+        42097.70906684              22.49         0.84          
+        42097.71948351              21.78         0.88          
+        42097.72990017              21.43         0.89          
+        42097.74031684              21.43         0.89          
+        42097.75073351              21.43         0.89          
+        42097.76115017              21.6          0.88          
+        42097.77156684              21.6          0.88          
+        42097.78198351              21.96         0.87          
+        42097.79240017              22.31         -0.07         
+        42097.80281684              22.14         -0.06         
+        42097.81323351              18.24         0.12          
+        42097.82365017              15.41         1.16          
+        42097.83406684              14.16         1.21          
+        42097.84448351              13.08         1.26          
+        42097.85490017              12.36         1.29          
+        42097.86531684              11.81         1.31          
+        42097.87573351              11.08         1.34          
