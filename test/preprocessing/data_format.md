@@ -77,7 +77,7 @@ The following is an example of a data file from a Lotek DST. Please configure th
 * Use decimal points (do not use decimal commas);
 * Temperature values to be the second column of the data and in &deg;C;
 * Depth (pressure) values to be the third column of the data and in PSI;
-* At least two decimal places to be used if possible;
+* At least two decimal places to be used if possible.
 
         "loggerfile",100,16384
         "","","","","","",""
