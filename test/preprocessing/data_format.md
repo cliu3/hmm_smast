@@ -8,7 +8,7 @@ The following is an example of a data file. Please configure SeaStar software pr
 * Temperature values to be the third column of the data and in &deg;C;
 * Depth values to be the fourth column of the data and in meters;
 * At least two decimal places to be used if possible;
-* Four underscores (`____`) to be used to indicate missing data.
+* Four underscores (`____`) to be used to indicate any missing data.
 
         #0	Date-time:	5/28/2010 9:23:57 AM
         #1	Recorder:	1M11951
