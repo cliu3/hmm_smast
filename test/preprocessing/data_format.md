@@ -1,5 +1,5 @@
 # Format of input data
-The HMM Geolocation Toolbox supports raw ASCII data file from Star-ODDI DSTs downloaded using SeaStar.
+The HMM Geolocation Toolbox supports the input of raw ASCII data file from Star-ODDI DSTs downloaded using SeaStar.
 
 The following is an example of a data file. Please configure SeaStar software properly so that the data file generated is as close to the required format as possible. For more information please refer to Chapter 8: Settings in the [Star-ODDI's User Manual for SeaStar](http://www.star-oddi.com/updates/SeaStar/DstTD.pdf). Specifically, we require:
 * The first line of data to be in the 15th line of the file, and the first 14 lines to start with a number sign/pound sign `#`;
