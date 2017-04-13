@@ -2,13 +2,13 @@
 The HMM Geolocation Toolbox supports raw ASCII data file from Star-ODDI DSTs downloaded using SeaStar.
 
 The following is an example of a data file. Please configure SeaStar software properly so that the data file generated is as close to the required format as possible. For more information please refer to [Star-ODDI's User Manual for SeaStar](http://www.star-oddi.com/updates/SeaStar/DstTD.pdf). Specifically, we require:
-1. The first line of data to be in the 15th line of the file, and the first 14 lines to start with a number sign/pound sign `#`;
-2. Date and time format to be `dd.mm.yy HH:MM:SS`;
-3. Use decimal points (do not use decimal commas);
-4. Temperature values to be the third column of the data and in degree celsius;
-4. Depth values to be the fourth column of the data and in meters;
-4. At least two decimal places to be used if possible;
-5. Four underscores (`____`) to be used to indicate missing data.
+* The first line of data to be in the 15th line of the file, and the first 14 lines to start with a number sign/pound sign `#`;
+* Date and time format to be `dd.mm.yy HH:MM:SS`;
+* Use decimal points (do not use decimal commas);
+* Temperature values to be the third column of the data and in degree celsius;
+* Depth values to be the fourth column of the data and in meters;
+* At least two decimal places to be used if possible;
+* Four underscores (`____`) to be used to indicate missing data.
 
         #0	Date-time:	5/28/2010 9:23:57 AM
         #1	Recorder:	1M11951
