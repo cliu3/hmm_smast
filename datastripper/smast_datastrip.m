@@ -63,7 +63,7 @@ td.catch_long = tagdata.recapture_lon;
 td.catch_lat  = tagdata.recapture_lat;
 td.catch_unc  = tagdata.recap_uncertainty_km;  
 % determine recapture availability
-if (tagdata.recap_uncertainty_km > 0 && floor(tagdata.dnum(end)) >= floor(tagdata.recapture_dnum) )
+if (tagdata.recap_uncertainty_km > 0 && floor(tagdata.dnum(end)) >= floor(tagdata.recapture_dnum)-1 )
     td.recap = 'yes';
 else
     td.recap = 'no';
