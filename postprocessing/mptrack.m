@@ -226,12 +226,14 @@ if strcmp(td.recap,'yes')
     end
     
     if (flag==1)
+        disp('Estimated recapture is within recapture location uncertainty range...')
         Mr=M;
         Mr(~logical(dist))=-inf;
         [val ind] = max(Mr(:));
         %[val ind] = max(M(:));
         [ym xm]  = ind2sub([row col],ind);
     else
+        disp('Estimated recapture is outside of recapture location uncertainty range. Choosing nearest estimated recapture location...')
         dist1=sqrt((Tx(:,:,end-1)-td.x1).^2+(Ty(:,:,end-1)-td.y1).^2);
         [vali ind1]=min(dist1(:));
         [ym1 xm1]  = ind2sub([row col],ind1);
