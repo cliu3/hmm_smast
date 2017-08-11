@@ -39,10 +39,8 @@ if isfield(db,'bathro')
 elseif isfield(db,'rough')
     s_eta =      db.rough+eps^20;  
 else
-    error('Bathymetry roughness is missing in tidaldb.mat!')
+    error('Bahtymetry roughness is missing in tidaldb.mat!')
 end
-%[row,col] = size(db.depth);
-%s_eta = 20*ones(row,col); %gwc debug - set roughness to about 20m everywhere (max excursion from bottom)
 s_eta_tid =  10^2;
 % White noise
 s_E =        E^2 * eye(td.tideFL);               

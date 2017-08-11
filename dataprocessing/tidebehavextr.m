@@ -1,5 +1,4 @@
 function tidebehavextr(tagno,tideFL,tideLV,behavFL,behavLV,DBname)
-
 %TIDEBEHAVEXTR  Extract tidal and behaviour information from a raw data file.
 %   TIDEBEHAVEXTR(TAGNO,TIDEFL,TIDELV,BEHAVFL,BEHAVLV,DBNAME)
 %
@@ -38,18 +37,6 @@ function tidebehavextr(tagno,tideFL,tideLV,behavFL,behavLV,DBname)
 %
 %   Date: 28/11 - 2008, ver. 0.57
 %   HMM geolocation toolbox, DTU Informatics and DTU Aqua
-%
-%   Author(s): 
-%      Martin Pedersen
-%
-%   Revision History
-%      2009:  G. Cowles (SMAST) - removed the phase/amplitude shifts which were 
-%             hard coded for the North Sea. 
-%             These are now set using readdb and stored as part of the db structure
-%             They are accessed here in the db structure as:
-%                db.year_shift, db.phase_shift, db.amp_shift
-%      
-%==============================================================================
 
 warning('on')
 % Define default values
@@ -58,8 +45,6 @@ if nargin < 3 || isempty(tideLV),  tideLV  = [0.42 0.85 0.6]; end
 if nargin < 4 || isempty(behavFL), behavFL = 16; end
 if nargin < 5 || isempty(behavLV), behavLV = [0.42 0.85 0.6]; end
 if nargin < 6 || isempty(DBname), DBname = 'tidaldb.mat'; end
-
-
 % Error messages
 if tideFL <= 0, error('Bad input for tideFL!'), end
 if (tideLV(1) <= 0 || (tideLV(2)<=0 || tideLV(2)>=1) || tideLV(3)<=0 ), error('Bad input in tideLV!'), end
@@ -84,7 +69,7 @@ if (db.long(1,1)-db.long(end,end)) > 0, db = flipdb(db,'long');save([td.dbdir(1:
 % if (db.long(1,1)-db.long(end,end)) > 0, db = flipdb(db,'long');save([dbdir(1:end-LDB) DBname],'db'); end
 disp(sprintf('\n=== Processing raw data of tag #%s ===',td.tagno))
 
-if isfield(td,'deltat'), td.dt = td.deltat; fprintf('Creating field dt from detalt %f minutes\n',td.dt), end
+if isfield(td,'deltat'), td.dt = td.deltat; disp('Creating field dt from detalt.'), end
 if ~isfield(td,'dt'), td.dt = 10; disp('No dt field found in td struct, assuming dt=10 as default'), end
 
 % Change dims of td.time, td.depth and td.temp
@@ -100,14 +85,8 @@ if first24 == 1
 else
     td.d24 = [1 first24:SR:length(td.time) length(td.time)];
 end
-
-% gwc, I think the problem is that td.d24 is somehow not an integer range
-% this is because td.dt which is the time step in minutes is not an integer
-% we need I guess to make that an integer, luckily it is for us an integer
-
 lengthtime = length(td.time); 
-%p=12.42; %period in hours
-p = 12.420601; 
+p=12.42; %period in hours
 w=2*pi/(p/24); % Angular frequency
 sint = sin(w*td.time)';
 cost = cos(w*td.time)';
@@ -128,19 +107,13 @@ tic
 for i=loop
     intv = i:td.tideFL+i-1;
     [rmse(i) rsquare(i) ampli(i) out(i)]=lssinfit(ons,cost(intv), sint(intv),ts(intv));
-%    plot(cost(intv),'b'); hold on; plot(sint(intv),'r'); plot(ts(intv),'g'); 
     if ~mod(i,floor(lengthtime/100)), disp(sprintf('\b.')), end
     if ~mod(i,floor(lengthtime/9.99)), disp(sprintf('\b%1.0f%% (%1.2f sec)\n',100*i/loop(end),toc)),tic, end
-%    pause
-%    clf
 end
 disp(sprintf('\b100%% (%1.2f sec)\n\n',toc))
 
 %% Find intervals with tidal information according to criteria
 crit = [(rmse<td.tideLV(1) & rsquare>td.tideLV(2) & ampli>td.tideLV(3)) zeros(1,td.tideFL)];
-
-%fprintf('found %d good intervals of %d with tide signal \n',numel(crit),numel(rmse));
-
 i=1;
 td.tideFound = zeros(1,lengthtime);
 while i < length(crit)+1
@@ -206,31 +179,68 @@ end
 
 %% Determine values of f and G (computed by nodal.exe)
 year = str2num(datestr(td.time_plot(1),10));
-
-%----------------------------------------------------------
-% gwc
-% load phase and amplitude modifications by year
-% since these are regionally-dependent, we will load them 
-% from an external file (using readdb.m) into the db struct
-%----------------------------------------------------------
-[junk,junk,ncomps] = size(db.amp);
-td.f = ones(ncomps,1);  % set to one 
-td.G = zeros(ncomps,1);  % gwc zero out for now 
-
-% see if the year is in the database
-[minny,imin] = min(abs(year-db.year_shift));
-if(minny ==0)
-  ii = imin;
-else
-  fprintf('year %d is not in the phase-amp shift data in the tidal database\n',year);
-  error('stopping...');
-end;
-
-% set the phase and amplitude shifts 
-[nn,ncomps] = size(db.amp_shift);
-td.f(1:ncomps) = db.amp_shift(ii,1:ncomps);
-td.G(1:ncomps) = db.phase_shift(ii,1:ncomps);
-
+switch year
+    case 1991
+        td.f = [0.9821 1.0000 0.9821 1.1606 1.1063 1.0660 0.9646];
+        td.G = [0.813 0.500 336.997 215.717 340.254 17.556 1.627]*pi/180;
+    case 1992
+        td.f = [0.9939 1.0000 0.9939 1.0658 1.0539 1.0336 0.9878];
+        td.G = [101.810 0.500 349.273 217.542 79.507 18.603 203.620]*pi/180;
+    case 1993
+        td.f = [1.0064 1.0000 1.0064 0.9679 0.9923 0.9955 1.0129];
+        td.G = [178.173 0.500 323.843 219.500 154.226 19.808 356.345]*pi/180;
+    case 1994
+        td.f = [1.0183 1.0000 1.0183 0.8798 0.9277 0.9557 1.0370];
+        td.G = [278.692 0.500 335.642 217.446 255.567 18.999 197.385]*pi/180;
+    case 1995
+        td.f = [1.0282 1.0000 1.0282 0.8106 0.8685 0.9196 1.0573];
+        td.G = [18.997 0.500 347.224 213.391 358.457 17.066 37.994]*pi/180;
+    case 1996
+        td.f = [1.0350 1.0000 1.0350 0.7659 0.8250 0.8932 1.0713];
+        td.G = [119.140 0.500 358.645 207.676 102.886 14.119 238.281]*pi/180;
+    case 1997
+        td.f = [1.0378 1.0000 1.0378 0.7479 0.8061 0.8818 1.0771];
+        td.G = [194.809 0.500 332.527 202.906 183.006 11.496 29.619]*pi/180;
+    case 1998
+        td.f = [1.0364 1.000 1.0364 0.7573 0.8160 0.8878 1.0741];
+        td.G = [294.848 0.500 343.843 196.037 288.636 7.801 229.696]*pi/180;
+    case 1999 %(#1432)
+        td.f = [1.0308 1.0000 1.0308 0.7936 0.8524 0.9098 1.0625];
+        td.G = [34.955 0.500 355.228 189.917 33.476 4.596 69.910]*pi/180;
+    case 2000
+        td.f = [1.0218 1.0000 1.0218 0.8553 0.9077 0.9435 1.0440];
+        td.G = [135.201 0.500 6.752 185.279 136.880 2.316 270.402]*pi/180;
+    case 2001 %(#2255)
+        td.f = [1.0103 1.0000 1.0103 0.9385 0.9719 0.9829 1.0207];
+        td.G = [211.263 0.500 341.026 184.538 213.322 2.136 62.527]*pi/180;
+    case 2002
+        td.f = [0.9978 1.0000 0.9978 1.0343 1.0351 1.0219 0.9957];
+        td.G = [311.942 0.500 352.983 183.888 313.770 2.047 263.883]*pi/180;
+    case 2003 %(#872)
+        td.f = [0.9857 1.0000 0.9857 1.1314 1.0908 1.0564 0.9716];
+        td.G = [52.858 0.500 5.176 185.16 53.25 2.853 105.717]*pi/180;
+    case 2004 %(#6448)
+        td.f = [0.9753 1.0000 0.9753 1.2172 1.1351 1.0837 0.9512];
+        td.G = [153.998 0.500 17.592 188.045 152.095 4.341 307.995]*pi/180;
+    case 2005 %(#1186)
+        td.f = [0.9677 1.0000 0.9677 1.2806 1.1656 1.1024 0.9364];
+        td.G = [230.942 0.500 352.752 194.118 225.149 7.301 101.885]*pi/180;
+    case 2006
+        td.f = [0.9637 1.000 0.9637 1.3134 1.1810 1.1118 0.9288];
+        td.G = [332.377 0.500 5.464 198.946 323.309 9.558 304.754]*pi/180;
+    case 2007
+        td.f = [0.9639 1.0000 0.9639 1.3122 1.1804 1.1114 0.9291];
+        td.G = [73.845 0.500 18.208 204.011 61.375 11.908 147.691]*pi/180;
+    case 2008
+        td.f = [0.9681 1.0000 0.9681 1.2771 1.1640 1.1015 0.9372];
+        td.G = [175.279 0.500 30.921 208.804 159.552 14.152 350.558]*pi/180;
+    case 2009
+        td.f = [0.9759 1.0000 0.9759 1.2119 1.1324 1.0821 0.9524];
+        td.G = [252.205 0.500 6.058 214.809 232.622 17.085 144.411]*pi/180;
+    case 2010
+        td.f = [0.9865 1.000 0.9865 1.1250 1.0873 1.0543 0.9732];
+        td.G = [353.329 0.500 18.457 217.595 331.501 18.532 346.657]*pi/180;
+end
 
 %% Transform release and recapture positions to pixel coords
 [row,col] = size(db.depth);
@@ -287,8 +297,7 @@ for i = 1:2
     set(pl,'EdgeColor','none')
     set(pl,'FaceColor',[0 0.8 0]) % ligth green
 end
-plot(t,td.depth,'b'),
-%set(gca,'ydir','reverse');
+plot(t,td.depth,'b'), 
 xlabel('Julian day'),
 %datetick('x','keeplimits'), xlabel('Date'),
 axis tight, , title('Result of tidal classification')
@@ -306,8 +315,7 @@ for i = 1:2
     set(pl,'EdgeColor',[0.6 1 0.4])
     set(pl,'FaceColor',[0.5 1 0.3]) % ligth green
 end
-plot(t,td.depth,'b'),
-%set(gca,'ydir','reverse');
+plot(t,td.depth,'b'), 
 xlabel('Julian day'),
 %datetick('x','keeplimits'), xlabel('Date'),
 axis tight,  title('Result of behaviour classification')
@@ -324,4 +332,4 @@ rec = plot(td.catch_long,td.catch_lat,'^','markersize',10,'markerfacecolor','r',
 legend([rel rec],'Release position','Recapture position','location','best');
 xlabel('Longitude, deg'), ylabel('Latitude, deg'), title('Release and recapture')
 hold off
-%set(gcf,'position',[150 100 500 350])
+set(gcf,'position',[150 100 500 350])

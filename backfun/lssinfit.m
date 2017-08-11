@@ -1,4 +1,4 @@
-function [rmse rsquare ampli out Yhat1 mwh alpha beta] = lssinfit(ons,cost,sint,ts,lim)
+function [rmse rsquare ampli out Yhat1] = lssinfit(ons,cost,sint,ts,lim)
 %LSSINFIT Fit a sinewave to input data by LS.
 %
 %   This function is called by tidebehavextr.m
@@ -29,9 +29,6 @@ ampli = sqrt(theta(2)^2 + theta(3)^2);
 lengthres = length(res);
 df = n-m-1;
 S = sum(res.^2)/(df);
-mwh = theta(1);
-alpha = theta(2);
-beta = theta(3);
 if nargin == 5
     resvar=zeros(n,1);
     for i=1:n

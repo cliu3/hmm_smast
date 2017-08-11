@@ -1,9 +1,4 @@
-function datalikelihood(tagno,type,iter,recap,z_off_bottom)
-%figure
-% tagno = 'ttide001'
-% type = 'fast';
-% iter = 'on';
-% recap = 'no';
+function datalikelihood(tagno,type,iter,recap)
 %DATALIKELIHOOD  Compute datalikelihood from preprocessed tag data
 %   DATALIKELIHOOD(TAGNO,TYPE,ITER,RECAP)
 %
@@ -33,9 +28,6 @@ function datalikelihood(tagno,type,iter,recap,z_off_bottom)
 %
 %   Date: 21/10 - 2008, ver. 0.52
 %   HMM geolocation toolbox, DTU Informatics and DTU Aqua
-
-%   off-bottom extent
-%    z_off_bottom = 40.0;
 
 if nargin < 4, recap = 'yes'; end
 if nargin < 3, iter = 'on'; end
@@ -82,8 +74,7 @@ for mode=modes
     freq(:,:,mode)      = ones(row,col) .* db.freq(mode);
 end
 
-LIK.tide  = zeros(row,col,days(end));
-tide2 = zeros(row,col,days(end));
+LIK.tide = zeros(row,col,days(end));
 
 % Load datalikelihood parameters
 datalikparam
@@ -106,7 +97,7 @@ if strcmp(type,'fast')
     end
 end
 
-
+%%
 disp('Computing observational likelihood matrix...')
 L2=zeros(row,col);
 for k = days
@@ -121,96 +112,29 @@ for k = days
                     for mode=modes
                         temp(mode,:) = amplitude(i,j,mode) * cos( freq(i,j,mode)*t + argument(i,j,mode) );
                     end
-                    % Predicted time series for this grid cell 
+                    % Predicted time series for this grid cell
                     mu = -sum(temp,1)+db.depth(i,j);
-%                    check tide phase
-                  %  if(i==51)
-                  %  if(j==7)
-                  %  if(i==61)
-                  %  if(j==14)
-                  %    figure
-                  %    plot(mu-mean(mu)); hold on; plot(ts-mean(ts));
-                  %    figdump([num2str(k) '.eps'])
-                  %  end;  
-                  %  end;
                     if strcmp(type,'fast') % "fast" computation
                         LIK.tide(i,j,k) = gausspdf(ts,mu,invcovs(:,:,k),consts(k));
                     else
                         sigma = s_E + epsilon(k)^2 * lambda.^c + s_e(i,j)*cospattern + s_eta(i,j);
                         LIK.tide(i,j,k) = mvnpdf(ts,mu,sigma);
-                        %if(max(LIK.tide(i,j,k) > 1e4)); 
-                        % epsilonk = epsilon(k)
-                        % save junk s_E epsilonk lambda c s_e cospattern s_eta ts mu sigma i j 
-                        % error('stop to save')
-                        %end;
                     end
                 end
             end
         end
-        %save the likelihood distributions when tide is found
-        %figure
-        %[ccc,hhh] = contour(db.long,db.lat,db.depth,[-5,-5],'w'); hold on;
-        %pcolor(db.long,db.lat,LIK.tide(:,:,k)); shading interp
-        %figdump(['tidelik_' num2str(k) '.eps'])
-       
     else % Tidal data not found
         [mindepth indx] = min(td.depth(td.d24(k):td.d24(k+1)-1));
         tidal = amplitude .* cos( freq.*td.time(td.d24(k)-1+indx) + argument );
         % Compute tidal contribution
         mu_depth = -sum(tidal,3) + db.depth;
-        fprintf('no tide found using bathymetry %f\n',mindepth);
-        %fprintf('doing likelihood, day %d  tagdepth %f %f\n',k,mindepth,tidal)
-
-        %gwc - two options.  In the first option we have the likelihood of the fish
-        %being = 1 in any water deeper than the tag depth and zero otherwise
-        %with the bottom roughness controlling the standard deviation of the smoothing
-        %from 0-1
         LIK.tide(:,:,k)  = normcdf(mindepth*ones(row,col),mu_depth,sqrt(s_eta))...
                      ./(eps+normcdf(zeros(row,col),mu_depth,sqrt(s_eta)));
-        %
-        %In the second option we assign a value of 0 where the bathymetry is shallower
-        %than the fish and a value of 0 where the bathymetry is deeper than the fish + is equal to
-        %z_off_bottom which is the maximum off-bottom extent of the fish
-        if(z_off_bottom > 0.0);
-          tide2(:,:,k) = normcdf(mindepth*ones(row,col),mu_depth+z_off_bottom,sqrt(s_eta))...
-                       ./(eps+normcdf(zeros(row,col),mu_depth,sqrt(s_eta)));
-          tide2(:,:,k) = -(tide2(:,:,k)-1);
-          LIK.tide(:,:,k) = LIK.tide(:,:,k).*tide2(:,:,k); 
-          clear tide2;
-        end;
-        %figure
-        %subplot(2,2,1)
-        %[ccc,hhh] = contour(db.long,db.lat,db.depth,[-5,-5],'w'); hold on;
-        %pcolor(db.long,db.lat,LIK.tide(:,:,k)); shading interp; caxis([0,1]); colorbar
-        %subplot(2,2,2)
-        %[ccc,hhh] = contour(db.long,db.lat,db.depth,[-5,-5],'w'); hold on;
-        %pcolor(db.long,db.lat,LIK.tide2(:,:,k)); shading interp; caxis([0,1]); colorbar
-        %subplot(2,2,3)
-        %[ccc,hhh] = contour(db.long,db.lat,db.depth,[-5,-5],'w'); hold on;
-        %pcolor(db.long,db.lat,LIK.tide(:,:,k)); shading interp; caxis([0,1]); colorbar
-        %figdump(['bathlik_' num2str(k) '.eps'])
-        %error('stop')
     end
     endtime=toc;
-    % if(mod(k,1)==0)
-    %        	  figure
-    %        	  pcolor(db.land(:,:))%.*log10(LIK.tide(:,:,k)))
-    %        	  colorbar
-    %        	end;
-    %           if(k==5)
-    %        	  error('stop')
-    %        	end;
     if ~strcmp(iter,'off'),disp(sprintf('Done day %i of %i in %3.2f sec',k,days(end),endtime)), end
-    %if(k<20);
-%   %     clf
-    %    figure
-    %    [ccc,hhh] = contour(db.long,db.lat,db.depth,[-5,-5],'w'); hold on;
-    %    pcolor(db.long,db.lat,LIK.tide(:,:,k)); shading interp; %caxis([0,1]); colorbar
-    %end;
-    %if(k==20); error('junk'); end;
 end
 LIK.tide(isnan(LIK.tide)) = 0;
-
 
 if sum(isnan(LIK.tide(:))) ~= 0, warning('NaN found in LIK.tide!'), end
 

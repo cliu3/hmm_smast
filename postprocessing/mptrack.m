@@ -61,7 +61,6 @@ kern2 = makekern2(par2);
 ks1 = size(kern1,1);
 ks2 = size(kern2,1);
 
-
 % Setup output struct
 mpt.land    = db.land;
 mpt.maplat  = db.lat;
@@ -207,9 +206,6 @@ mpt.steps = sqrt( (diff(mpt.lat_clean).*deglong(0)).^2 ...
     + (diff(mpt.long_clean).*deglong(lats)).^2);
 mpt.length  = sum(mpt.steps);
 
-% interpolate depth onto the track
-mpt.depth = interp2(db.long,db.lat,db.depth,mpt.long_clean,mpt.lat_clean);
-
 %% Creating *.mat file
 filename = sprintf('mpt%s',tagno);
 disp(sprintf('Saving -> %s.mat <- in\n%s',filename,cd))
@@ -219,10 +215,8 @@ save(filename,'mpt');
 filename = sprintf('mpt%s.txt',tagno);
 disp(sprintf('Saving -> %s <- in\n%s',filename,cd))
 fid = fopen(filename,'wt');
-fprintf(fid,'%s\n','UTCdate     long       lat');
-for i=1:numel(mpt.long);
-  fprintf(fid,'%s %12.8f %12.8f\n',datestr(mpt.time(i),'mm/dd/yy HH:MM:SS'), mpt.long(i),mpt.lat(i)); 
-end;
+fprintf(fid,'%s\n','long     lat');
+fprintf(fid,'%12.8f %12.8f\n',[mpt.long mpt.lat]');
 fclose(fid);
 
 disp(sprintf('\nDONE mptracking!\n'))

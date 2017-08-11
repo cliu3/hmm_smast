@@ -29,13 +29,7 @@ tidebehavextr('1459');
 %%% Calculate the datalikelihood using the tidal database          %%%
 %%% datalikelihood1459.mat is created                              %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-recap='no'
-if (tagdata.flag_recpos==1)
-    recap='on';
-end;
-%recap = 'no';  %option for user to manually override and ignore recap 
-datalikelihood('1459','fast', 'on',recap)
-
+datalikelihood('1459','fast')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Geolocate the tag                                              %%%

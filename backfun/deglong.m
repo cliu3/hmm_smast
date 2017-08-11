@@ -1,5 +1,5 @@
 function longfac = deglong(lat)
-%DEGLONG returns the length (in km) of one degree of longitude at the latitude
+%DEGLONG returns the length of one degree of longitude at the latitude
 %        given as input to the function.
 %
 %   This function is called by readdb.m, samptrack.m and mptrack.m

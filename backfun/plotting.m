@@ -26,7 +26,6 @@ axis ij, axis(zm) , axis off,
 % Time series axes
 axes('position',[0.06 0.84 0.94 0.16])
 [f_tsf f_sf]=stairs(td.time_plot,td.tideFound);
-f_tsf=[f_tsf(1);f_tsf];f_sf=[0;f_sf];
 pl=fill(f_tsf,f_sf*min(td.depth),'g'); axis tight
 set(pl,'EdgeColor','none')
 set(pl,'FaceColor',[0.6 1 0.4]) % gr0n

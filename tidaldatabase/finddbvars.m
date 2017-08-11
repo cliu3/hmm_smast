@@ -47,13 +47,8 @@ t= 0:1/144:3;
 
 %% Store f and G from nodal.exe (fortran program)
 % values of f and G that set t=0 at 1/1-01 00:01
-% GWC - these f/G depend on what constituents are being used, hard
-%   coding these is not ideal
-%f = [1.0103 1.0000 1.0103 0.9385 0.9719 0.9829 1.0207];
-%G = [211.263 0.500 341.026 184.538 213.322 2.136 62.527]*pi/180;
-[is2001] = find(db.year_shift==2001);
-G = db.phase_shift(is2001,:);
-f = zeros(length(db.freq),1);
+f = [1.0103 1.0000 1.0103 0.9385 0.9719 0.9829 1.0207];
+G = [211.263 0.500 341.026 184.538 213.322 2.136 62.527]*pi/180;
     
 %% Tidal predictions %%
 lng=0; plt=0;

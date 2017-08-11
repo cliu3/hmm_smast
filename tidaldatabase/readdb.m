@@ -24,10 +24,6 @@ fgetl(fid); fgetl(fid);
 rowcol = fscanf(fid,'%f',2);        % Read rows and columns
 fgetl(fid); fgetl(fid);
 noconst = fscanf(fid,'%i',1);       % Read number of constituents
-fgetl(fid); fgetl(fid);
-phase_file = fscanf(fid,'%s',1);
-if ~exist(phase_file,'file'), error('phase_file does not exist or is in the wrong dir'), end
-fprintf('reading phase data from %s\n',phase_file);
 fclose(fid);
 row = rowcol(1); col = rowcol(2);
 
@@ -68,36 +64,6 @@ for i=1:noconst
 end
 db.amp(db.amp == landindicator*0.01) = 0;
 db.phase(find(db.phase == landindicator*pi/180)) = 0;
-
-%% Load regionally-dependent phase and amplitude shifts
-%% Phase shifts map from a year day time format (for a given year) to global phase
-%% Not sure what the amplitude shifts are
-fid = fopen(phase_file,'r');
-fprintf('reading phase and amplitude shift file\n');
-fprintf('reading first %d constituents\n',noconst);
-fgetl(fid); fgetl(fid); fgetl(fid); fgetl(fid); %read header
-fgetl(fid);
-nyears = fscanf(fid,'%d',1);
-fprintf('number of years: %d\n',nyears);
-fgetl(fid); fgetl(fid);
-noconst_shift = fscanf(fid,'%d',1);
-fprintf('number of constituents: %d\n',noconst_shift);
-fgetl(fid);
-db.year_shift  = zeros(nyears,1);
-db.amp_shift   = zeros(nyears,noconst);
-db.phase_shift = zeros(nyears,noconst);
-junk = zeros(noconst_shift,1);
-for i=1:nyears
-  db.year_shift(i) = fscanf(fid,'%d',1);
-  junk                        = fscanf(fid,'%f',noconst_shift);
-  db.amp_shift(i,1:noconst)   = junk(1:noconst);
-  junk                        = fscanf(fid,'%f',noconst_shift);
-  db.phase_shift(i,1:noconst) = junk(1:noconst);
-  db.phase_shift(i,1:noconst) = db.phase_shift(i,1:noconst)*pi/180;
-end;
-fclose(fid);
-
-%% add a depth field with NaN on land 
 
 
 %% Store in mat file %%

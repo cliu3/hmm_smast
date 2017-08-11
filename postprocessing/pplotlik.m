@@ -1,4 +1,4 @@
-%function pplotlik(LIK,result,typ,day,lonrange,latrange)
+function pplotlik(LIK,result,typ,day,lonrange,latrange)
 %PPLOTLIK  Plot a data likelihood to be used in a paper.
 %   PPLOTLIK(LIK,RESULT,TYP,DAY,LONRANGE,LATRANGE)
 %
