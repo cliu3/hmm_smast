@@ -1,5 +1,5 @@
 # hmm_smast
-`hmm_smast` is a MATLAB package for geolocating New England groundfish using Data Storage Tag (DST) data. This package is a fork of Martin W Pedersen's MATLAB geolocation toolbox, available at http://mwpedersen.dk/tracking.html.
+`hmm_smast` is a MATLAB package for geolocating New England groundfish using Data Storage Tag (DST) data. This package is a fork of Martin W Pedersen's MATLAB geolocation toolbox, available at http://mwpedersen.dk/tracking.html (The link is dead as of August, 2017. See [`mwp_original` branch](../..//tree/mwp_original) for the original geolocation toolbox code).
 
 ## Dependencies
 This code requires [t_tide](https://www.eoas.ubc.ca/~rich/) to perform tidal elevation prediction and the [Matlab Google Earth Toolbox](http://www.mathworks.com/matlabcentral/fileexchange/12954-google-earth-toolbox) to plot the most probable track in .kml format. These packages are included in the `dependencies` directory.
