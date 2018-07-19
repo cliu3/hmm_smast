@@ -1,35 +1,32 @@
-clear all;
-close all;
+%clear all;
+%close all;
 addpath(genpath('../'));
-
-% load configuations
-json.startup;
-config = json.read('config.json');
-
+%addpath(genpath('../../preprocess/'));
+%addpath('/opt/matlab/googleearth');
 
 global fvcom_tidaldb % path to fvcom tidal database
-fvcom_tidaldb = config.fvcom_tidaldb;
+fvcom_tidaldb = 'data/fvcomdb_gom3_v2.mat';
 global bottom_temperature  % path to fvcom bottom temperature
-bottom_temperature   = config.bottom_temperature;
+bottom_temperature   = 'data/gom3_btemp_davged_MayJun_2010.nc';
 
 %ptags = [7, 8];
-ptags = config.ptags;
+ptags = 7;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % tag-specific paremeters  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu
-std_temp_offset= config.std_temp_offset; %higher value is more inclusive
-tag_depth_range = config.tag_depth_range; % in meters
-tag_depth_accu = config.tag_depth_accu; % fraction of depth renge
-tag_temp_accu = config.tag_temp_accu; % in degree C
+std_temp_offset=2.0; %higher value is more inclusive
+tag_depth_range = 250; % in meters
+tag_depth_accu = 0.008; % fraction of depth renge
+tag_temp_accu = 0.1; % in degree C
 
 
 tag_num_range = ptags;
 
 global tideLV
 % tideLV  = [RMSE upper bound, R^2 lower bound, AMPLITUDE lower, AMPLITUDE upper]
-tideLV  = config.tideLV;
+tideLV  = [0.42 0.85 0.2 2.0];
 
 % main loop over tags
 for tag_num=tag_num_range
@@ -53,7 +50,7 @@ for tag_num=tag_num_range
     do_parts(5) = 1; %5 cliu likelihood & tidal constraint
     do_parts(6) = 1; %6 geolocate
     do_parts(7) = 1; %7 most probable track
-    do_parts(8) = config.make_movie; %8 make a movie
+    do_parts(8) = 0; %8 make a movie
     
     fast_likelihood = 1; %=1 use fast scheme, =0 use more accurate scheme
     
@@ -80,7 +77,7 @@ for tag_num=tag_num_range
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Read in the raw data file from an SMAST-format tag             %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    path_to_tags = config.path_to_tags ;
+    path_to_tags = 'preprocessing/' ;
     fprintf('loading %s\n',[path_to_tags tagname]);
     if(exist([path_to_tags tagname '.mat']))
         
