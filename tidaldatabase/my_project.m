@@ -64,9 +64,11 @@ if ispc
 else
     
     if(ProjectDirection == 'forward')
-        [x,y] = sp_proj('1802','forward',lon,lat,'m');
+%         [x,y] = sp_proj('1802','forward',lon,lat,'m');
+        [x,y] = arrayfun(@(a,b) LatLongToStatePlane(a,b,1802), lat, lon);
     else
-        [lon,lat] = sp_proj('1802','inverse',x,y,'m');
+%         [lon,lat] = sp_proj('1802','inverse',x,y,'m');
+        [lat, lon] = arrayfun(@(a,b) StatePlaneToLatLong(a,b,1802), x, y);
     end;
     
 end
