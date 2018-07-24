@@ -38,6 +38,8 @@ for i=tagset
   tag.length    = numeric(i,10); 
   tag.sex       = char(txt(i+1,11));
   tag.maturity  = numeric(i,12);
+  tag.release_lon = numeric(i,7); 
+  tag.release_lat = numeric(i,6);  
   tag.recapture_lon = numeric(i,19); 
   tag.recapture_lat = numeric(i,18); 
   if ispc

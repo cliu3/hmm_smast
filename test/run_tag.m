@@ -20,7 +20,8 @@ std_temp_offset=2.0; %higher value is more inclusive
 tag_depth_range = 250; % in meters
 tag_depth_accu = 0.008; % fraction of depth renge
 tag_temp_accu = 0.1; % in degree C
-
+D_low = 1; % random walk diffusioncoefficient for low activity, in km^2/day
+D_high = 10; % random walk diffusioncoefficient for high activity, in km^2/day
 
 tag_num_range = ptags;
 
@@ -146,7 +147,7 @@ for tag_num=tag_num_range
         if(do_parts(6)==1)
             %hmmgeolocate(tagid,2,'on',[],true)
             %hmmgeolocate(tagid,2,'on',[10. 100.]);
-            hmmgeolocate(tagid,2,'on',[1.,10.]);
+            hmmgeolocate(tagid,2,'on',[D_low, D_high]);
         end;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
