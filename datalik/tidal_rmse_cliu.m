@@ -8,11 +8,15 @@ function tidal_rmse_cliu(fish_no,path_to_tags,tagname)
 tag_name=[num2str(fish_no),'_raw'];
 load([path_to_tags tagname]);
 tagno=[num2str(fish_no),'_',tag.tag_id];
-global tideLV
+global tideLV low_fit
 %tideLV  = [0.42 0.85 0.2 2.0];
 
 mean_ampli=[];std_ampli=[];mean_phase=[];std_phase=[];
-Twindow = 13;  %time window = 13 h
+if exist('low_fit', 'var')
+    Twindow = low_fit;  
+else
+    Twindow = 13;  %time window = 13 h
+end
 % for Twindow=10:0.5:20
 nwindow = floor(Twindow*3600/tag.min_intvl_seconds); % window size in data point numbers
 

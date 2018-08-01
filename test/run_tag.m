@@ -15,11 +15,13 @@ ptags = 7;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % tag-specific paremeters  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu
+global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu low_fit mod_fit
 std_temp_offset=2.0; %higher value is more inclusive
 tag_depth_range = 250; % in meters
 tag_depth_accu = 0.008; % fraction of depth renge
 tag_temp_accu = 0.1; % in degree C
+low_fit = 13; %tidal fit duration (hours) for low activity
+mod_fit = 5; %tidal fit duration (hours) for moderate activity
 D_low = 1; % random walk diffusioncoefficient for low activity, in km^2/day
 D_high = 10; % random walk diffusioncoefficient for high activity, in km^2/day
 
@@ -111,7 +113,7 @@ for tag_num=tag_num_range
         %      dbname - alternate tidal base: def = tidaldb.mat
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if(do_parts(3)==1)
-            tidebehavextr(tagid,10,tideLV,16,tideLV);  %default
+            tidebehavextr(tagid,mod_fit,tideLV,low_fit,tideLV);  %default
         end;
         %tidebehavextr(tagid);
         % make strict criteria so no tide is found
