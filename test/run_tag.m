@@ -1,8 +1,7 @@
-%clear all;
-%close all;
+clear variables;
+close all;
 addpath(genpath('../'));
-%addpath(genpath('../../preprocess/'));
-%addpath('/opt/matlab/googleearth');
+
 
 global fvcom_tidaldb % path to fvcom tidal database
 fvcom_tidaldb = 'data/fvcomdb_gom3_v2.mat';
@@ -12,14 +11,19 @@ bottom_temperature   = 'data/gom3_btemp_davged_MayJun_2010.nc';
 %ptags = [7, 8];
 ptags = 7;
 
+
+global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu low_fit mod_fit
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % tag-specific paremeters  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-global std_temp_offset tag_depth_range tag_depth_accu tag_temp_accu low_fit mod_fit
 std_temp_offset=2.0; %higher value is more inclusive
 tag_depth_range = 250; % in meters
 tag_depth_accu = 0.008; % fraction of depth renge
 tag_temp_accu = 0.1; % in degree C
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     other paremeters     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 low_fit = 13; %tidal fit duration (hours) for low activity
 mod_fit = 5; %tidal fit duration (hours) for moderate activity
 D_low = 1; % random walk diffusioncoefficient for low activity, in km^2/day
@@ -44,7 +48,6 @@ for tag_num=tag_num_range
     z_off_bottom = 20.0; %max off-bottom extent in meters
     %set to -99.0 to use original Petersen likelihood estimator
     
-    %do_parts = 6;
     
     do_parts(1) = 1; %1 generate a new tidaldb, =0 use tidaldb.mat
     do_parts(2) = 1; %2 strip
@@ -66,15 +69,11 @@ for tag_num=tag_num_range
     %%% or resolution
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    if(do_parts(1)==1);
-        %  gen_tidaldb(-71,-70,42,43,.02,{'M2','S2','N2','K1','O1'}); %for fixed tags
-        %gen_tidaldb(-71,-66,40,45,.015,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM
-        %gen_tidaldb(-71,-66,40,45,.05,{'M2','N2','S2','O1','K1','K2','P1','Q1'}); %all GOM
-        %readdb
-        %finddbvars
+    if(do_parts(1)==1)
+
         gen_tidaldb_draft(-71,-66,40,45,.05);
         
-    end;
+    end
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,7 +92,7 @@ for tag_num=tag_num_range
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if(do_parts(2)==1)
             smast_datastrip(tag)
-        end;
+        end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% Extract tidal and behaviour information from rawXXXX.mat       %%%
         %%% tagdataxxxx.mat is created                                     %%%
@@ -114,7 +113,7 @@ for tag_num=tag_num_range
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if(do_parts(3)==1)
             tidebehavextr(tagid,mod_fit,tideLV,low_fit,tideLV);  %default
-        end;
+        end
         %tidebehavextr(tagid);
         % make strict criteria so no tide is found
         %tidebehavextr(tagid,10,[0.1 0.99 0.2],16,[0.1 0.99 0.2]);
@@ -128,15 +127,15 @@ for tag_num=tag_num_range
             if (tag.recap_uncertainty_km<0)
                 recap='no';
                 fprintf('============setting recap to NO\n');
-            end;
+            end
             
             if(fast_likelihood)
                 datalikelihood(tagid,'fast', 'on',recap,z_off_bottom);
             else
                 datalikelihood(tagid,'full', 'on',recap,z_off_bottom);
-            end;
+            end
             
-        end;
+        end
         
         if(do_parts(5)==1)
             likelihood_cliu(tag_num,path_to_tags,tagname)
@@ -150,7 +149,7 @@ for tag_num=tag_num_range
             %hmmgeolocate(tagid,2,'on',[],true)
             %hmmgeolocate(tagid,2,'on',[10. 100.]);
             hmmgeolocate(tagid,2,'on',[D_low, D_high]);
-        end;
+        end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% Find the most probable track of the fish                       %%%
@@ -166,7 +165,7 @@ for tag_num=tag_num_range
             plottrack(mpt);
             %write_ge_track(mpt);
             write_ge_track_UD(tagid)
-        end;
+        end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% Create an avi file that shows how the probability distribution %%%
         %%% evolves in time                                                %%%
@@ -179,7 +178,7 @@ for tag_num=tag_num_range
         end
     else
         error('tag file does not exist, stopping...');
-    end;
-end;
-%return
+    end
+end
+
 
