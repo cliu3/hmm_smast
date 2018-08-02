@@ -26,8 +26,8 @@ tag_temp_accu = 0.1; % in degree C
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 low_fit = 13; %tidal fit duration (hours) for low activity
 mod_fit = 5; %tidal fit duration (hours) for moderate activity
-D_low = 1; % random walk diffusioncoefficient for low activity, in km^2/day
-D_high = 10; % random walk diffusioncoefficient for high activity, in km^2/day
+D_low = 1; % random walk diffusion coefficient for low activity, in km^2/day
+D_high = 10; % random walk diffusion coefficient for high activity, in km^2/day
 
 tag_num_range = ptags;
 
